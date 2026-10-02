@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Checklist Cek iPhone</title>
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--tx:#1b1d21;--mu:#6b7280;--bd:#d9dce1;--ac:#2563eb;--ok:#16a34a;--bad:#d97706;--cx:#dc2626}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111316;--card:#1b1e23;--tx:#eceef1;--mu:#98a0ab;--bd:#323840;--ac:#60a5fa;--ok:#4ade80;--bad:#fbbf24;--cx:#f87171}}
+:root[data-theme="dark"]{--bg:#111316;--card:#1b1e23;--tx:#eceef1;--mu:#98a0ab;--bd:#323840;--ac:#60a5fa;--ok:#4ade80;--bad:#fbbf24;--cx:#f87171}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:90px}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 14px}
+.row{display:flex;align-items:center;gap:10px;justify-content:space-between}
+h1{font-size:17px;margin:0}
+.bar{height:6px;background:var(--bd);border-radius:9px;margin-top:8px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .2s}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px}
+button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;padding:6px 11px;cursor:pointer}
+button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:720px;margin:0 auto;padding:12px}
+section{margin-bottom:16px}
+h2{font-size:15px;margin:14px 2px 8px;color:var(--ac)}
+.item{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.item.ok{border-left-color:var(--ok)}.item.bad{border-left-color:var(--bad)}.item.cx{border-left-color:var(--cx)}
+.t{font-weight:600}.d{color:var(--mu);font-size:13px;margin:2px 0 6px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.opts label{cursor:pointer}
+.opts input{position:absolute;opacity:0;pointer-events:none}
+.opts span{display:inline-block;padding:7px 12px;border:1px solid var(--bd);border-radius:20px;font-size:14px}
+.opts input:checked+span{background:var(--ok);border-color:var(--ok);color:#fff}
+.opts input.b:checked+span{background:var(--bad);border-color:var(--bad);color:#000}
+.opts input.c:checked+span{background:var(--cx);border-color:var(--cx);color:#fff}
+.opts input:focus-visible+span{outline:2px solid var(--ac)}
+input[type=text],textarea{width:100%;margin-top:6px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+textarea{min-height:64px;resize:vertical}
+#warn{display:none;background:var(--cx);color:#fff;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-weight:600}
+#warn ul{margin:6px 0 0;padding-left:18px;font-weight:400}
+.foot{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;justify-content:center}
+.foot button{flex:1;max-width:240px;padding:10px}
+pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:13px;display:none}
+.cred{font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<header>
+  <div class="row"><h1>📱 Checklist Cek iPhone</h1>
+    <div class="row"><span class="timer" id="tm">00:00</span><button id="ts">Timer</button><button id="tr">↺</button></div></div>
+  <div class="bar"><i id="pb"></i></div>
+  <div style="font-size:12px;color:var(--mu);margin-top:4px" id="pt">0 / 0 terisi</div>
+</header>
+<main>
+  <div id="warn"></div>
+  <div id="form"></div>
+  <pre id="out"></pre>
+</main>
+<div class="foot">
+  <button class="p" id="rep">Buat &amp; Salin Laporan</button>
+  <button id="rst">Reset Form</button>
+</div>
+
+<script>
+// Opsi: akhiran "!" = minus (kuning), "!!" = CANCEL (merah)
+// k: r=pilih satu, m=pilih banyak, t=teks, x=teks panjang. n:1 = ada kolom catatan
+const SEC=[
+{h:"1. Minus di Deskripsi",i:[
+ {id:"minus",t:"Tulis ulang minus yang ada di deskripsi",d:"Salin teks deskripsi supaya mudah dicek.",k:"x"}]},
+{h:"2. Persiapan",i:[
+ {id:"bright",t:"BRIGHTNESS FULL & PASANG TIMER (WAJIB)",k:"r",o:["Sudah","Belum!"]}]},
+{h:"3. Fisik",i:[
+ {id:"fisik",t:"Fisik sesuai deskripsi",k:"r",o:["Mulus","Lecet tipis!","Lecet parah!"],n:1},
+ {id:"btn",t:"Tombol power & volume",k:"r",o:["Berfungsi","Tidak!"]},
+ {id:"silent",t:"Tombol silent",k:"r",o:["Berfungsi","Tidak!"]},
+ {id:"senter",t:"Senter",k:"r",o:["Berfungsi","Tidak!"]},
+ {id:"lcd",t:"LCD mulus",d:"Jika terpasang tempered glass, harap dibuka di akhir.",k:"r",o:["Mulus","Ada goresan!","Retak/pecah!"],n:1}]},
+{h:"4. Fungsi (Settings)",i:[
+ {id:"wifi",t:"Wi-Fi",d:"Cek tangkapan sinyal, bandingkan dengan iPhone yang kamu bawa.",k:"r",o:["Banyak","Sedikit!"]},
+ {id:"bt",t:"Bluetooth",d:"Hubungkan ke Bluetooth/TWS.",k:"r",o:["Normal","Tidak bisa tersambung!"],n:1},
+ {id:"bat",t:"Battery Health",d:"Settings › Battery › Battery Health & Charging. Isi persentase.",k:"t",ph:"cth: 87%"},
+ {id:"model",t:"Model Number sesuai keterangan inter/resmi",d:"Settings › General › About.",k:"r",o:["Sesuai","Tidak!"],n:1},
+ {id:"modem",t:"Modem Firmware",d:"TIDAK BOLEH BLANK. Blank = indikasi IC Baseband/Bypass → CANCEL.",k:"r",o:["Terisi angka","Blank!!"]},
+ {id:"sim",t:"Carrier Lock / Pembatasan SIM",d:"Jika Simlock → CANCEL.",k:"r",o:["No SIM Restriction","Simlock!!"]},
+ {id:"autob",t:"Auto Brightness",d:"Accessibility › Display & Text Size. Redupkan layar lalu sorot senter ke sensor atas.",k:"r",o:["Naik sendiri","Brightness stuck!"]},
+ {id:"spk",t:"Speaker",d:"Settings › Sounds & Haptics, lalu test.",k:"r",o:["Normal & kencang","Speaker kecil!","Speaker sember!","Speaker mati!"]},
+ {id:"fid",t:"Face ID / Touch ID",d:"Pastikan berfungsi normal dan responsif.",k:"r",o:["Responsif","Tidak responsif!"]},
+ {id:"panic",t:"Panicfull & Resetcounter",d:"Privacy & Security › scroll bawah › Analytics & Improvements › Analytics Data, ketik \"Panicfull\" dan \"resetcounter\". Jika ada → CANCEL.",k:"r",o:["Normal","Ada panicfull/resetcounter!!"]}]},
+{h:"5. Kembali ke Menu",i:[
+ {id:"mic",t:"Voice Notes / Microphone",k:"r",o:["Normal","Tidak ada suara!"]},
+ {id:"comp",t:"Compass",k:"r",o:["Berfungsi","Tidak!"]},
+ {id:"touch",t:"Responsif layar (pakai Notepad)",k:"r",o:["Layar normal","Layar delay!","Ada bagian yg gabisa disentuh!"],n:1}]},
+{h:"6. Kamera",d:"Boleh pilih lebih dari satu (getar &amp; jamur).",i:[
+ {id:"c05",t:"Kamera 0.5 (iPhone 11 ke atas)",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
+ {id:"c1",t:"Kamera 1x",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
+ {id:"c25",t:"Kamera 2x–5x",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
+ {id:"cpot",t:"Kamera potret",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
+ {id:"cvid",t:"Video",d:"Set kualitas video ke 60 fps.",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]}]},
+{h:"7. Cek IMEI",i:[
+ {id:"imei_m",t:"IMEI device sesuai simcard",d:"Buka Telepon, ketik #*06#.",k:"r",o:["Sesuai","Housing gantian!"]},
+ {id:"imei_n",t:"Catat IMEI",k:"t",ph:"15 digit IMEI"},
+ {id:"kartu",t:"Masukkan kartu (WAJIB by.U / Telkomsel)",k:"r",o:["Ada sinyal","Tidak ada layanan/Terblokir!"]},
+ {id:"prox",t:"Test telepon 123 + loud speaker, tutup sensor atas",d:"Jika IMEI terblokir, test telepon 911. Jika ditutup tangan layar TIDAK mati = proximity rusak.",k:"r",o:["Berfungsi","Tidak berfungsi!"]},
+ {id:"login",t:"Login CEIRKU.org",d:"ID dan password CEIRKU: minta ke admin di grup.",k:"r",o:["Sudah login","Belum login"]},
+ {id:"ceir",t:"Status IMEI (Cek IMEI Status → input IMEI → bayar QRIS)",d:"Kirim QR ke grup agar bisa dibayar.",k:"r",o:["IMEI terdaftar","Tidak terdaftar!"]}]},
+{h:"8. Minus Lain",i:[
+ {id:"minus2",t:"Minus lain selain di poin 1",d:"Tulis di sini dan beritahu penjual ketidaksesuaian kondisi iPhone.",k:"x"}]},
+{h:"9. Selesai",i:[
+ {id:"konf",t:"Konfirmasi ke grup agar di-follow up",k:"r",o:["Sudah","Belum"]}]}
+];
+const KEY="cek_iphone_v1";
+let S={},N={},H={model:"",nama:""};
+try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");S=j.S||{};N=j.N||{};H=j.H||H}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({S,N,H}))}catch(e){}};
+const cl=o=>o.replace(/!+$/,""), lv=o=>o.endsWith("!!")?2:o.endsWith("!")?1:0;
+const $=s=>document.querySelector(s);
+const ALL=SEC.flatMap(s=>s.i);
+
+function build(){
+  let h=`<section><h2>Info Unit</h2><div class="item">
+   <input type="text" id="h_model" placeholder="Tipe iPhone (cth: iPhone 12 Pro 128GB)" value="${esc(H.model)}">
+   <input type="text" id="h_nama" placeholder="Nama pengecek" value="${esc(H.nama)}"></div></section>`;
+  for(const s of SEC){
+    h+=`<section><h2>${s.h}</h2>${s.d?`<div class="d">${s.d}</div>`:""}`;
+    for(const it of s.i){
+      h+=`<div class="item" id="it_${it.id}"><div class="t">${it.t}</div>${it.d?`<div class="d">${it.d}</div>`:""}`;
+      if(it.k=="r"||it.k=="m"){
+        h+=`<div class="opts">`+it.o.map((o,x)=>{
+          const sel=it.k=="r"?S[it.id]===cl(o):(S[it.id]||[]).includes(cl(o));
+          const c=lv(o)==2?"c":lv(o)==1?"b":"";
+          return `<label><input type="${it.k=="r"?"radio":"checkbox"}" name="${it.id}" class="${c}" data-id="${it.id}" value="${esc(cl(o))}" ${sel?"checked":""}><span>${cl(o)}</span></label>`}).join("")+`</div>`;
+        if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional)" value="${esc(N[it.id]||"")}">`;
+      }else if(it.k=="t")h+=`<input type="text" data-id="${it.id}" placeholder="${it.ph||""}" value="${esc(S[it.id]||"")}">`;
+      else h+=`<textarea data-id="${it.id}" placeholder="Tulis di sini… (kosongkan jika tidak ada)">${esc(S[it.id]||"")}</textarea>`;
+      h+=`</div>`;
+    }
+    h+=`</section>`;
+  }
+  $("#form").innerHTML=h;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function level(it){ // 0 ok,1 bad,2 cancel,-1 kosong
+  const v=S[it.id]; if(it.k=="t"||it.k=="x")return (v&&v.trim())?0:-1;
+  const sel=it.k=="r"?(v?[v]:[]):(v||[]); if(!sel.length)return -1;
+  let m=0; for(const x of sel){const o=it.o.find(o=>cl(o)===x); if(o)m=Math.max(m,lv(o))} return m;
+}
+function refresh(){
+  let done=0,cx=[],bad=[];
+  for(const it of ALL){
+    const l=level(it),el=$("#it_"+it.id);
+    el.classList.remove("ok","bad","cx");
+    if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
+    if(l==2)cx.push(it.t);
+  }
+  $("#pb").style.width=(done/ALL.length*100)+"%";
+  $("#pt").textContent=done+" / "+ALL.length+" terisi";
+  const w=$("#warn");
+  if(cx.length){w.style.display="block";w.innerHTML="⛔ HARAP CANCEL — ditemukan:<ul>"+cx.map(t=>"<li>"+t+"</li>").join("")+"</ul>"}
+  else w.style.display="none";
+}
+document.addEventListener("input",e=>{
+  const t=e.target;
+  if(t.id=="h_model")H.model=t.value; else if(t.id=="h_nama")H.nama=t.value;
+  else if(t.dataset.note)N[t.dataset.note]=t.value;
+  else if(t.dataset.id){
+    const it=ALL.find(x=>x.id==t.dataset.id);
+    if(it.k=="r")S[it.id]=t.value;
+    else if(it.k=="m"){
+      let a=S[it.id]||[];
+      if(t.checked){a=t.value=="Normal"?["Normal"]:a.filter(x=>x!="Normal").concat(t.value)}
+      else a=a.filter(x=>x!=t.value);
+      S[it.id]=a;
+      document.querySelectorAll(`input[name="${it.id}"]`).forEach(i=>i.checked=a.includes(i.value));
+    }else S[it.id]=t.value;
+  }
+  save();refresh();
+});
+
+function report(){
+  const L=[];
+  L.push("*HASIL CEK IPHONE*");
+  if(H.model)L.push("Unit: "+H.model);
+  if(H.nama)L.push("Pengecek: "+H.nama);
+  L.push("Waktu: "+new Date().toLocaleString("id-ID"));
+  const sh=t=>t.replace(/\s*\(.*?\)/g,"").trim(),gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
+  const cx=ALL.filter(i=>level(i)==2),pb=ALL.filter(i=>level(i)==1);
+  if(cx.length)L.push("","⛔ *CANCEL*: "+cx.map(i=>sh(i.t)+" ("+gv(i)+")").join("; "));
+  if(pb.length)L.push("","⚠️ *PERLU PERTIMBANGAN*: "+pb.map(i=>sh(i.t)+" ("+gv(i)+")").join("; "));
+  for(const s of SEC){
+    L.push("","*"+s.h+"*");
+    for(const it of s.i){
+      let v=it.k=="m"?(S[it.id]||[]).join(" + "):(S[it.id]||"");
+      if(it.k=="x"&&!String(v).trim())v="-";
+      if(!v)v="(belum diisi)";
+      const l=level(it);
+      L.push((l==2?"❌ ":l==1?"⚠️ ":"✅ ")+it.t.replace(/\(.*?\)/g,"").trim()+": "+v+(N[it.id]?" — "+N[it.id]:""));
+    }
+  }
+  return L.join("\n");
+}
+$("#rep").onclick=async()=>{
+  const t=report(),o=$("#out"),b=$("#rep");
+  o.style.display="block";o.textContent=t;
+  let ok=false;
+  try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
+  if(!ok){try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand("copy");a.remove()}catch(e){}}
+  if(!ok){const r=document.createRange();r.selectNodeContents(o);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+  b.textContent=ok?"✔ Tersalin! Tempel di WhatsApp":"Tekan lama teks, lalu Salin";
+  setTimeout(()=>b.textContent="Buat & Salin Laporan",3500);
+  o.scrollIntoView({behavior:"smooth"});
+};
+let rstT=null;
+$("#rst").onclick=()=>{
+  const b=$("#rst");
+  if(!rstT){
+    b.textContent="Yakin? Tekan lagi";b.style.background="var(--cx)";b.style.color="#fff";
+    rstT=setTimeout(()=>{rstT=null;b.textContent="Reset Form";b.style.background="";b.style.color=""},3000);
+    return;
+  }
+  clearTimeout(rstT);rstT=null;
+  b.textContent="Reset Form";b.style.background="";b.style.color="";
+  S={};N={};H={model:"",nama:""};
+  try{localStorage.removeItem(KEY)}catch(e){}
+  build();refresh();
+  const o=$("#out");o.style.display="none";o.textContent="";
+  window.scrollTo({top:0,behavior:"smooth"});
+};
+
+// Timer
+let sec=0,iv=null;
+const fm=()=>{$("#tm").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":"+String(sec%60).padStart(2,"0")};
+$("#ts").onclick=()=>{if(iv){clearInterval(iv);iv=null;$("#ts").textContent="Timer"}else{iv=setInterval(()=>{sec++;fm()},1000);$("#ts").textContent="Stop"}};
+$("#tr").onclick=()=>{clearInterval(iv);iv=null;sec=0;fm();$("#ts").textContent="Timer"};
+
+build();refresh();
+</script>
+</body>
+</html>
