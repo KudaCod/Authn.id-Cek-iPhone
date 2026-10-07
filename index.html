@@ -3,7 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Checklist Cek iPhone</title>
+<title>Cek iPhone</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Cek iPhone">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADsElEQVR4nO3c3XHTQBSG4Q1DCbQAjUFZVEYLUAQXGkSw+fyjKJbPnue5Sy4yO9aro7Us5+Xz158D/ufD0QvgeYmDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxEH49ewG5+fP909BL++vLt19FL2MHLBF+kfqosXqueSO04njaL1+omUnjPUaKMUWed56rGUesVr7XaVck4Kr7WFddcMg4eo14cFU/BRbmV14uDhykWR7mT70St9ReLg0cSB5E4iMRBNM+nsovDP8ioteW8bJ44Ds9isSxjjkRcVogmieNJxsbq2dazzSRx8B7EQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJI7t5niK+AJxbLSUMXcf4nirH98/zZqIOLY4r2HKPsSxm/lGiDjudqGAOb6ushLHfSabDZeJYzeTjY0hjru0GhtDHHuZb2wMcdyuzz50JQ4icdyk4dgY4rhFt33oShxvMvHYGOK4qu3YGOJ4i7nHxhDHZT33oStxRJ0vKAtxbNFhbIwmcWyYAcbG6BDH7g97NhkbY/o4Xjdxex/N96GrmePY9qSnC8pq2jjSMX7LsW81NsbEcVw4kBf6MDZemzaOsbWPDX9tVjPHMe7swz70xORxjL3nRyvzxzFu68PYONcijnGtDyPkv7rEMbYOgLZjY7SKY/Q+0hv0imPc2UfzmNrFMW4+5M3LGD3jGA78bZrGMa71oZ7ROY7xbwFfvv0SxInWcYw/faxZnPzYXPc4xlkKyliJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBNEkcz/YPNp5tPdtMEgfv4ePRC9jNcrIe/pWkOWbGYp44FjMdm8O5rBCJg0gcROIgmm1DutnJ2xwb2yGOEd79Lr9snkjrOK7eFGmeSN89x+23yw6/sXaUvnFwVdM47h0GPYdH0zi4hTiIxEEkDqJicey1Mbz31sVetzpqbWyLxcEj1Yvj8cOj59gYzW+fX32ysO2N88XL568/j17DFrsftvf+VLbc2Bh14xilTuuKZYyKe45VlVe8yjrPFZ4cq6cdIXWzWMwQx+KpEqmexWKeONhd4T0H700cROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcRL8BxFzlMzXcmE8AAAAASUVORK5CYII=">
 <style>
 :root{--bg:#f4f5f7;--card:#fff;--tx:#1b1d21;--mu:#6b7280;--bd:#d9dce1;--ac:#2563eb;--ok:#16a34a;--bad:#d97706;--cx:#dc2626}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111316;--card:#1b1e23;--tx:#eceef1;--mu:#98a0ab;--bd:#323840;--ac:#60a5fa;--ok:#4ade80;--bad:#fbbf24;--cx:#f87171}}
@@ -42,6 +48,9 @@ textarea{min-height:64px;resize:vertical}
 .foot button{flex:1;max-width:240px;padding:10px}
 pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:13px;display:none}
 .cred{font-family:ui-monospace,monospace}
+html{-webkit-text-size-adjust:100%}
+button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+input[type=text],textarea{font-size:16px}
 </style>
 </head>
 <body>
@@ -49,7 +58,7 @@ pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);borde
   <div class="row"><h1>📱 Checklist Cek iPhone</h1>
     <div class="row"><span class="timer" id="tm">00:00</span><button id="ts">Timer</button><button id="tr">↺</button></div></div>
   <div class="bar"><i id="pb"></i></div>
-  <div style="font-size:12px;color:var(--mu);margin-top:4px" id="pt">0 / 0 terisi</div>
+  <div class="row" style="font-size:12px;color:var(--mu);margin-top:4px"><span id="pt">0 / 0 terisi</span><span id="ofl"></span></div>
 </header>
 <main>
   <div id="warn"></div>
@@ -234,6 +243,10 @@ $("#ts").onclick=()=>{if(iv){clearInterval(iv);iv=null;$("#ts").textContent="Tim
 $("#tr").onclick=()=>{clearInterval(iv);iv=null;sec=0;fm();$("#ts").textContent="Timer"};
 
 build();refresh();
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("sw.js").catch(()=>{});
+  navigator.serviceWorker.ready.then(()=>{$("#ofl").textContent="✔ Siap offline";$("#ofl").style.color="var(--ok)"}).catch(()=>{});
+}
 </script>
 </body>
 </html>
