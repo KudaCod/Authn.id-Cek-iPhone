@@ -48,6 +48,12 @@ textarea{min-height:64px;resize:vertical}
 .foot button{flex:1;max-width:240px;padding:10px}
 pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:13px;display:none}
 .cred{font-family:ui-monospace,monospace}
+.intro{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--ac);border-radius:10px;padding:12px;margin-bottom:12px}
+.intro .d{margin:6px 0 0}
+.why{margin:6px 0 4px;padding:8px 10px;border-radius:8px;background:rgba(37,99,235,.10);border-left:3px solid var(--ac);font-size:13px}
+.why ul{margin:4px 0 0;padding-left:18px}.why li{margin:2px 0}
+details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-size:13px}
+details.ex img{display:block;max-width:100%;height:auto;margin:8px 0;border-radius:8px;border:1px solid var(--bd)}
 html{-webkit-text-size-adjust:100%}
 button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input[type=text],textarea{font-size:16px}
@@ -61,80 +67,592 @@ input[type=text],textarea{font-size:16px}
   <div class="row" style="font-size:12px;color:var(--mu);margin-top:4px"><span id="pt">0 / 0 terisi</span><span id="ofl"></span></div>
 </header>
 <main>
+  <div class="intro"><b>Form checklist ini dibuat untuk menghindari / meminimalisir adanya penipuan dalam bentuk unit yang tidak sesuai.</b>
+    <div class="d">Catatan: tulisan abu-abu kecil di bawah judul setiap poin adalah cara melihat / mengecek poin tersebut. Kotak biru berisi alasan kenapa poin itu penting dicek.</div></div>
   <div id="warn"></div>
   <div id="form"></div>
   <pre id="out"></pre>
 </main>
 <div class="foot">
-  <button class="p" id="rep">Buat &amp; Salin Laporan</button>
+  <button class="p" id="rep">Check Status Device</button>
   <button id="rst">Reset Form</button>
 </div>
 
 <script>
 // Opsi: akhiran "!" = minus (kuning), "!!" = CANCEL (merah)
-// k: r=pilih satu, m=pilih banyak, t=teks, x=teks panjang. n:1 = ada kolom catatan
+// k: r=pilih satu, m=pilih banyak, t=teks, x=teks panjang. n:1 = kolom catatan. img:[...] = gambar contoh. w = alasan (kotak biru)
 const SEC=[
-{h:"1. Minus di Deskripsi",i:[
- {id:"minus",t:"Tulis ulang minus yang ada di deskripsi",d:"Salin teks deskripsi supaya mudah dicek.",k:"x"}]},
-{h:"2. Persiapan",i:[
- {id:"bright",t:"BRIGHTNESS FULL & PASANG TIMER (WAJIB)",k:"r",o:["Sudah","Belum!"]}]},
-{h:"3. Fisik",i:[
- {id:"fisik",t:"Fisik sesuai deskripsi",k:"r",o:["Mulus","Lecet tipis!","Lecet parah!"],n:1},
- {id:"btn",t:"Tombol power & volume",k:"r",o:["Berfungsi","Tidak!"]},
- {id:"silent",t:"Tombol silent",k:"r",o:["Berfungsi","Tidak!"]},
- {id:"senter",t:"Senter",k:"r",o:["Berfungsi","Tidak!"]},
- {id:"lcd",t:"LCD mulus",d:"Jika terpasang tempered glass, harap dibuka di akhir.",k:"r",o:["Mulus","Ada goresan!","Retak/pecah!"],n:1}]},
-{h:"4. Fungsi (Settings)",i:[
- {id:"wifi",t:"Wi-Fi",d:"Cek tangkapan sinyal, bandingkan dengan iPhone yang kamu bawa.",k:"r",o:["Banyak","Sedikit!"]},
- {id:"bt",t:"Bluetooth",d:"Hubungkan ke Bluetooth/TWS.",k:"r",o:["Normal","Tidak bisa tersambung!"],n:1},
- {id:"bat",t:"Battery Health",d:"Settings › Battery › Battery Health & Charging. Isi persentase.",k:"t",ph:"cth: 87%"},
- {id:"model",t:"Model Number sesuai keterangan inter/resmi",d:"Settings › General › About.",k:"r",o:["Sesuai","Tidak!"],n:1},
- {id:"modem",t:"Modem Firmware",d:"TIDAK BOLEH BLANK. Blank = indikasi IC Baseband/Bypass → CANCEL.",k:"r",o:["Terisi angka","Blank!!"]},
- {id:"sim",t:"Carrier Lock / Pembatasan SIM",d:"Jika Simlock → CANCEL.",k:"r",o:["No SIM Restriction","Simlock!!"]},
- {id:"autob",t:"Auto Brightness",d:"Accessibility › Display & Text Size. Redupkan layar lalu sorot senter ke sensor atas.",k:"r",o:["Naik sendiri","Brightness stuck!"]},
- {id:"spk",t:"Speaker",d:"Settings › Sounds & Haptics, lalu test.",k:"r",o:["Normal & kencang","Speaker kecil!","Speaker sember!","Speaker mati!"]},
- {id:"fid",t:"Face ID / Touch ID",d:"Pastikan berfungsi normal dan responsif.",k:"r",o:["Responsif","Tidak responsif!"]},
- {id:"panic",t:"Panicfull & Resetcounter",d:"Privacy & Security › scroll bawah › Analytics & Improvements › Analytics Data, ketik \"Panicfull\" dan \"resetcounter\". Jika ada → CANCEL.",k:"r",o:["Normal","Ada panicfull/resetcounter!!"]}]},
-{h:"5. Kembali ke Menu",i:[
- {id:"mic",t:"Voice Notes / Microphone",k:"r",o:["Normal","Tidak ada suara!"]},
- {id:"comp",t:"Compass",k:"r",o:["Berfungsi","Tidak!"]},
- {id:"touch",t:"Responsif layar (pakai Notepad)",k:"r",o:["Layar normal","Layar delay!","Ada bagian yg gabisa disentuh!"],n:1}]},
-{h:"6. Kamera",d:"Boleh pilih lebih dari satu (getar &amp; jamur).",i:[
- {id:"c05",t:"Kamera 0.5 (iPhone 11 ke atas)",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
- {id:"c1",t:"Kamera 1x",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
- {id:"c25",t:"Kamera 2x–5x",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
- {id:"cpot",t:"Kamera potret",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]},
- {id:"cvid",t:"Video",d:"Set kualitas video ke 60 fps.",k:"m",o:["Normal","Getar!","Jamur!","Blank!!"]}]},
-{h:"7. Cek IMEI",i:[
- {id:"imei_m",t:"IMEI device sesuai simcard",d:"Buka Telepon, ketik #*06#.",k:"r",o:["Sesuai","Housing gantian!"]},
- {id:"imei_n",t:"Catat IMEI",k:"t",ph:"15 digit IMEI"},
- {id:"kartu",t:"Masukkan kartu (WAJIB by.U / Telkomsel)",k:"r",o:["Ada sinyal","Tidak ada layanan/Terblokir!"]},
- {id:"prox",t:"Test telepon 123 + loud speaker, tutup sensor atas",d:"Jika IMEI terblokir, test telepon 911. Jika ditutup tangan layar TIDAK mati = proximity rusak.",k:"r",o:["Berfungsi","Tidak berfungsi!"]},
- {id:"login",t:"Login CEIRKU.org",d:"ID dan password CEIRKU: minta ke admin di grup.",k:"r",o:["Sudah login","Belum login"]},
- {id:"ceir",t:"Status IMEI (Cek IMEI Status → input IMEI → bayar QRIS)",d:"Kirim QR ke grup agar bisa dibayar.",k:"r",o:["IMEI terdaftar","Tidak terdaftar!"]}]},
-{h:"8. Minus Lain",i:[
- {id:"minus2",t:"Minus lain selain di poin 1",d:"Tulis di sini dan beritahu penjual ketidaksesuaian kondisi iPhone.",k:"x"}]},
-{h:"9. Selesai",i:[
- {id:"konf",t:"Konfirmasi ke grup agar di-follow up",k:"r",o:["Sudah","Belum"]}]}
+{
+"h": "1. Minus di Deskripsi",
+"i": [
+{
+"id": "minus",
+"t": "Deskripsi bisa ditulis ulang untuk memastikan tidak ada minus lain ketika pengecekan ulang",
+"k": "x",
+"s": "Deskripsi penjual",
+"d": "Salin ulang deskripsi/minus dari penjual di kolom ini, lalu cocokkan satu per satu dengan kondisi unit saat dicek."
+}
+]
+},
+{
+"h": "2. Persiapan",
+"i": [
+{
+"id": "bright",
+"t": "Brightness (kecerahan) layar FULL (WAJIB)",
+"k": "r",
+"s": "Brightness full",
+"d": "Geser slider kecerahan di Control Center sampai penuh. Tampilkan layar putih penuh agar kerusakan mudah terlihat.",
+"w": [
+"Kecerahan penuh membuat kerusakan layar terlihat jelas: dead pixel (titik mati), white spot (bercak putih), warna tidak rata, atau LCD yang abnormal."
+],
+"o": [
+"Sudah",
+"Belum!"
+]
+},
+{
+"id": "timer",
+"t": "Pasang timer (WAJIB)",
+"k": "r",
+"s": "Timer",
+"d": "Tekan tombol Timer di bagian atas halaman ini sejak awal pengecekan, dan catat persentase baterai saat mulai.",
+"w": [
+"Timer dijalankan untuk mengetahui baterai boros atau tidak: lihat berapa persen baterai turun selama pengecekan (layar menyala terang), lalu bandingkan dengan Battery Health. Tujuannya menghindari battery health suntikan (angka kesehatan baterai yang tidak sesuai kondisi aslinya)."
+],
+"o": [
+"Sudah",
+"Belum!"
+]
+},
+{
+"id": "box",
+"t": "Cek box / dus (khusus iPhone resmi: BliBli, iBox, Digimap) original atau tidak",
+"k": "m",
+"s": "Box / dus",
+"d": "1) Dus terasa lebih berat. 2) Tatakan (pengganjal) berbahan foam, bukan plastik: jika digores akan membekas. 3) Pada labeling ada bahasa Indonesia serta nama importir. Cocokkan juga IMEI/serial di label dengan unit.",
+"w": [
+"Unit inter kadang dijual sebagai unit resmi dengan memasang dus palsu atau dus dari unit lain, supaya terlihat meyakinkan. Cek box membantu memastikan dus original dan sesuai dengan unitnya.",
+"Dus resmi di Indonesia mencantumkan keterangan berbahasa Indonesia dan nama importir. Dus yang terasa ringan, tatakannya plastik, atau labelnya tidak lengkap bisa jadi bukan dus original, sehingga klaim unit resmi (garansi dan nilai jual) perlu ditinjau ulang."
+],
+"o": [
+"Box sesuai (semua poin)",
+"Dus terasa ringan!",
+"Tatakan plastik, bukan foam!",
+"Label tanpa bahasa Indonesia/importir!",
+"Tidak ada box!",
+"Tidak dicek (bukan iPhone resmi)"
+],
+"n": 1
+}
+]
+},
+{
+"h": "3. Fisik",
+"i": [
+{
+"id": "fisik",
+"t": "Fisik sesuai deskripsi",
+"k": "r",
+"s": "Fisik",
+"o": [
+"Mulus",
+"Lecet tipis!",
+"Lecet parah!"
+],
+"n": 1
+},
+{
+"id": "btn",
+"t": "Tombol power & volume",
+"k": "r",
+"s": "Tombol power & volume",
+"o": [
+"Berfungsi",
+"Tidak!"
+]
+},
+{
+"id": "silent",
+"t": "Tombol silent",
+"k": "r",
+"s": "Tombol silent",
+"o": [
+"Berfungsi",
+"Tidak!"
+]
+},
+{
+"id": "senter",
+"t": "Senter",
+"k": "r",
+"s": "Senter",
+"o": [
+"Berfungsi",
+"Tidak!"
+]
+},
+{
+"id": "lcd",
+"t": "LCD mulus",
+"k": "r",
+"s": "LCD mulus",
+"d": "Jika terpasang tempered glass, harap dibuka di akhir.",
+"o": [
+"Mulus",
+"Ada goresan!",
+"Retak/pecah!"
+],
+"n": 1
+},
+{
+"id": "lcd_ori",
+"t": "Pastikan LCD original atau sudah diganti",
+"k": "r",
+"s": "Status LCD",
+"d": "Tanyakan ke penjual, cek pesan/peringatan layar atau menu Parts and Service History di Settings › General › About, dan cek apakah tombol True Tone ada di Control Center (tahan slider kecerahan). Cek juga Auto-Brightness di poin 4.",
+"w": [
+"Jika LCD sudah diganti (bukan original), responsivitas layar akan menurun: sentuhan bisa kurang peka atau delay, warna dan kecerahan bisa berbeda, fitur seperti True Tone atau Auto-Brightness bisa hilang, dan lebih mudah bermasalah.",
+"Nilai jual unit juga lebih rendah, jadi pastikan harga disesuaikan dan penjual jujur soal ini."
+],
+"o": [
+"LCD original",
+"LCD sudah diganti!",
+"Tidak bisa dipastikan!"
+],
+"n": 1
+}
+]
+},
+{
+"h": "4. Pengecekan Fungsi & Pengaturan (Settings)",
+"d": "Buka Settings (Pengaturan) lalu cek poin di bawah satu per satu. Tulisan abu-abu = cara cek. Kotak biru = alasan kenapa poin itu penting.",
+"i": [
+{
+"id": "wifi",
+"t": "Wi-Fi",
+"k": "r",
+"s": "Wi-Fi",
+"d": "Cek jumlah sinyal Wi-Fi yang tertangkap, bandingkan dengan iPhone yang kamu bawa.",
+"w": [
+"Sinyal Wi-Fi yang sedikit atau lemah bisa menandakan antena Wi-Fi bermasalah, misalnya bekas dibongkar atau terkena air."
+],
+"o": [
+"Banyak",
+"Sedikit!"
+]
+},
+{
+"id": "bt",
+"t": "Bluetooth",
+"k": "r",
+"s": "Bluetooth",
+"d": "Hubungkan iPhone ke Bluetooth/TWS.",
+"w": [
+"Bluetooth yang tidak bisa tersambung bisa menandakan komponen atau antena bermasalah."
+],
+"o": [
+"Normal",
+"Tidak bisa tersambung!"
+],
+"n": 1
+},
+{
+"id": "bat",
+"t": "Battery Health",
+"k": "t",
+"s": "Battery Health",
+"d": "Settings › Battery › Battery Health & Charging. Isi persentasenya.",
+"w": [
+"Battery Health menunjukkan sisa kapasitas baterai dibanding saat baru. Bandingkan dengan hasil timer (baterai boros atau tidak) untuk mendeteksi battery health suntikan."
+],
+"ph": "cth: 87%"
+},
+{
+"id": "cyc",
+"t": "Cycle Count (khusus iPhone 15 ke atas)",
+"k": "t",
+"s": "Cycle Count",
+"d": "Settings › Battery › Battery Health & Charging › Cycle Count. Isi angkanya (kosongkan untuk seri di bawah iPhone 15).",
+"w": [
+"Cycle count adalah jumlah siklus pengisian baterai. Apple merancang baterai menyisakan sekitar 80% kapasitas pada 500 siklus (1000 siklus untuk iPhone 15 ke atas). Cycle count tinggi tapi Battery Health masih sangat tinggi patut dicurigai."
+],
+"ph": "cth: 120"
+},
+{
+"id": "riw",
+"t": "Riwayat komponen & servis sesuai deskripsi penjual",
+"k": "r",
+"s": "Riwayat komponen & servis",
+"d": "Settings › General › About › Parts and Service History (umumnya tersedia di iPhone 12 ke atas, tergantung seri dan versi iOS).",
+"w": [
+"Menu ini menampilkan komponen yang pernah diganti (baterai, layar, kamera). Cocokkan dengan deskripsi penjual. Jika berbeda, berarti ada riwayat servis yang tidak diberitahukan."
+],
+"o": [
+"Sesuai",
+"Tidak sesuai!",
+"Menu tidak tersedia di seri ini"
+],
+"n": 1
+},
+{
+"id": "model",
+"t": "Model Number sesuai keterangan inter/resmi",
+"k": "r",
+"s": "Model Number",
+"d": "Settings › General › About › Model Number.",
+"w": [
+"Huruf pertama Model Number umumnya menunjukkan asal unit: M = unit baru, F = refurbish, N = unit pengganti garansi, P = custom. Pastikan sesuai dengan keterangan penjual (inter/resmi)."
+],
+"o": [
+"Sesuai",
+"Tidak!"
+],
+"n": 1
+},
+{
+"id": "modem",
+"t": "Modem Firmware",
+"k": "r",
+"s": "Modem Firmware",
+"d": "Settings › General › About › Modem Firmware. Harus terisi angka/kode, TIDAK BOLEH BLANK.",
+"w": [
+"Modem firmware adalah perangkat lunak yang menjalankan modem, yaitu bagian yang mengurus sinyal seluler, telepon, SMS, dan data.",
+"Jika kosong/blank, artinya modem tidak terbaca: unit bisa tidak ada sinyal, tidak bisa telepon/SMS/internet, dan umumnya sulit atau mahal diperbaiki. Karena itu jangan ambil unit yang modem firmware-nya kosong (harap CANCEL)."
+],
+"o": [
+"Terisi angka",
+"Blank!!"
+]
+},
+{
+"id": "sim",
+"t": "Carrier Lock / Pembatasan SIM",
+"k": "r",
+"s": "Carrier Lock",
+"d": "Settings › General › About › Carrier Lock. Harus tertulis \"No SIM restrictions\".",
+"w": [
+"Jika Simlock: iPhone terkunci ke operator tertentu. Risikonya harus memakai R-SIM (kartu tambahan untuk membuka kunci), sinyal dan fitur bisa tidak stabil, bisa bermasalah setelah update atau reset, dan nilai jual rendah. Harap CANCEL.",
+"Jika baris Carrier Lock tidak ada sama sekali, itu indikasi unit sudah di-bypass. Harap CANCEL."
+],
+"o": [
+"No SIM Restriction",
+"Simlock!!",
+"Baris Carrier Lock tidak ada!!"
+]
+},
+{
+"id": "autob",
+"t": "Auto Brightness",
+"k": "r",
+"s": "Auto Brightness",
+"d": "Settings › Accessibility › Display & Text Size › Auto-Brightness. Redupkan layar lalu sorot senter ke sensor atas iPhone.",
+"w": [
+"Jika menu Auto-Brightness (kecerahan otomatis) tidak ada seperti pada gambar contoh, maka LCD sudah pernah diganti. Jika menu ada tapi kecerahan tidak naik saat disorot senter, sensor cahaya bermasalah."
+],
+"o": [
+"Naik sendiri",
+"Brightness stuck!",
+"Menu Auto-Brightness tidak ada!"
+]
+},
+{
+"id": "magsafe",
+"t": "Cek MagSafe (iPhone 11 ke atas)",
+"k": "r",
+"s": "MagSafe",
+"d": "Tempelkan wireless charger/MagSafe charger ke bagian belakang iPhone. Pastikan menempel dan mengisi daya. Pada iPhone 11 magnetnya tidak sekuat iPhone 12 ke atas, jadi bandingkan dengan iPhone 11 lain yang normal.",
+"w": [
+"Jika tidak terisi dengan MagSafe, ada indikasi housing (bodi belakang) sudah diganti, karena magnet dan koil pengisian nirkabel ada di bagian itu. Fitur MagSafe juga tidak bisa dipakai, termasuk aksesori dan casing MagSafe."
+],
+"o": [
+"MagSafe berfungsi",
+"MagSafe tidak berfungsi!",
+"iPhone 11: magnet lemah, pengisian nirkabel jalan",
+"Tidak ada MagSafe (iPhone XR/XS ke bawah)"
+]
+},
+{
+"id": "nfc",
+"t": "Cek NFC",
+"k": "r",
+"s": "NFC",
+"d": "Buka aplikasi Shortcuts (Pintasan) › Automation (Otomatisasi) › cari NFC › Scan, lalu dekatkan iPhone ke tag atau kartu NFC.",
+"w": [
+"Jika NFC tidak berfungsi, ada indikasi komponen antena NFC atau housing sudah diganti atau rusak. Fitur yang memakai NFC (baca tag/kartu, pembayaran nirkontak tertentu) tidak bisa dipakai."
+],
+"o": [
+"NFC berfungsi",
+"NFC tidak berfungsi!"
+]
+},
+{
+"id": "spk",
+"t": "Speaker",
+"k": "r",
+"s": "Speaker",
+"d": "Settings › Sounds & Haptics, lalu test.",
+"o": [
+"Normal & kencang",
+"Speaker kecil!",
+"Speaker sember!",
+"Speaker mati!"
+]
+},
+{
+"id": "fid",
+"t": "Face ID / Touch ID",
+"k": "r",
+"s": "Face ID / Touch ID",
+"d": "Pastikan berfungsi normal dan responsif.",
+"w": [
+"Face ID/Touch ID yang rusak biasanya sulit dan mahal diperbaiki karena komponennya terikat ke unit."
+],
+"o": [
+"Responsif",
+"Tidak responsif!"
+]
+},
+{
+"id": "panic",
+"t": "Panicfull & Resetcounter",
+"k": "r",
+"s": "Panicfull & Resetcounter",
+"d": "Settings › Privacy & Security › scroll ke bawah › Analytics & Improvements › Analytics Data, lalu ketik \"Panicfull\" dan \"resetcounter\" di kolom pencarian.",
+"w": [
+"Panicfull/resetcounter menandakan unit pernah restart sendiri (kernel panic). Ini sering terkait kerusakan hardware seperti mainboard, baterai, atau sensor, dan bisa kambuh lagi. Jika ada, harap CANCEL."
+],
+"o": [
+"Normal",
+"Ada panicfull/resetcounter!!"
+]
+}
+]
+},
+{
+"h": "5. Kembali ke Menu",
+"i": [
+{
+"id": "mic",
+"t": "Voice Notes / Microphone",
+"k": "r",
+"s": "Microphone",
+"o": [
+"Normal",
+"Tidak ada suara!"
+]
+},
+{
+"id": "comp",
+"t": "Compass",
+"k": "r",
+"s": "Compass",
+"d": "Buka aplikasi Compass (Kompas), kalibrasi jika diminta, lalu putar badan. Arah harus berubah mengikuti.",
+"w": [
+"iPhone bekerja menggunakan komponen perangkat keras bernama magnetometer (sering disebut sensor kompas digital). Sensor ini mengukur kekuatan dan arah medan magnet bumi, agar navigasi dan penentuan arah di iPhone menjadi sangat akurat.",
+"Jika kompas tidak berfungsi, magnetometer kemungkinan rusak atau bermasalah (bisa karena bekas jatuh, kerusakan di mainboard, atau komponen pengganti). Arah di Maps menjadi tidak akurat, dan ini bisa jadi indikasi unit pernah dibongkar."
+],
+"o": [
+"Berfungsi",
+"Tidak!"
+]
+},
+{
+"id": "touch",
+"t": "Responsif layar (pakai Notepad)",
+"k": "r",
+"s": "Responsif layar",
+"d": "Buka Notes/Notepad, lalu coret layar ke seluruh area.",
+"w": [
+"Layar delay atau ada area yang tidak bisa disentuh menandakan masalah pada LCD/touch, atau LCD non-original."
+],
+"o": [
+"Layar normal",
+"Layar delay!",
+"Ada bagian yg gabisa disentuh!"
+],
+"n": 1
+}
+]
+},
+{
+"h": "6. Kamera",
+"d": "Boleh pilih lebih dari satu (getar dan jamur). Getar = stabilizer kamera bermasalah. Jamur = bercak/kabut di lensa. Blank = kamera hitam/tidak terbaca (harap CANCEL).",
+"i": [
+{
+"id": "c05",
+"t": "Kamera 0.5 (iPhone 11 ke atas)",
+"k": "m",
+"s": "Kamera 0.5",
+"o": [
+"Normal",
+"Getar!",
+"Jamur!",
+"Blank!!"
+]
+},
+{
+"id": "c1",
+"t": "Kamera 1x",
+"k": "m",
+"s": "Kamera 1x",
+"o": [
+"Normal",
+"Getar!",
+"Jamur!",
+"Blank!!"
+]
+},
+{
+"id": "c25",
+"t": "Kamera 2x–5x",
+"k": "m",
+"s": "Kamera 2x–5x",
+"o": [
+"Normal",
+"Getar!",
+"Jamur!",
+"Blank!!"
+]
+},
+{
+"id": "cpot",
+"t": "Kamera potret",
+"k": "m",
+"s": "Kamera potret",
+"o": [
+"Normal",
+"Getar!",
+"Jamur!",
+"Blank!!"
+]
+},
+{
+"id": "cvid",
+"t": "Video",
+"k": "m",
+"s": "Video",
+"d": "Set kualitas video ke 60 fps.",
+"o": [
+"Normal",
+"Getar!",
+"Jamur!",
+"Blank!!"
+]
+}
+]
+},
+{
+"h": "7. Cek IMEI",
+"i": [
+{
+"id": "imei_m",
+"t": "IMEI device sesuai dengan IMEI di housing / SIM tray",
+"k": "r",
+"s": "IMEI device vs housing",
+"d": "Buka Telepon, ketik *#06#. Bandingkan dengan nomor IMEI yang tercetak di SIM tray (dan di kotak jika ada).",
+"w": [
+"Jika tidak ada nomor IMEI pada SIM tray, atau nomornya berbeda, ada indikasi housing sudah diganti."
+],
+"o": [
+"Sesuai",
+"Tidak sesuai / housing gantian!",
+"Tidak ada IMEI di SIM tray!"
+]
+},
+{
+"id": "imei_n",
+"t": "Catat IMEI",
+"k": "t",
+"s": "IMEI",
+"ph": "15 digit IMEI"
+},
+{
+"id": "kartu",
+"t": "Masukkan kartu (WAJIB by.U / Telkomsel)",
+"k": "r",
+"s": "Test kartu",
+"w": [
+"Khusus iPhone inter: patokannya, jika device bisa memakai Telkomsel dan ada sinyal, umumnya artinya device tersebut all operator."
+],
+"o": [
+"Ada sinyal",
+"Tidak ada layanan/Terblokir!"
+]
+},
+{
+"id": "prox",
+"t": "Test telepon 123 + loud speaker, tutup sensor atas",
+"k": "r",
+"s": "Test telepon & proximity",
+"d": "Jika IMEI terblokir, test telepon 911. Tutup sensor atas dengan tangan: layar harus mati.",
+"w": [
+"Jika layar TIDAK mati saat ditutup tangan, sensor proximity tidak berfungsi (layar bisa tersentuh pipi saat telepon)."
+],
+"o": [
+"Berfungsi",
+"Tidak berfungsi!"
+]
+},
+{
+"id": "ceirku",
+"t": "Jika iPhone inter, mohon cek validitas IMEI menggunakan website ceirku.org",
+"k": "r",
+"s": "Validitas IMEI (ceirku.org)",
+"d": "Buka ceirku.org lalu cek status IMEI unit ini. Login/daftar dengan akun milikmu sendiri.",
+"w": [
+"Untuk mengetahui IMEI tersebut terdaftar atau tidak. Jika tidak terdaftar, status IMEI tersebut roamer, dan bisa dilihat IMEI tembakan/inject tersebut berlaku sampai kapan (tanggal spesifik).",
+"Catatan: ceirku.org adalah website yang bisa mengetahui IMEI suntikan atau bukan, namun layanannya berbayar."
+],
+"o": [
+"IMEI terdaftar",
+"Tidak terdaftar (roamer)!",
+"Bukan iPhone inter / tidak dicek"
+],
+"n": 1
+},
+{
+"id": "ceir_tgl",
+"t": "Masa berlaku IMEI (jika terlihat di ceirku.org)",
+"k": "t",
+"s": "Masa berlaku IMEI",
+"ph": "cth: 31 Desember 2026"
+}
+]
+},
+{
+"h": "8. Minus Lain",
+"i": [
+{
+"id": "minus2",
+"t": "Minus lain selain di poin 1",
+"k": "x",
+"s": "Minus lain",
+"d": "Tulis di sini, dan beritahu penjual tentang ketidaksesuaian kondisi iPhone."
+}
+]
+}
 ];
-const KEY="cek_iphone_v1";
-let S={},N={},H={model:"",nama:""};
-try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");S=j.S||{};N=j.N||{};H=j.H||H}catch(e){}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({S,N,H}))}catch(e){}};
+
+const KEY="cek_iphone_v2";
+let S={},N={};
+try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");S=j.S||{};N=j.N||{}}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({S,N}))}catch(e){}};
 const cl=o=>o.replace(/!+$/,""), lv=o=>o.endsWith("!!")?2:o.endsWith("!")?1:0;
 const $=s=>document.querySelector(s);
 const ALL=SEC.flatMap(s=>s.i);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 
 function build(){
-  let h=`<section><h2>Info Unit</h2><div class="item">
-   <input type="text" id="h_model" placeholder="Tipe iPhone (cth: iPhone 12 Pro 128GB)" value="${esc(H.model)}">
-   <input type="text" id="h_nama" placeholder="Nama pengecek" value="${esc(H.nama)}"></div></section>`;
+  let h="";
   for(const s of SEC){
     h+=`<section><h2>${s.h}</h2>${s.d?`<div class="d">${s.d}</div>`:""}`;
     for(const it of s.i){
       h+=`<div class="item" id="it_${it.id}"><div class="t">${it.t}</div>${it.d?`<div class="d">${it.d}</div>`:""}`;
+      if(it.img)h+=`<details class="ex"><summary>📷 Lihat contoh gambar</summary>`+it.img.map(p=>`<img src="${p}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`).join("")+`</details>`;
+      if(it.w)h+=`<div class="why"><b>Kenapa penting:</b>`+(it.w.length>1?`<ul>${it.w.map(x=>`<li>${x}</li>`).join("")}</ul>`:` ${it.w[0]}`)+`</div>`;
       if(it.k=="r"||it.k=="m"){
-        h+=`<div class="opts">`+it.o.map((o,x)=>{
+        h+=`<div class="opts">`+it.o.map(o=>{
           const sel=it.k=="r"?S[it.id]===cl(o):(S[it.id]||[]).includes(cl(o));
           const c=lv(o)==2?"c":lv(o)==1?"b":"";
           return `<label><input type="${it.k=="r"?"radio":"checkbox"}" name="${it.id}" class="${c}" data-id="${it.id}" value="${esc(cl(o))}" ${sel?"checked":""}><span>${cl(o)}</span></label>`}).join("")+`</div>`;
@@ -147,20 +665,21 @@ function build(){
   }
   $("#form").innerHTML=h;
 }
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 
-function level(it){ // 0 ok,1 bad,2 cancel,-1 kosong
+function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
   const v=S[it.id]; if(it.k=="t"||it.k=="x")return (v&&v.trim())?0:-1;
   const sel=it.k=="r"?(v?[v]:[]):(v||[]); if(!sel.length)return -1;
   let m=0; for(const x of sel){const o=it.o.find(o=>cl(o)===x); if(o)m=Math.max(m,lv(o))} return m;
 }
+const gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
+const nm=i=>i.s||i.t;
 function refresh(){
-  let done=0,cx=[],bad=[];
+  let done=0,cx=[];
   for(const it of ALL){
     const l=level(it),el=$("#it_"+it.id);
     el.classList.remove("ok","bad","cx");
     if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
-    if(l==2)cx.push(it.t);
+    if(l==2)cx.push(nm(it));
   }
   $("#pb").style.width=(done/ALL.length*100)+"%";
   $("#pt").textContent=done+" / "+ALL.length+" terisi";
@@ -170,14 +689,14 @@ function refresh(){
 }
 document.addEventListener("input",e=>{
   const t=e.target;
-  if(t.id=="h_model")H.model=t.value; else if(t.id=="h_nama")H.nama=t.value;
-  else if(t.dataset.note)N[t.dataset.note]=t.value;
+  if(t.dataset.note)N[t.dataset.note]=t.value;
   else if(t.dataset.id){
     const it=ALL.find(x=>x.id==t.dataset.id);
     if(it.k=="r")S[it.id]=t.value;
     else if(it.k=="m"){
       let a=S[it.id]||[];
-      if(t.checked){a=t.value=="Normal"?["Normal"]:a.filter(x=>x!="Normal").concat(t.value)}
+      const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0;
+      if(t.checked){a=EX(t.value)?[t.value]:a.filter(x=>!EX(x)).concat(t.value)}
       else a=a.filter(x=>x!=t.value);
       S[it.id]=a;
       document.querySelectorAll(`input[name="${it.id}"]`).forEach(i=>i.checked=a.includes(i.value));
@@ -189,13 +708,23 @@ document.addEventListener("input",e=>{
 function report(){
   const L=[];
   L.push("*HASIL CEK IPHONE*");
-  if(H.model)L.push("Unit: "+H.model);
-  if(H.nama)L.push("Pengecek: "+H.nama);
   L.push("Waktu: "+new Date().toLocaleString("id-ID"));
-  const sh=t=>t.replace(/\s*\(.*?\)/g,"").trim(),gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
-  const cx=ALL.filter(i=>level(i)==2),pb=ALL.filter(i=>level(i)==1);
-  if(cx.length)L.push("","⛔ *CANCEL*: "+cx.map(i=>sh(i.t)+" ("+gv(i)+")").join("; "));
-  if(pb.length)L.push("","⚠️ *PERLU PERTIMBANGAN*: "+pb.map(i=>sh(i.t)+" ("+gv(i)+")").join("; "));
+  const choice=ALL.filter(i=>i.k=="r"||i.k=="m");
+  const ans=choice.filter(i=>level(i)>=0), blank=choice.length-ans.length;
+  const cx=ans.filter(i=>level(i)==2), pb=ans.filter(i=>level(i)==1);
+  const extra=(S.minus2||"").trim();
+  const pts=ans.reduce((a,i)=>a+(level(i)==0?1:level(i)==1?0.5:0),0);
+  const pct=ans.length?Math.round(pts/ans.length*100):0;
+  L.push("","*STATUS DEVICE*");
+  L.push("Kondisi unit: ±"+pct+"%"+(blank?" (sementara, "+blank+" poin belum diisi)":""));
+  L.push(cx.length?"Rekomendasi: ⛔ CANCEL":(pb.length||extra)?"Rekomendasi: ⚠️ Tinjau ulang sebelum diambil":"Rekomendasi: ✅ Unit sesuai hasil pengecekan");
+  L.push("(Persentase adalah perkiraan dari poin yang dicek, bukan penilaian resmi.)");
+  if(cx.length)L.push("","⛔ *CANCEL*: "+cx.map(i=>nm(i)+" ("+gv(i)+")").join("; "));
+  if(pb.length)L.push("","⚠️ *PERLU PERTIMBANGAN*: "+pb.map(i=>nm(i)+" ("+gv(i)+")").join("; "));
+  if(extra)L.push("","📝 *Minus lain*: "+extra);
+  if(cx.length||pb.length||extra){
+    L.push("","ℹ️ Mohon ditinjau ulang karena ada minus atau kerusakan pada iPhone ini. Beritahukan kepada penjual jika ada ketidaksesuaian unit dengan deskripsi. Minus tersebut berisiko menurunkan nilai jual, menimbulkan biaya perbaikan, mengganggu fungsi unit, dan membuat unit sulit dijual kembali. Sebaiknya lakukan negosiasi harga"+(cx.length?", atau batalkan pembelian karena ada minus krusial.":"."));
+  }
   for(const s of SEC){
     L.push("","*"+s.h+"*");
     for(const it of s.i){
@@ -203,7 +732,7 @@ function report(){
       if(it.k=="x"&&!String(v).trim())v="-";
       if(!v)v="(belum diisi)";
       const l=level(it);
-      L.push((l==2?"❌ ":l==1?"⚠️ ":"✅ ")+it.t.replace(/\(.*?\)/g,"").trim()+": "+v+(N[it.id]?" — "+N[it.id]:""));
+      L.push((l==2?"❌ ":l==1?"⚠️ ":l<0?"⬜ ":"✅ ")+nm(it)+": "+v+(N[it.id]?" — "+N[it.id]:""));
     }
   }
   return L.join("\n");
@@ -216,7 +745,7 @@ $("#rep").onclick=async()=>{
   if(!ok){try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand("copy");a.remove()}catch(e){}}
   if(!ok){const r=document.createRange();r.selectNodeContents(o);const s=getSelection();s.removeAllRanges();s.addRange(r)}
   b.textContent=ok?"✔ Tersalin! Tempel di WhatsApp":"Tekan lama teks, lalu Salin";
-  setTimeout(()=>b.textContent="Buat & Salin Laporan",3500);
+  setTimeout(()=>b.textContent="Check Status Device",3500);
   o.scrollIntoView({behavior:"smooth"});
 };
 let rstT=null;
@@ -229,7 +758,7 @@ $("#rst").onclick=()=>{
   }
   clearTimeout(rstT);rstT=null;
   b.textContent="Reset Form";b.style.background="";b.style.color="";
-  S={};N={};H={model:"",nama:""};
+  S={};N={};
   try{localStorage.removeItem(KEY)}catch(e){}
   build();refresh();
   const o=$("#out");o.style.display="none";o.textContent="";
