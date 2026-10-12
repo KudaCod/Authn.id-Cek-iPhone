@@ -56,7 +56,8 @@ details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-s
 .vb{display:flex;gap:6px;justify-content:center;margin:4px 0}.vb button{padding:6px 10px;font-size:13px}
 select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:16px}
 .oem{display:none;margin:6px 0;padding:8px 10px;border-radius:8px;background:rgba(217,119,6,.15);border-left:3px solid var(--bad);font-size:13px;font-weight:600}
-#res{display:none;scroll-margin-top:120px}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
+#res{display:none;scroll-margin-top:120px}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #pimg img.pimgreal{filter:drop-shadow(0 0 1px rgba(255,255,255,.45)) drop-shadow(0 6px 16px rgba(255,255,255,.08))}}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
 details.ex img{display:block;max-width:100%;height:auto;margin:8px 0;border-radius:8px;border:1px solid var(--bd)}
 html{-webkit-text-size-adjust:100%}
 button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -934,7 +935,7 @@ function phone2D(tipe,warna){
   return `<div style="display:flex;gap:14px;justify-content:center;align-items:flex-start">${f}${b}</div><div class="d" style="text-align:center">Ilustrasi 2D (foto produk belum dipasang).</div>`;
 }
 // Seri yang memakai foto seri lain (tampilan sama)
-const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s","iPhone 8 Plus":"iPhone 8"};
+const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s"};
 function showUnit(){
   const box=$("#pimg"),cap=$("#pcap");
   const info=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
