@@ -768,6 +768,22 @@ const SEC=[
 "n": 1
 },
 {
+"id": "bc",
+"t": "Cek IMEI di website Bea Cukai",
+"k": "r",
+"s": "Cek IMEI Bea Cukai",
+"d": "Buka <a href=\"https://old.beacukai.go.id/websitenewV2/cek-imei.html\" target=\"_blank\" rel=\"noopener\">old.beacukai.go.id/websitenewV2/cek-imei.html</a>, masukkan IMEI unit (dari *#06#), lalu cocokkan hasilnya dengan unit.",
+"w": [
+"Unit Bea Cukai adalah unit luar negeri yang IMEI-nya didaftarkan secara resmi dengan membayar bea masuk dan pajak. Pengecekan di website Bea Cukai memastikan IMEI unit ini benar-benar tercatat, sehingga statusnya legal dan sinyal operator Indonesia bisa dipakai tanpa takut diblokir.",
+"Jika IMEI tidak ditemukan atau datanya tidak sesuai (merek/tipe berbeda), klaim \"Bea Cukai\" dari penjual patut dipertanyakan. Bisa jadi IMEI hanya didaftarkan sementara, atau hasil inject/tembakan yang bisa terblokir sewaktu-waktu."
+],
+"o": [
+"Terdaftar & data sesuai",
+"Tidak terdaftar / data tidak sesuai!"
+],
+"n": 1
+},
+{
 "id": "ceir_tgl",
 "t": "Masa berlaku IMEI (jika terlihat di ceirku.org)",
 "k": "t",
@@ -875,7 +891,11 @@ function applyAuto(){
 // ===== Poin yang tampil sesuai tipe =====
 const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
 const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
-const VIS={silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t)};
+const VIS={silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
+  // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
+  ceirku:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
+  ceir_tgl:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
+  bc:()=>S.asal==="Bea Cukai"};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
