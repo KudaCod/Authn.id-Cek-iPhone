@@ -939,7 +939,7 @@ const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s","iPhone 
   "iPhone 12 mini":"iPhone 12","iPhone 12 Pro Max":"iPhone 12 Pro","iPhone 13 mini":"iPhone 13",
   "iPhone 13 Pro Max":"iPhone 13 Pro","iPhone 14 Plus":"iPhone 14","iPhone 14 Pro Max":"iPhone 14 Pro",
   "iPhone 15 Plus":"iPhone 15","iPhone 15 Pro Max":"iPhone 15 Pro","iPhone 16 Plus":"iPhone 16","iPhone 16 Pro Max":"iPhone 16 Pro"};
-const FOTO_V=11; // naikkan setiap kali foto di img/produk diganti, supaya HP checker mengambil foto baru
+const FOTO_V=12; // naikkan setiap kali foto di img/produk diganti, supaya HP checker mengambil foto baru
 function showUnit(){
   const box=$("#pimg"),cap=$("#pcap");
   const info=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
@@ -949,7 +949,10 @@ function showUnit(){
   box.innerHTML=phone2D(S.tipe,S.warna);
   if(S.warna){const im=new Image();im.alt=info;im.className="pimgreal";
     im.onload=()=>{box.innerHTML="";box.appendChild(im)};
-    im.src="img/produk/"+slug(PHOTO_AS[S.tipe]||S.tipe)+"-"+slug(S.warna)+".png?v="+FOTO_V}
+    const url="img/produk/"+slug(PHOTO_AS[S.tipe]||S.tipe)+"-"+slug(S.warna)+".png?v="+FOTO_V;
+    // Kalau gagal (misalnya HP masih menyimpan jawaban "tidak ditemukan" yang lama), coba sekali lagi dengan alamat baru
+    im.onerror=()=>{if(!im.dataset.retry&&navigator.onLine!==false){im.dataset.retry="1";im.src=url+"&r="+Date.now()}};
+    im.src=url}
 }
 
 function report(){

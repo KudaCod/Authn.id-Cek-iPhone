@@ -1,4 +1,4 @@
-const C="cek-iphone-v11";
+const C="cek-iphone-v12";
 const CORE=["./","./index.html"];
 self.addEventListener("install",e=>{
   // cache:"reload" = ambil langsung dari server, jangan dari cache browser
@@ -27,7 +27,7 @@ self.addEventListener("fetch",e=>{
     return;
   }
   // Foto dan file lain: dari salinan offline, ambil dari internet kalau belum ada (URL foto memakai ?v=versi)
-  e.respondWith(caches.match(req).then(hit=>hit||fetch(req).then(r=>{
+  e.respondWith(caches.match(req).then(hit=>hit||fetch(req,{cache:"no-cache"}).then(r=>{
     if(r&&r.ok){const cp=r.clone();caches.open(C).then(c=>c.put(req,cp))}
     return r;
   })));
