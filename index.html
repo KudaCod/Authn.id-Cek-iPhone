@@ -936,6 +936,7 @@ function phone2D(tipe,warna){
 }
 // Seri yang memakai foto seri lain (tampilan sama)
 const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s"};
+const FOTO_V=11; // naikkan setiap kali foto di img/produk diganti, supaya HP checker mengambil foto baru
 function showUnit(){
   const box=$("#pimg"),cap=$("#pcap");
   const info=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
@@ -945,7 +946,7 @@ function showUnit(){
   box.innerHTML=phone2D(S.tipe,S.warna);
   if(S.warna){const im=new Image();im.alt=info;im.className="pimgreal";
     im.onload=()=>{box.innerHTML="";box.appendChild(im)};
-    im.src="img/produk/"+slug(PHOTO_AS[S.tipe]||S.tipe)+"-"+slug(S.warna)+".png"}
+    im.src="img/produk/"+slug(PHOTO_AS[S.tipe]||S.tipe)+"-"+slug(S.warna)+".png?v="+FOTO_V}
 }
 
 function report(){
@@ -1024,7 +1025,10 @@ $("#tr").onclick=()=>{clearInterval(iv);iv=null;sec=0;fm();$("#ts").textContent=
 
 build();applyAuto();save();refresh();
 if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("sw.js").catch(()=>{});
+  // Muat ulang sekali saat versi baru aktif, supaya checker langsung melihat versi terbaru
+  const hadCtl=!!navigator.serviceWorker.controller;let reloaded=false;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(hadCtl&&!reloaded){reloaded=true;location.reload()}});
+  navigator.serviceWorker.register("sw.js",{updateViaCache:"none"}).then(r=>{try{r.update()}catch(e){}}).catch(()=>{});
   navigator.serviceWorker.ready.then(()=>{$("#ofl").textContent="✔ Siap offline";$("#ofl").style.color="var(--ok)"}).catch(()=>{});
 }
 </script>
