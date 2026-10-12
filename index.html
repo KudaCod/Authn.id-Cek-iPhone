@@ -62,7 +62,7 @@ select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-
 .oem{display:none;margin:6px 0;padding:8px 10px;border-radius:8px;background:rgba(217,119,6,.15);border-left:3px solid var(--bad);font-size:13px;font-weight:600}
 #res{display:none;scroll-margin-top:120px}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #pimg img.pimgreal{filter:drop-shadow(0 0 1px rgba(255,255,255,.45)) drop-shadow(0 6px 16px rgba(255,255,255,.08))}}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
-details.ex img{display:block;max-width:100%;height:auto;margin:8px 0;border-radius:8px;border:1px solid var(--bd)}
+.ex{margin:6px 0}.ex .exl{font-size:12px;color:var(--mu);margin-bottom:2px}.ex img{display:block;max-width:100%;max-height:420px;width:auto;height:auto;margin:6px 0;border-radius:8px;border:1px solid var(--bd)}
 html{-webkit-text-size-adjust:100%}
 button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input[type=text],textarea{font-size:16px}
@@ -865,7 +865,7 @@ function build(){
     h+=`<section><h2>${hd(s)}</h2>${s.d?`<div class="d">${s.d}</div>`:""}`;
     for(const it of s.i){
       h+=`<div class="item" id="it_${it.id}"><div class="t">${it.t}</div>${it.d?`<div class="d">${it.d}</div>`:""}`;
-      if(it.img)h+=`<details class="ex"><summary>📷 Lihat contoh gambar</summary>`+it.img.map(p=>`<img src="${p}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`).join("")+`</details>`;
+      if(it.img)h+=`<div class="ex"><div class="exl">📷 Contoh gambar</div>`+it.img.map(p=>`<img src="${p}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`).join("")+`</div>`;
       if(it.w)h+=`<div class="why"><b>Kenapa penting:</b>`+(it.w.length>1?`<ul>${it.w.map(x=>`<li>${x}</li>`).join("")}</ul>`:` ${it.w[0]}`)+`</div>`;
       if(DYN[it.id])h+=`<div class="oem" id="dyn_${it.id}"></div>`;
       if(AUTO[it.id]||it.id=="cyc")h+=`<div class="d" id="auto_${it.id}" style="display:none;color:var(--ok);font-weight:600">${it.id=="cyc"?"✔ Dilewati otomatis: menu Cycle Count hanya ada di iPhone 15 ke atas.":"✔ Terisi otomatis: seri ini tidak memiliki fitur ini. Ubah jika tipe yang dipilih salah."}</div>`;
