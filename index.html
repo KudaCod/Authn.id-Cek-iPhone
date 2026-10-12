@@ -55,6 +55,10 @@ pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);borde
 details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-size:13px}
 .vb{display:flex;gap:6px;justify-content:center;margin:4px 0}.vb button{padding:6px 10px;font-size:13px}
 select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:16px}
+.item.miss{border-color:var(--cx);border-left-color:var(--cx);box-shadow:0 0 0 1px var(--cx)}
+.item.miss .t::after{content:" — wajib dipilih";color:var(--cx);font-size:12px;font-weight:600}
+#need{display:none;background:rgba(220,38,38,.12);border:1px solid var(--cx);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+#need ul{margin:6px 0 0;padding-left:18px;max-height:180px;overflow:auto}
 .oem{display:none;margin:6px 0;padding:8px 10px;border-radius:8px;background:rgba(217,119,6,.15);border-left:3px solid var(--bad);font-size:13px;font-weight:600}
 #res{display:none;scroll-margin-top:120px}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #pimg img.pimgreal{filter:drop-shadow(0 0 1px rgba(255,255,255,.45)) drop-shadow(0 6px 16px rgba(255,255,255,.08))}}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
@@ -77,8 +81,9 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
 </header>
 <main>
   <div class="intro"><b>Form checklist ini dibuat untuk menghindari / meminimalisir adanya penipuan dalam bentuk unit yang tidak sesuai.</b>
-    <div class="d">Catatan: tulisan abu-abu kecil di bawah judul setiap poin adalah cara melihat / mengecek poin tersebut. Kotak biru berisi alasan kenapa poin itu penting dicek.</div></div>
+    <div class="d">Catatan: tulisan abu-abu kecil di bawah judul setiap poin adalah cara melihat / mengecek poin tersebut. Kotak biru berisi alasan kenapa poin itu penting dicek. Semua pilihan wajib diisi sebelum menekan Check Status Device.</div></div>
   <div id="warn"></div>
+  <div id="need"></div>
   <div id="form"></div>
   <div id="res"><div id="pimg"></div><div id="pcap"></div><pre id="out"></pre></div>
 </main>
@@ -788,7 +793,22 @@ const DEV=[["iPhone 6","home",1,"A6"],["iPhone 6 Plus","home",1,"A6"],["iPhone 6
 ["iPhone 17","island",2,"A17"],["iPhone Air","island",1,"AAIR"],["iPhone 17 Pro","island",3,"A17P"],["iPhone 17 Pro Max","island",3,"A17P"]];
 const DM={};DEV.forEach(d=>DM[d[0]]={d:d[1],c:d[2],cols:CS[d[3]]});
 const HEX={"Space Gray":"#6e6e73","Silver":"#e3e4e6","Gold":"#e6cfae","Rose Gold":"#e8c3b9","Black":"#2b2b2d","Jet Black":"#101012","(PRODUCT)RED":"#bf0a1d","White":"#f2f2f0","Blue":"#9db9d8","Yellow":"#f4e48f","Coral":"#f2735a","Green":"#9fc7ac","Purple":"#c9b7e6","Midnight Green":"#4e5851","Graphite":"#54524f","Pacific Blue":"#2e5e73","Pink":"#f5c6d0","Midnight":"#2e3642","Starlight":"#efe9e1","Sierra Blue":"#a7c1d9","Alpine Green":"#576856","Space Black":"#2f2e30","Deep Purple":"#594f63","Black Titanium":"#3b3b3d","White Titanium":"#e0dfdc","Blue Titanium":"#3d4a5c","Natural Titanium":"#b9b1a6","Desert Titanium":"#bfa48f","Teal":"#b0d4d2","Ultramarine":"#9aaaf5","Mist Blue":"#b9ccd9","Sage":"#b5c2a8","Lavender":"#cdbfe0","Cloud White":"#f1f0ec","Light Gold":"#e5d3a8","Sky Blue":"#bcd3e6","Cosmic Orange":"#d96a2d","Deep Blue":"#2f3c54"};
-const colorsFor=()=>{const m=DM[S.tipe];return m?m.cols.concat(["Lainnya"]):[]};
+const colorsFor=()=>{const m=DM[S.tipe];return m?m.cols.concat(["Lainnya"]):(S.tipe==="Lainnya"?["Lainnya"]:[])};
+
+// ===== Storage per seri =====
+const STO=["16GB","32GB","64GB","128GB","256GB","512GB","1TB","2TB"];
+const stoRange=(a,b)=>STO.slice(STO.indexOf(a),STO.indexOf(b)+1);
+const SP=a=>a.map(x=>"iPhone "+x);
+const STO_GRP=[
+  [SP(["6","6 Plus","6s","6s Plus"]),"16GB","256GB"],
+  [SP(["SE (2016)"]),"16GB","128GB"],
+  [SP(["7","7 Plus"]),"32GB","256GB"],
+  [SP(["8","8 Plus"]),"64GB","256GB"],
+  [SP(["SE (2020)","SE (2022)"]),"64GB","256GB"],
+  [SP(["X","XR","XS","XS Max","11","11 Pro","11 Pro Max","12 mini","12"]),"64GB","512GB"],
+  [SP(["12 Pro","12 Pro Max","13 mini","13","13 Pro","13 Pro Max","14","14 Plus","14 Pro","14 Pro Max","15","15 Plus","15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max"]),"128GB","1TB"],
+  [SP(["17","Air","17 Pro","17 Pro Max"]),"256GB","2TB"]];
+const storageFor=()=>{if(!S.tipe)return [];const g=STO_GRP.find(x=>x[0].includes(S.tipe));return g?stoRange(g[1],g[2]):STO};
 
 // ===== Fitur per seri: isi otomatis "tidak ada" untuk fitur yang tidak dimiliki seri =====
 const P=a=>a.map(x=>"iPhone "+x);
@@ -835,6 +855,9 @@ function renderColors(){
   const el=$("#opts_warna");if(!el)return;
   const cs=colorsFor();
   el.innerHTML=cs.length?cs.map(o=>`<label><input type="radio" name="warna" data-id="warna" value="${esc(o)}" ${S.warna===o?"checked":""}><span>${esc(o)}</span></label>`).join(""):'<span class="d">Pilih tipe device dulu.</span>';
+  const st=$("#opts_storage");if(!st)return;
+  const ss=storageFor();
+  st.innerHTML=ss.length?ss.map(o=>`<label><input type="radio" name="storage" data-id="storage" value="${esc(o)}" ${S.storage===o?"checked":""}><span>${esc(o)}</span></label>`).join(""):'<span class="d">Pilih tipe device dulu.</span>';
 }
 function build(){
   let h="";
@@ -851,6 +874,7 @@ function build(){
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional, cth: tipe lain)" value="${esc(N[it.id]||"")}">`;
       }else if(it.k=="r"||it.k=="m"){
         if(it.id=="warna")h+=`<div class="opts" id="opts_warna"></div>`;
+        else if(it.id=="storage")h+=`<div class="opts" id="opts_storage"></div>`;
         else h+=`<div class="opts">`+it.o.map(o=>{
           const sel=it.k=="r"?S[it.id]===cl(o):(S[it.id]||[]).includes(cl(o));
           const c=lv(o)==2?"c":lv(o)==1?"b":"";
@@ -879,10 +903,14 @@ function refresh(){
   let done=0,cx=[];
   for(const it of ALL){
     const l=level(it),el=$("#it_"+it.id);
-    el.classList.remove("ok","bad","cx");
+    el.classList.remove("ok","bad","cx","miss");
+    if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))el.classList.add("miss");
     if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
     if(l==2)cx.push(nm(it));
   }
+  if(typeof missing==="function"&&reqTried){const ms=missing(),nb=$("#need");
+    if(!ms.length)nb.style.display="none";
+    else nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";}
   for(const k in DYN){const e=$("#dyn_"+k);if(e){const t=DYN[k]();e.textContent=t;e.style.display=t?"block":"none"}}
   for(const k of Object.keys(AUTO).concat("cyc")){const e=$("#auto_"+k);if(e)e.style.display=(k=="cyc"?cycNA():autoOn(k)&&hasV(k,AUTO[k].v))?"block":"none"}
   $("#pb").style.width=(done/ALL.length*100)+"%";
@@ -899,7 +927,7 @@ document.addEventListener("input",e=>{
     if(it.k=="r")S[it.id]=t.value;
     else if(it.k=="sel"){
       S[it.id]=t.value;
-      if(it.id=="tipe"){if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;renderColors();applyAuto()}
+      if(it.id=="tipe"){if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto()}
     }else if(it.k=="m"){
       let a=S[it.id]||[];
       const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0||v.indexOf("Tidak ada di seri")==0||v.indexOf("Tidak ada TrueDepth")==0||v.indexOf("Tidak ada box")==0;
@@ -994,7 +1022,22 @@ function report(){
   }
   return L.join("\n");
 }
+// Semua pilihan wajib diisi sebelum laporan dibuat
+var REQ=ALL.filter(i=>i.k=="r"||i.k=="m"||i.k=="sel");
+var missing=()=>REQ.filter(i=>level(i)<0);
+var reqTried=false;
 $("#rep").onclick=async()=>{
+  const ms=missing(),b0=$("#rep"),nb=$("#need");
+  if(ms.length){
+    reqTried=true;refresh();
+    nb.style.display="block";
+    nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";
+    b0.textContent="Masih ada "+ms.length+" poin kosong";setTimeout(()=>b0.textContent="Check Status Device",3000);
+    const first=$("#it_"+ms[0].id);if(first)first.scrollIntoView({behavior:"smooth",block:"center"});
+    $("#res").style.display="none";
+    return;
+  }
+  nb.style.display="none";
   const t=report(),o=$("#out"),b=$("#rep");
   showUnit();
   $("#res").style.display="block";o.style.display="block";o.textContent=t;
@@ -1016,7 +1059,7 @@ $("#rst").onclick=()=>{
   }
   clearTimeout(rstT);rstT=null;
   b.textContent="Reset Form";b.style.background="";b.style.color="";
-  S={};N={};
+  S={};N={};reqTried=false;$("#need").style.display="none";
   try{localStorage.removeItem(KEY)}catch(e){}
   build();refresh();
   const o=$("#out");o.style.display="none";o.textContent="";$("#res").style.display="none";
