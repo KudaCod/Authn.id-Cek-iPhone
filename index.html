@@ -267,6 +267,38 @@ const SEC=[
 ]
 },
 {
+"id": "action",
+"t": "Action Button & getaran",
+"k": "r",
+"s": "Action Button",
+"d": "Tekan dan tahan Action Button di sisi kiri (menggantikan tombol silent mulai iPhone 15 Pro). Fungsinya mengikuti Settings › Action Button (bawaan: mode senyap). Harus langsung merespons, muncul indikator di layar/Dynamic Island, dan ada getaran.",
+"w": [
+"Mulai iPhone 15 Pro, tombol silent diganti Action Button yang bisa diatur untuk berbagai fungsi (senyap, senter, kamera, dan lainnya). Tombol yang tidak merespons, harus ditekan keras, atau macet bisa menandakan tombol atau kabel fleksibelnya rusak, bekas jatuh, atau kemasukan air.",
+"Perhatikan juga getaran saat tombol ditekan: harus terasa normal (mendem). Getaran lemah atau kasar bisa menandakan taptic engine bermasalah atau sudah diganti."
+],
+"o": [
+"Berfungsi, getaran normal (mendem)",
+"Action Button tidak berfungsi!",
+"Getaran lemah/kasar!"
+]
+},
+{
+"id": "camctl",
+"t": "Camera Control (tombol kamera di sisi kanan)",
+"k": "r",
+"s": "Camera Control",
+"d": "Tekan Camera Control: aplikasi Kamera harus langsung terbuka. Tekan ringan untuk memunculkan kontrol (zoom/eksposur), lalu geser jari di atas tombol: nilainya harus berubah. Tekan penuh untuk mengambil foto.",
+"w": [
+"Camera Control memakai sensor tekanan dan sensor sentuh untuk gerakan geser, serta umpan balik getaran. Jika tidak merespons, tekan ringan tidak terdeteksi, atau geser tidak berfungsi, ada indikasi komponen tombol atau kabel fleksibelnya rusak, bekas jatuh, atau unit pernah dibongkar.",
+"Perbaikannya membutuhkan penggantian komponen, jadi kerusakan ini menurunkan nilai unit."
+],
+"o": [
+"Berfungsi (tekan, tekan ringan & geser normal)",
+"Tidak merespons!",
+"Tekan ringan / geser tidak berfungsi!"
+]
+},
+{
 "id": "senter",
 "t": "Senter",
 "k": "r",
@@ -840,6 +872,11 @@ function applyAuto(){
     document.querySelectorAll(`input[name="${id}"]`).forEach(i=>i.checked=hasV(id,i.value));
   }
 }
+// ===== Poin yang tampil sesuai tipe =====
+const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
+const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
+const VIS={silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t)};
+const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
 const isNA=it=>{if(it.id=="cyc")return cycNA();const v=S[it.id],a=Array.isArray(v)?v:(v?[v]:[]);return a.length>0&&a.every(x=>NAP.some(p=>x.indexOf(p)==0))};
@@ -901,8 +938,12 @@ const gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
 const nm=i=>i.s||i.t;
 function refresh(){
   let done=0,cx=[];
+  let total=0;
   for(const it of ALL){
     const l=level(it),el=$("#it_"+it.id);
+    const vis=shown(it);el.style.display=vis?"":"none";
+    if(!vis){el.classList.remove("ok","bad","cx","miss");continue}
+    total++;
     el.classList.remove("ok","bad","cx","miss");
     if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))el.classList.add("miss");
     if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
@@ -913,8 +954,8 @@ function refresh(){
     else nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";}
   for(const k in DYN){const e=$("#dyn_"+k);if(e){const t=DYN[k]();e.textContent=t;e.style.display=t?"block":"none"}}
   for(const k of Object.keys(AUTO).concat("cyc")){const e=$("#auto_"+k);if(e)e.style.display=(k=="cyc"?cycNA():autoOn(k)&&hasV(k,AUTO[k].v))?"block":"none"}
-  $("#pb").style.width=(done/ALL.length*100)+"%";
-  $("#pt").textContent=done+" / "+ALL.length+" terisi";
+  $("#pb").style.width=(done/total*100)+"%";
+  $("#pt").textContent=done+" / "+total+" terisi";
   const w=$("#warn");
   if(cx.length){w.style.display="block";w.innerHTML="⛔ HARAP CANCEL — ditemukan:<ul>"+cx.map(t=>"<li>"+t+"</li>").join("")+"</ul>"}
   else w.style.display="none";
@@ -990,7 +1031,7 @@ function report(){
   const unit=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
   L.push("Unit: "+(unit||"(belum diisi)")+(N.tipe?" ("+N.tipe+")":""));
   L.push("Asal unit: "+(S.asal||"(belum diisi)"));
-  const choice=ALL.filter(i=>(i.k=="r"||i.k=="m")&&!i.ns);
+  const choice=ALL.filter(i=>(i.k=="r"||i.k=="m")&&!i.ns&&shown(i));
   const ans=choice.filter(i=>level(i)>=0), blank=choice.length-ans.length;
   const cx=ans.filter(i=>level(i)==2), pb=ans.filter(i=>level(i)==1);
   const extra=(S.minus2||"").trim(), oem=DYN.box();
@@ -1012,6 +1053,7 @@ function report(){
     if(s.skip)continue;
     L.push("","*"+hd(s)+"*");
     for(const it of s.i){
+      if(!shown(it))continue;
       let v=it.k=="m"?(S[it.id]||[]).join(" + "):(S[it.id]||"");
       if(it.k=="x"&&!String(v).trim())v="-";
       if(!v)v=(it.id=="cyc"&&cycNA())?"Tidak tersedia di seri ini":"(belum diisi)";
@@ -1024,7 +1066,7 @@ function report(){
 }
 // Semua pilihan wajib diisi sebelum laporan dibuat
 var REQ=ALL.filter(i=>i.k=="r"||i.k=="m"||i.k=="sel");
-var missing=()=>REQ.filter(i=>level(i)<0);
+var missing=()=>REQ.filter(i=>shown(i)&&level(i)<0);
 var reqTried=false;
 $("#rep").onclick=async()=>{
   const ms=missing(),b0=$("#rep"),nb=$("#need");
