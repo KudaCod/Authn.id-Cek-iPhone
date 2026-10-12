@@ -351,7 +351,7 @@ const SEC=[
 "t": "Cycle Count (khusus iPhone 15 ke atas)",
 "k": "t",
 "s": "Cycle Count",
-"d": "Settings › Battery › Battery Health & Charging › Cycle Count. Isi angkanya (kosongkan untuk seri di bawah iPhone 15).",
+"d": "Settings › Battery › Battery Health & Charging › Cycle Count. Isi angkanya. Untuk seri di bawah iPhone 15, kolom ini dilewati otomatis.",
 "w": [
 "Cycle count adalah jumlah siklus pengisian baterai. Apple merancang baterai menyisakan sekitar 80% kapasitas pada 500 siklus (1000 siklus untuk iPhone 15 ke atas). Cycle count tinggi tapi Battery Health masih sangat tinggi patut dicurigai."
 ],
@@ -447,7 +447,7 @@ const SEC=[
 "MagSafe berfungsi",
 "MagSafe tidak berfungsi!",
 "iPhone 11: magnet lemah, pengisian nirkabel jalan",
-"Tidak ada MagSafe (iPhone XR/XS ke bawah)"
+"Tidak ada MagSafe (XS/XR ke bawah, SE, 16e)"
 ]
 },
 {
@@ -587,7 +587,7 @@ const SEC=[
 "t": "Kamera 2x",
 "k": "m",
 "s": "Kamera 2x",
-"d": "Zoom telefoto tergantung seri. Pilih \"Tidak ada di seri ini\" jika seri tidak punya kamera ini.",
+"d": "Lensa telefoto (2x, 2.5x, 3x, atau 4x tergantung seri). Untuk seri dengan telefoto 5x, cek di poin Kamera 5x. Pilihan \"Tidak ada di seri ini\" terisi otomatis untuk seri tanpa telefoto.",
 "o": [
 "Normal",
 "Getar!",
@@ -601,7 +601,7 @@ const SEC=[
 "t": "Kamera 5x",
 "k": "m",
 "s": "Kamera 5x",
-"d": "Tersedia pada seri Pro tertentu. Pilih \"Tidak ada di seri ini\" jika seri tidak punya kamera ini.",
+"d": "Tersedia di iPhone 15 Pro Max, 16 Pro, dan 16 Pro Max. Untuk seri lain, \"Tidak ada di seri ini\" terisi otomatis.",
 "o": [
 "Normal",
 "Getar!",
@@ -625,7 +625,7 @@ const SEC=[
 "Getar!",
 "Jamur!",
 "Blank!!",
-"Tidak ada TrueDepth (iPhone 8 ke bawah)"
+"Tidak ada TrueDepth (iPhone 8 ke bawah, SE)"
 ]
 },
 {
@@ -789,6 +789,43 @@ const DM={};DEV.forEach(d=>DM[d[0]]={d:d[1],c:d[2],cols:CS[d[3]]});
 const HEX={"Space Gray":"#6e6e73","Silver":"#e3e4e6","Gold":"#e6cfae","Rose Gold":"#e8c3b9","Black":"#2b2b2d","Jet Black":"#101012","(PRODUCT)RED":"#bf0a1d","White":"#f2f2f0","Blue":"#9db9d8","Yellow":"#f4e48f","Coral":"#f2735a","Green":"#9fc7ac","Purple":"#c9b7e6","Midnight Green":"#4e5851","Graphite":"#54524f","Pacific Blue":"#2e5e73","Pink":"#f5c6d0","Midnight":"#2e3642","Starlight":"#efe9e1","Sierra Blue":"#a7c1d9","Alpine Green":"#576856","Space Black":"#2f2e30","Deep Purple":"#594f63","Black Titanium":"#3b3b3d","White Titanium":"#e0dfdc","Blue Titanium":"#3d4a5c","Natural Titanium":"#b9b1a6","Desert Titanium":"#bfa48f","Teal":"#b0d4d2","Ultramarine":"#9aaaf5","Mist Blue":"#b9ccd9","Sage":"#b5c2a8","Lavender":"#cdbfe0","Cloud White":"#f1f0ec","Light Gold":"#e5d3a8","Sky Blue":"#bcd3e6","Cosmic Orange":"#d96a2d","Deep Blue":"#2f3c54"};
 const colorsFor=()=>{const m=DM[S.tipe];return m?m.cols.concat(["Lainnya"]):[]};
 
+// ===== Fitur per seri: isi otomatis "tidak ada" untuk fitur yang tidak dimiliki seri =====
+const P=a=>a.map(x=>"iPhone "+x);
+const OLD=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus"]), SE2=P(["SE (2020)","SE (2022)"]);
+const NO_UW=OLD.concat(P(["X","XR","XS","XS Max","16e","Air"]),SE2);           // tanpa kamera 0.5 (ultra wide)
+const NO_TELE=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air"]).concat(SE2); // tanpa lensa telefoto
+const HAS_5X=P(["15 Pro Max","16 Pro","16 Pro Max"]);                            // telefoto 5x
+const NO_MS=OLD.concat(P(["X","XR","XS","XS Max","16e"]),SE2);                   // tanpa MagSafe
+const NO_TD=OLD.concat(SE2);                                                     // tanpa TrueDepth
+const PRE15=DEV.map(d=>d[0]).slice(0,DEV.findIndex(d=>d[0]=="iPhone 15"));       // tanpa menu Cycle Count
+const optOf=(id,pre)=>cl(ALL.find(i=>i.id==id).o.find(o=>cl(o).indexOf(pre)==0));
+const AUTO={
+  c05:{no:t=>NO_UW.includes(t),v:"Tidak ada di seri ini"},
+  c2:{no:t=>NO_TELE.includes(t)||HAS_5X.includes(t),v:"Tidak ada di seri ini"},
+  c5:{no:t=>!HAS_5X.includes(t),v:"Tidak ada di seri ini"},
+  cpot:{no:t=>NO_TD.includes(t),v:optOf("cpot","Tidak ada TrueDepth")},
+  magsafe:{no:t=>NO_MS.includes(t),v:optOf("magsafe","Tidak ada MagSafe")}
+};
+const known=()=>!!DM[S.tipe];
+const autoOn=id=>known()&&!!AUTO[id]&&AUTO[id].no(S.tipe);
+const cycNA=()=>known()&&PRE15.includes(S.tipe)&&!(S.cyc&&String(S.cyc).trim());
+const hasV=(id,v)=>Array.isArray(S[id])?S[id].includes(v):S[id]===v;
+function applyAuto(){
+  if(!known())return;
+  for(const id in AUTO){
+    const it=ALL.find(i=>i.id==id),v=AUTO[id].v,emp=it.k=="m"?!(S[id]||[]).length:!S[id];
+    if(autoOn(id)){if(emp)S[id]=it.k=="m"?[v]:v}
+    else if(hasV(id,v))delete S[id];
+    document.querySelectorAll(`input[name="${id}"]`).forEach(i=>i.checked=hasV(id,i.value));
+  }
+}
+// Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
+const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
+const isNA=it=>{if(it.id=="cyc")return cycNA();const v=S[it.id],a=Array.isArray(v)?v:(v?[v]:[]);return a.length>0&&a.every(x=>NAP.some(p=>x.indexOf(p)==0))};
+// Isian lama yang labelnya berubah
+const REN={"Tidak ada TrueDepth (iPhone 8 ke bawah)":optOf("cpot","Tidak ada TrueDepth"),"Tidak ada MagSafe (iPhone XR/XS ke bawah)":optOf("magsafe","Tidak ada MagSafe")};
+for(const k in S){if(Array.isArray(S[k]))S[k]=S[k].map(x=>REN[x]||x);else if(REN[S[k]])S[k]=REN[S[k]]}
+
 // ===== Keterangan otomatis =====
 const DYN={box:()=>{const a=S.box||[];const bad=a.some(x=>x.indexOf("Dus terasa ringan")==0||x.indexOf("Tatakan plastik")==0||x.indexOf("Label tanpa")==0);
   return bad?"📦 Keterangan: dus/box tersebut OEM (bukan dus original resmi dari importir).":""}};
@@ -807,6 +844,7 @@ function build(){
       if(it.img)h+=`<details class="ex"><summary>📷 Lihat contoh gambar</summary>`+it.img.map(p=>`<img src="${p}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`).join("")+`</details>`;
       if(it.w)h+=`<div class="why"><b>Kenapa penting:</b>`+(it.w.length>1?`<ul>${it.w.map(x=>`<li>${x}</li>`).join("")}</ul>`:` ${it.w[0]}`)+`</div>`;
       if(DYN[it.id])h+=`<div class="oem" id="dyn_${it.id}"></div>`;
+      if(AUTO[it.id]||it.id=="cyc")h+=`<div class="d" id="auto_${it.id}" style="display:none;color:var(--ok);font-weight:600">${it.id=="cyc"?"✔ Dilewati otomatis: menu Cycle Count hanya ada di iPhone 15 ke atas.":"✔ Terisi otomatis: seri ini tidak memiliki fitur ini. Ubah jika tipe yang dipilih salah."}</div>`;
       if(it.k=="sel"){
         h+=`<select data-id="${it.id}"><option value="">— pilih tipe —</option>`+DEV.map(d=>`<option ${S[it.id]===d[0]?"selected":""}>${esc(d[0])}</option>`).join("")+`<option ${S[it.id]==="Lainnya"?"selected":""}>Lainnya</option></select>`;
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional, cth: tipe lain)" value="${esc(N[it.id]||"")}">`;
@@ -829,6 +867,7 @@ function build(){
 
 function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
   const v=S[it.id];
+  if(it.id=="cyc"&&cycNA())return 0;
   if(it.k=="t"||it.k=="x"||it.k=="sel")return (v&&String(v).trim())?0:-1;
   const sel=it.k=="r"?(v?[v]:[]):(v||[]); if(!sel.length)return -1;
   let m=0; for(const x of sel){const o=(it.o||[]).find(o=>cl(o)===x); if(o)m=Math.max(m,lv(o))} return m;
@@ -844,6 +883,7 @@ function refresh(){
     if(l==2)cx.push(nm(it));
   }
   for(const k in DYN){const e=$("#dyn_"+k);if(e){const t=DYN[k]();e.textContent=t;e.style.display=t?"block":"none"}}
+  for(const k of Object.keys(AUTO).concat("cyc")){const e=$("#auto_"+k);if(e)e.style.display=(k=="cyc"?cycNA():autoOn(k)&&hasV(k,AUTO[k].v))?"block":"none"}
   $("#pb").style.width=(done/ALL.length*100)+"%";
   $("#pt").textContent=done+" / "+ALL.length+" terisi";
   const w=$("#warn");
@@ -858,10 +898,10 @@ document.addEventListener("input",e=>{
     if(it.k=="r")S[it.id]=t.value;
     else if(it.k=="sel"){
       S[it.id]=t.value;
-      if(it.id=="tipe"){if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;renderColors()}
+      if(it.id=="tipe"){if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;renderColors();applyAuto()}
     }else if(it.k=="m"){
       let a=S[it.id]||[];
-      const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0||v.indexOf("Tidak ada di seri")==0||v.indexOf("Tidak ada TrueDepth")==0;
+      const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0||v.indexOf("Tidak ada di seri")==0||v.indexOf("Tidak ada TrueDepth")==0||v.indexOf("Tidak ada box")==0;
       if(t.checked){a=EX(t.value)?[t.value]:a.filter(x=>!EX(x)).concat(t.value)}
       else a=a.filter(x=>x!=t.value);
       S[it.id]=a;
@@ -893,6 +933,8 @@ function phone2D(tipe,warna){
   b+=`<circle cx="${W/2}" cy="${H/2+8}" r="7" fill="${edge}" opacity=".5"/></svg>`;
   return `<div style="display:flex;gap:14px;justify-content:center;align-items:flex-start">${f}${b}</div><div class="d" style="text-align:center">Ilustrasi 2D (foto produk belum dipasang).</div>`;
 }
+// Seri yang memakai foto seri lain (tampilan sama)
+const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s","iPhone 8 Plus":"iPhone 8"};
 function showUnit(){
   const box=$("#pimg"),cap=$("#pcap");
   const info=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
@@ -902,7 +944,7 @@ function showUnit(){
   box.innerHTML=phone2D(S.tipe,S.warna);
   if(S.warna){const im=new Image();im.alt=info;im.className="pimgreal";
     im.onload=()=>{box.innerHTML="";box.appendChild(im)};
-    im.src="img/produk/"+slug(S.tipe)+"-"+slug(S.warna)+".png"}
+    im.src="img/produk/"+slug(PHOTO_AS[S.tipe]||S.tipe)+"-"+slug(S.warna)+".png"}
 }
 
 function report(){
@@ -916,8 +958,9 @@ function report(){
   const ans=choice.filter(i=>level(i)>=0), blank=choice.length-ans.length;
   const cx=ans.filter(i=>level(i)==2), pb=ans.filter(i=>level(i)==1);
   const extra=(S.minus2||"").trim(), oem=DYN.box();
-  const pts=ans.reduce((a,i)=>a+(level(i)==0?1:level(i)==1?0.5:0),0);
-  const pct=ans.length?Math.round(pts/ans.length*100):0;
+  const sc=ans.filter(i=>!isNA(i));
+  const pts=sc.reduce((a,i)=>a+(level(i)==0?1:level(i)==1?0.5:0),0);
+  const pct=sc.length?Math.round(pts/sc.length*100):0;
   L.push("","*STATUS DEVICE*");
   L.push("Kondisi unit: ±"+pct+"%"+(blank?" (sementara, "+blank+" poin belum diisi)":""));
   L.push(cx.length?"Rekomendasi: ⛔ CANCEL":(pb.length||extra||oem)?"Rekomendasi: ⚠️ Tinjau ulang sebelum diambil":(blank?"Rekomendasi: ⏳ Pengecekan belum lengkap, lengkapi dulu poin yang kosong":"Rekomendasi: ✅ Unit sesuai hasil pengecekan"));
@@ -935,10 +978,10 @@ function report(){
     for(const it of s.i){
       let v=it.k=="m"?(S[it.id]||[]).join(" + "):(S[it.id]||"");
       if(it.k=="x"&&!String(v).trim())v="-";
-      if(!v)v="(belum diisi)";
+      if(!v)v=(it.id=="cyc"&&cycNA())?"Tidak tersedia di seri ini":"(belum diisi)";
       if(it.id=="box"&&oem)v+=" → dus/box OEM";
       const l=level(it);
-      L.push((l==2?"❌ ":l==1?"⚠️ ":l<0?"⬜ ":"✅ ")+nm(it)+": "+v+(N[it.id]?" — "+N[it.id]:""));
+      L.push((l==2?"❌ ":l==1?"⚠️ ":l<0?"⬜ ":isNA(it)?"➖ ":"✅ ")+nm(it)+": "+v+(N[it.id]?" — "+N[it.id]:""));
     }
   }
   return L.join("\n");
@@ -978,7 +1021,7 @@ const fm=()=>{$("#tm").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":
 $("#ts").onclick=()=>{if(iv){clearInterval(iv);iv=null;$("#ts").textContent="Timer"}else{iv=setInterval(()=>{sec++;fm()},1000);$("#ts").textContent="Stop"}};
 $("#tr").onclick=()=>{clearInterval(iv);iv=null;sec=0;fm();$("#ts").textContent="Timer"};
 
-build();refresh();
+build();applyAuto();save();refresh();
 if("serviceWorker" in navigator){
   navigator.serviceWorker.register("sw.js").catch(()=>{});
   navigator.serviceWorker.ready.then(()=>{$("#ofl").textContent="✔ Siap offline";$("#ofl").style.color="var(--ok)"}).catch(()=>{});
