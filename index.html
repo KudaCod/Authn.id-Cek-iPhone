@@ -244,6 +244,7 @@ const SEC=[
 {
 "id": "btn",
 "t": "Tombol power & volume",
+"img": [{"src":"img/contoh/contoh-tombol-action.png","when":"action"},{"src":"img/contoh/contoh-tombol-silent.png","when":"silent"}],
 "k": "r",
 "s": "Tombol power & volume",
 "o": [
@@ -254,6 +255,7 @@ const SEC=[
 {
 "id": "silent",
 "t": "Tombol silent & getaran",
+"img": ["img/contoh/contoh-tombol-silent.png"],
 "k": "r",
 "s": "Tombol silent",
 "d": "Geser tombol silent bolak-balik. iPhone harus bergetar singkat saat tombol digeser ke mode senyap.",
@@ -269,6 +271,7 @@ const SEC=[
 {
 "id": "action",
 "t": "Action Button & getaran",
+"img": ["img/contoh/contoh-tombol-action.png"],
 "k": "r",
 "s": "Action Button",
 "d": "Tekan dan tahan Action Button di sisi kiri (menggantikan tombol silent mulai iPhone 15 Pro). Fungsinya mengikuti Settings › Action Button (bawaan: mode senyap). Harus langsung merespons, muncul indikator di layar/Dynamic Island, dan ada getaran.",
@@ -285,6 +288,7 @@ const SEC=[
 {
 "id": "camctl",
 "t": "Camera Control (tombol kamera di sisi kanan)",
+"img": ["img/contoh/contoh-tombol-action.png"],
 "k": "r",
 "s": "Camera Control",
 "d": "Tekan Camera Control: aplikasi Kamera harus langsung terbuka. Tekan ringan untuk memunculkan kontrol (zoom/eksposur), lalu geser jari di atas tombol: nilainya harus berubah. Tekan penuh untuk mengambil foto.",
@@ -922,7 +926,7 @@ function build(){
     h+=`<section><h2>${hd(s)}</h2>${s.d?`<div class="d">${s.d}</div>`:""}`;
     for(const it of s.i){
       h+=`<div class="item" id="it_${it.id}"><div class="t">${it.t}</div>${it.d?`<div class="d">${it.d}</div>`:""}`;
-      if(it.img)h+=`<div class="ex"><div class="exl">📷 Contoh gambar</div>`+it.img.map(p=>`<img src="${p}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`).join("")+`</div>`;
+      if(it.img)h+=`<div class="ex"><div class="exl">📷 Contoh gambar</div>`+it.img.map(p=>typeof p==="string"?`<img src="${p}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`:`<img src="${p.src}" data-when="${p.when}" alt="Contoh ${esc(it.s||it.t)}" loading="lazy">`).join("")+`</div>`;
       if(it.w)h+=`<div class="why"><b>Kenapa penting:</b>`+(it.w.length>1?`<ul>${it.w.map(x=>`<li>${x}</li>`).join("")}</ul>`:` ${it.w[0]}`)+`</div>`;
       if(DYN[it.id])h+=`<div class="oem" id="dyn_${it.id}"></div>`;
       if(AUTO[it.id]||it.id=="cyc")h+=`<div class="d" id="auto_${it.id}" style="display:none;color:var(--ok);font-weight:600">${it.id=="cyc"?"✔ Dilewati otomatis: menu Cycle Count hanya ada di iPhone 15 ke atas.":"✔ Terisi otomatis: seri ini tidak memiliki fitur ini. Ubah jika tipe yang dipilih salah."}</div>`;
@@ -972,6 +976,7 @@ function refresh(){
   if(typeof missing==="function"&&reqTried){const ms=missing(),nb=$("#need");
     if(!ms.length)nb.style.display="none";
     else nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";}
+  document.querySelectorAll("img[data-when]").forEach(im=>{im.style.display=(VIS[im.dataset.when]?VIS[im.dataset.when](S.tipe):true)?"":"none"});
   for(const k in DYN){const e=$("#dyn_"+k);if(e){const t=DYN[k]();e.textContent=t;e.style.display=t?"block":"none"}}
   for(const k of Object.keys(AUTO).concat("cyc")){const e=$("#auto_"+k);if(e)e.style.display=(k=="cyc"?cycNA():autoOn(k)&&hasV(k,AUTO[k].v))?"block":"none"}
   $("#pb").style.width=(done/total*100)+"%";
