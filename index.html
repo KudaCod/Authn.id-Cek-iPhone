@@ -498,7 +498,7 @@ const SEC=[
 {
 "id": "magsafe",
 "t": "Cek MagSafe / wireless charging",
-"img": ["img/contoh/contoh-magsafe.jpg"],
+"img": [{"src":"img/contoh/contoh-magsafe.jpg","when":"not15"},{"src":"img/contoh/contoh-magsafe-15.jpg","when":"fr15"}],
 "k": "r",
 "s": "MagSafe / wireless charging",
 "d": "Tempelkan MagSafe charger atau taruh iPhone di wireless charger, dengan bagian belakang iPhone menghadap charger. Harus muncul indikator mengisi daya. Semua iPhone 8 ke atas (termasuk iPhone 11 dan SE 2020/2022) sudah support wireless charging. Magnet MagSafe baru ada mulai iPhone 12 (kecuali 16e), jadi di iPhone 12 ke atas charger MagSafe juga harus menempel kuat. Di iPhone 8 sampai 11, SE 2020/2022, dan 16e, charger MagSafe tetap bisa mengisi daya tapi tidak menempel, jadi tahan posisinya.",
@@ -945,7 +945,7 @@ const VIS={cyc:t=>!PRE15.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>A
   ceir_tgl:()=>false,
   bc:()=>S.asal==="Bea Cukai",
   // Frame gambar contoh: tombol home, poni (notch), atau Dynamic Island
-  frhome:t=>HOME_T.includes(t),fr15:t=>!!t&&!PRE15.includes(t)&&t!=="Lainnya",frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
+  frhome:t=>HOME_T.includes(t),fr15:t=>!!t&&!PRE15.includes(t)&&t!=="Lainnya",not15:t=>!(!!t&&!PRE15.includes(t)&&t!=="Lainnya"),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Tidak ada wireless charging","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
