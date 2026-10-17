@@ -179,7 +179,7 @@ const SEC=[
 {
 "id": "bright",
 "t": "Brightness (kecerahan) layar FULL (WAJIB)",
-"img": ["img/contoh/contoh-brightness.jpg"],
+"img": [{"src":"img/contoh/contoh-brightness.jpg","when":"frisland"},{"src":"img/contoh/contoh-brightness-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-brightness-notch.jpg","when":"frnotch"}],
 "k": "r",
 "s": "Brightness full",
 "d": "Geser slider kecerahan di Control Center sampai penuh. Tampilkan layar putih penuh agar kerusakan mudah terlihat.",
@@ -245,7 +245,7 @@ const SEC=[
 {
 "id": "btn",
 "t": "Tombol power & volume",
-"img": ["img/contoh/contoh-power-volume.jpg"],
+"img": [{"src":"img/contoh/contoh-power-volume.jpg","when":"frisland"},{"src":"img/contoh/contoh-power-volume-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-power-volume-notch.jpg","when":"frnotch"}],
 "k": "r",
 "s": "Tombol power & volume",
 "o": [
@@ -256,7 +256,7 @@ const SEC=[
 {
 "id": "silent",
 "t": "Tombol silent & getaran",
-"img": ["img/contoh/contoh-tombol-silent.jpg"],
+"img": [{"src":"img/contoh/contoh-tombol-silent.jpg","when":"frisland"},{"src":"img/contoh/contoh-tombol-silent-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-tombol-silent-notch.jpg","when":"frnotch"}],
 "k": "r",
 "s": "Tombol silent",
 "d": "Geser tombol silent bolak-balik. iPhone harus bergetar singkat saat tombol digeser ke mode senyap.",
@@ -330,7 +330,7 @@ const SEC=[
 {
 "id": "lcd_ori",
 "t": "Pastikan LCD original atau sudah diganti",
-"img": [{"src":"img/contoh/contoh-lcd-bezel.jpg","when":"lcdnew"},{"src":"img/contoh/contoh-lcd-se.jpg","when":"lcdhome"}],
+"img": [{"src":"img/contoh/contoh-lcd-bezel.jpg","when":"frisland"},{"src":"img/contoh/contoh-lcd-se.jpg","when":"frhome"},{"src":"img/contoh/contoh-lcd-notch.jpg","when":"frnotch"}],
 "k": "r",
 "s": "Status LCD",
 "d": "Tanyakan ke penjual, cek pesan/peringatan layar atau menu Parts and Service History di Settings › General › About, dan cek apakah tombol True Tone ada di Control Center (tahan slider kecerahan). Cek juga Auto-Brightness di bagian Pengecekan Fungsi.",
@@ -355,7 +355,7 @@ const SEC=[
 {
 "id": "wifi",
 "t": "Wi-Fi",
-"img": [{"src":"img/contoh/contoh-wifi-new.jpg","when":"lcdnew"},{"src":"img/contoh/contoh-wifi-home.jpg","when":"lcdhome"}],
+"img": [{"src":"img/contoh/contoh-wifi-new.jpg","when":"frisland"},{"src":"img/contoh/contoh-wifi-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-wifi-notch.jpg","when":"frnotch"}],
 "k": "r",
 "s": "Wi-Fi",
 "d": "Cek jumlah sinyal Wi-Fi yang tertangkap, bandingkan dengan iPhone yang kamu bawa.",
@@ -370,7 +370,7 @@ const SEC=[
 {
 "id": "bt",
 "t": "Bluetooth",
-"img": [{"src":"img/contoh/contoh-bt-new.jpg","when":"lcdnew"},{"src":"img/contoh/contoh-bt-home.jpg","when":"lcdhome"}],
+"img": [{"src":"img/contoh/contoh-bt-new.jpg","when":"frisland"},{"src":"img/contoh/contoh-bt-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-bt-notch.jpg","when":"frnotch"}],
 "k": "r",
 "s": "Bluetooth",
 "d": "Hubungkan iPhone ke Bluetooth/TWS.",
@@ -902,12 +902,14 @@ function applyAuto(){
 const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
 const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
 const HOME_T=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus","SE (2020)","SE (2022)"]);
+const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e"]); // gambar contoh pakai frame poni (notch)
 const VIS={silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
   // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
   ceirku:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
   ceir_tgl:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
   bc:()=>S.asal==="Bea Cukai",
-  lcdhome:t=>HOME_T.includes(t),lcdnew:t=>!HOME_T.includes(t)};
+  // Frame gambar contoh: tombol home, poni (notch), atau Dynamic Island
+  frhome:t=>HOME_T.includes(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t)};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
