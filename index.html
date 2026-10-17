@@ -404,7 +404,7 @@ const SEC=[
 "t": "Cycle Count (khusus iPhone 15 ke atas)",
 "k": "t",
 "s": "Cycle Count",
-"d": "Settings › Battery › Battery Health & Charging › Cycle Count. Isi angkanya. Untuk seri di bawah iPhone 15, kolom ini dilewati otomatis.",
+"d": "Settings › Battery › Battery Health & Charging › Cycle Count (Pengaturan › Baterai › Kesehatan & Pengisian Daya Baterai › Jumlah Siklus). Isi angkanya. Poin ini hanya muncul untuk iPhone 15 ke atas.",
 "w": [
 "Cycle count adalah jumlah siklus pengisian baterai. Apple merancang baterai menyisakan sekitar 80% kapasitas pada 500 siklus (1000 siklus untuk iPhone 15 ke atas). Cycle count tinggi tapi Battery Health masih sangat tinggi patut dicurigai."
 ],
@@ -495,18 +495,21 @@ const SEC=[
 },
 {
 "id": "magsafe",
-"t": "Cek MagSafe (iPhone 11 ke atas)",
+"t": "Cek MagSafe / wireless charging",
+"img": ["img/contoh/contoh-magsafe.jpg"],
 "k": "r",
-"s": "MagSafe",
-"d": "Tempelkan wireless charger/MagSafe charger ke bagian belakang iPhone. Pastikan menempel dan mengisi daya. Pada iPhone 11 magnetnya tidak sekuat iPhone 12 ke atas, jadi bandingkan dengan iPhone 11 lain yang normal.",
+"s": "MagSafe / wireless charging",
+"d": "Tempelkan MagSafe charger atau taruh iPhone di wireless charger, dengan bagian belakang iPhone menghadap charger. Harus muncul indikator mengisi daya. iPhone 12 ke atas (kecuali 16e) punya magnet MagSafe, jadi charger MagSafe juga harus menempel kuat. iPhone 8, 8 Plus, X, XR, XS, 11, SE 2020/2022, dan 16e tidak punya magnet: cukup pastikan mengisi daya (tahan posisi charger).",
 "w": [
-"Jika tidak terisi dengan MagSafe, ada indikasi housing (bodi belakang) sudah diganti, karena magnet dan koil pengisian nirkabel ada di bagian itu. Fitur MagSafe juga tidak bisa dipakai, termasuk aksesori dan casing MagSafe."
+"Koil wireless charging (dan magnet MagSafe di iPhone 12 ke atas) ada di bagian belakang iPhone. Jika tidak mengisi daya, atau magnet MagSafe tidak menempel, ada indikasi housing (bodi belakang) sudah diganti atau koilnya rusak.",
+"Fitur wireless charging dan aksesori MagSafe (charger, casing, dompet) juga tidak bisa dipakai normal."
 ],
 "o": [
-"MagSafe berfungsi",
-"MagSafe tidak berfungsi!",
-"iPhone 11: magnet lemah, pengisian nirkabel jalan",
-"Tidak ada MagSafe (XS/XR ke bawah, SE, 16e)"
+"MagSafe menempel & mengisi daya",
+"Wireless charging jalan (tanpa magnet)",
+"Magnet MagSafe tidak menempel!",
+"Tidak mengisi daya!",
+"Tidak ada wireless charging (iPhone 7 ke bawah, SE 2016)"
 ]
 },
 {
@@ -566,6 +569,11 @@ const SEC=[
 {
 "id": "mic",
 "t": "Voice Notes / Microphone",
+"img": [{"src":"img/contoh/contoh-mic-home.jpg","when":"frhome"}],
+"d": "Buka Voice Memos (Memo Suara), rekam suaramu beberapa detik, lalu putar ulang. Suara harus terdengar jelas.",
+"w": [
+"Mikrofon yang mati atau suaranya kecil/kresek membuat telepon, voice note, dan rekam video tidak normal. Bisa karena mikrofon rusak, kemasukan air, atau lubangnya tersumbat."
+],
 "k": "r",
 "s": "Microphone",
 "o": [
@@ -576,6 +584,7 @@ const SEC=[
 {
 "id": "comp",
 "t": "Compass",
+"img": [{"src":"img/contoh/contoh-comp-home.jpg","when":"frhome"}],
 "k": "r",
 "s": "Compass",
 "d": "Buka aplikasi Compass (Kompas), kalibrasi jika diminta, lalu putar badan. Arah harus berubah mengikuti.",
@@ -606,7 +615,9 @@ const SEC=[
 },
 {
 "id": "nfc",
+"alt": {"frhome": {"d": "Buka app Pintasan (Shortcuts) › ketuk + › Automasi › pilih NFC › Pindai, lalu tempelkan kartu e-money atau tag NFC ke bagian atas belakang iPhone. Ikuti langkah 1–4 pada gambar. NFC berfungsi jika kartu/tag terbaca dan muncul kolom untuk memberi nama label. Jika opsi NFC tidak muncul (umumnya di iPhone 8 ke bawah dan SE 2016), pakai aplikasi pembaca NFC dari App Store. iPhone 6/6 Plus hanya memakai NFC untuk Apple Pay, jadi tidak bisa dites dengan cara ini."}},
 "t": "Cek NFC",
+"img": [{"src":"img/contoh/contoh-nfc1-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-nfc2-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-nfc3-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-nfc4-home.jpg","when":"frhome"}],
 "k": "r",
 "s": "NFC",
 "d": "Buka aplikasi Shortcuts (Pintasan) › Automation (Otomatisasi) › cari NFC › Scan, lalu dekatkan iPhone ke tag atau kartu NFC.",
@@ -716,6 +727,7 @@ const SEC=[
 {
 "id": "imei_m",
 "t": "IMEI device sesuai dengan IMEI di housing / SIM tray",
+"img": ["img/contoh/contoh-simtray.jpg"],
 "k": "r",
 "s": "IMEI device vs housing",
 "d": "Buka Telepon, ketik *#06#. Bandingkan dengan nomor IMEI yang tercetak di SIM tray (dan di kotak jika ada).",
@@ -895,7 +907,7 @@ const OLD=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus"])
 const NO_UW=OLD.concat(P(["X","XR","XS","XS Max","16e","Air"]),SE2);           // tanpa kamera 0.5 (ultra wide)
 const NO_TELE=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air"]).concat(SE2); // tanpa lensa telefoto
 const HAS_5X=P(["15 Pro Max","16 Pro","16 Pro Max"]);                            // telefoto 5x
-const NO_MS=OLD.concat(P(["X","XR","XS","XS Max","16e"]),SE2);                   // tanpa MagSafe
+const NO_WL=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus"]);            // tanpa wireless charging (mulai iPhone 8)
 const NO_TD=OLD.concat(SE2);                                                     // tanpa TrueDepth
 const PRE15=DEV.map(d=>d[0]).slice(0,DEV.findIndex(d=>d[0]=="iPhone 15"));       // tanpa menu Cycle Count
 const optOf=(id,pre)=>cl(ALL.find(i=>i.id==id).o.find(o=>cl(o).indexOf(pre)==0));
@@ -904,7 +916,7 @@ const AUTO={
   c2:{no:t=>NO_TELE.includes(t)||HAS_5X.includes(t),v:"Tidak ada di seri ini"},
   c5:{no:t=>!HAS_5X.includes(t),v:"Tidak ada di seri ini"},
   cpot:{no:t=>NO_TD.includes(t),v:optOf("cpot","Tidak ada TrueDepth")},
-  magsafe:{no:t=>NO_MS.includes(t),v:optOf("magsafe","Tidak ada MagSafe")},
+  magsafe:{no:t=>NO_WL.includes(t),v:optOf("magsafe","Tidak ada wireless charging")},
   riw:{no:t=>OLD.includes(t),v:"Menu tidak tersedia di seri ini"}
 };
 const known=()=>!!DM[S.tipe];
@@ -925,7 +937,7 @@ const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Ma
 const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
 const HOME_T=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus","SE (2020)","SE (2022)"]);
 const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e"]); // gambar contoh pakai frame poni (notch)
-const VIS={silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
+const VIS={cyc:t=>!PRE15.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
   // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
   ceirku:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
   ceir_tgl:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
@@ -934,10 +946,11 @@ const VIS={silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl
   frhome:t=>HOME_T.includes(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
-const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
+const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Tidak ada wireless charging","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
 const isNA=it=>{if(it.id=="cyc")return cycNA();const v=S[it.id],a=Array.isArray(v)?v:(v?[v]:[]);return a.length>0&&a.every(x=>NAP.some(p=>x.indexOf(p)==0))};
 // Isian lama yang labelnya berubah
-const REN={"Tidak ada TrueDepth (iPhone 8 ke bawah)":optOf("cpot","Tidak ada TrueDepth"),"Tidak ada MagSafe (iPhone XR/XS ke bawah)":optOf("magsafe","Tidak ada MagSafe")};
+const REN={"Tidak ada TrueDepth (iPhone 8 ke bawah)":optOf("cpot","Tidak ada TrueDepth"),"MagSafe berfungsi":"MagSafe menempel & mengisi daya","MagSafe tidak berfungsi!":"Tidak mengisi daya!","iPhone 11: magnet lemah, pengisian nirkabel jalan":"Wireless charging jalan (tanpa magnet)"};
+if(/^Tidak ada MagSafe/.test(S.magsafe||""))delete S.magsafe; // pilihan lama, diisi ulang otomatis
 for(const k in S){if(Array.isArray(S[k]))S[k]=S[k].map(x=>REN[x]||x);else if(REN[S[k]])S[k]=REN[S[k]]}
 
 // ===== Keterangan otomatis =====
