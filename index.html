@@ -389,7 +389,7 @@ const SEC=[
 {
 "id": "bat",
 "t": "Battery Health",
-"img": [{"src":"img/contoh/contoh-bat-home.jpg","when":"frhome"}],
+"img": [{"src":"img/contoh/contoh-bat-home.jpg","when":"frhome"},{"src":"img/contoh/contoh-battery-health-15.jpg","when":"fr15"}],
 "k": "t",
 "s": "Battery Health",
 "d": "Settings › Battery › Battery Health & Charging (Pengaturan › Baterai › Kesehatan & Pengisian Daya Baterai). Isi persentase Kapasitas Maksimum.",
@@ -945,7 +945,7 @@ const VIS={cyc:t=>!PRE15.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>A
   ceir_tgl:()=>false,
   bc:()=>S.asal==="Bea Cukai",
   // Frame gambar contoh: tombol home, poni (notch), atau Dynamic Island
-  frhome:t=>HOME_T.includes(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
+  frhome:t=>HOME_T.includes(t),fr15:t=>!!t&&!PRE15.includes(t)&&t!=="Lainnya",frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Tidak ada wireless charging","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
