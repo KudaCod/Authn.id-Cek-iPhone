@@ -161,9 +161,9 @@ const SEC=[
 "d": "Tanyakan ke penjual, lalu cocokkan dengan kondisi unit dan kelengkapannya.",
 "w": [
 "iBox (resmi): unit distribusi resmi di Indonesia dengan garansi resmi. Karena itu cek box resmi pada bagian Persiapan.",
-"Inter: unit impor (garansi internasional, bukan distribusi resmi). IMEI belum tentu terdaftar di Indonesia, jadi wajib test kartu by.U/Telkomsel dan cek IMEI di ceirku.org.",
+"Inter: unit impor (garansi internasional, bukan distribusi resmi). IMEI belum tentu terdaftar di Indonesia, jadi wajib test kartu by.U/Telkomsel",
 "Bea Cukai: unit inter yang IMEI-nya didaftarkan dan dibayar bea/pajaknya lewat Bea Cukai, sehingga umumnya berstatus terdaftar (bukan roamer). Minta bukti pendaftarannya dan tetap cek IMEI.",
-"Cocokkan dengan akhiran Nomor Model (Settings › General › About): ID/A = resmi Indonesia, LL/A, ZA/A, ZP/A, J/A dan sejenisnya = inter. Jika penjual bilang resmi tapi kodenya bukan ID/A, harap tanyakan.",
+"Cocokkan dengan akhiran Nomor Model (Settings › General › About). Unit resmi Indonesia: PA/A = iBox, ID/A = Digimap, SA/A = Blibli. LL/A, ZA/A, ZP/A, J/A dan sejenisnya = inter. Jika penjual bilang resmi tapi kodenya bukan PA/A, ID/A, atau SA/A, harap tanyakan.",
 "Mengetahui asal unit membantu menentukan pengecekan mana yang wajib, dan mencegah unit inter dijual sebagai unit resmi."
 ],
 "o": [
@@ -437,7 +437,7 @@ const SEC=[
 "d": "Settings › General › About › Model Number (Pengaturan › Umum › Mengenai › Nomor Model). Jika yang tampil diawali huruf A (cth A2296), ketuk sekali untuk melihat kode lengkapnya.",
 "w": [
 "Huruf pertama Model Number umumnya menunjukkan asal unit: M = unit baru, F = refurbish, N = unit pengganti garansi, P = custom. Pastikan sesuai dengan keterangan penjual (inter/resmi).",
-"Akhiran kode menunjukkan wilayah: ID/A = resmi Indonesia (iBox/Digimap). LL/A (Amerika), ZA/A (Singapura), ZP/A (Hong Kong), J/A (Jepang), dan sejenisnya = unit inter."
+"Akhiran kode menunjukkan wilayah. Resmi Indonesia: PA/A = iBox, ID/A = Digimap, SA/A = Blibli. LL/A (Amerika), ZA/A (Singapura), ZP/A (Hong Kong), J/A (Jepang), dan sejenisnya = unit inter."
 ],
 "o": [
 "Sesuai",
@@ -499,9 +499,9 @@ const SEC=[
 "img": ["img/contoh/contoh-magsafe.jpg"],
 "k": "r",
 "s": "MagSafe / wireless charging",
-"d": "Tempelkan MagSafe charger atau taruh iPhone di wireless charger, dengan bagian belakang iPhone menghadap charger. Harus muncul indikator mengisi daya. iPhone 12 ke atas (kecuali 16e) punya magnet MagSafe, jadi charger MagSafe juga harus menempel kuat. iPhone 8, 8 Plus, X, XR, XS, 11, SE 2020/2022, dan 16e tidak punya magnet: cukup pastikan mengisi daya (tahan posisi charger).",
+"d": "Tempelkan MagSafe charger atau taruh iPhone di wireless charger, dengan bagian belakang iPhone menghadap charger. Harus muncul indikator mengisi daya. Semua iPhone 8 ke atas (termasuk iPhone 11 dan SE 2020/2022) sudah support wireless charging. Magnet MagSafe baru ada mulai iPhone 12 (kecuali 16e), jadi di iPhone 12 ke atas charger MagSafe juga harus menempel kuat. Di iPhone 8 sampai 11, SE 2020/2022, dan 16e, charger MagSafe tetap bisa mengisi daya tapi tidak menempel, jadi tahan posisinya.",
 "w": [
-"Koil wireless charging (dan magnet MagSafe di iPhone 12 ke atas) ada di bagian belakang iPhone. Jika tidak mengisi daya, atau magnet MagSafe tidak menempel, ada indikasi housing (bodi belakang) sudah diganti atau koilnya rusak.",
+"Koil wireless charging ada di bagian belakang semua iPhone 8 ke atas, termasuk iPhone 11. Mulai iPhone 12 (kecuali 16e), di bagian itu juga ada magnet MagSafe. Jika tidak mengisi daya, atau magnet MagSafe tidak menempel, ada indikasi housing (bodi belakang) sudah diganti atau koilnya rusak.",
 "Fitur wireless charging dan aksesori MagSafe (charger, casing, dompet) juga tidak bisa dipakai normal."
 ],
 "o": [
@@ -633,7 +633,7 @@ const SEC=[
 },
 {
 "h": "Kamera",
-"d": "Boleh pilih lebih dari satu (getar dan jamur). Getar = stabilizer kamera bermasalah. Jamur = bercak/kabut di lensa. Blank = kamera hitam/tidak terbaca (harap CANCEL).",
+"d": "Boleh pilih lebih dari satu (getar dan jamur). Getar = stabilizer kamera bermasalah. Blur = gambar buram/tidak fokus. Jamur = bercak/kabut di lensa. Blank = kamera hitam/tidak terbaca (harap CANCEL).",
 "i": [
 {
 "id": "c05",
@@ -643,6 +643,7 @@ const SEC=[
 "o": [
 "Normal",
 "Getar!",
+"Blur!",
 "Jamur!",
 "Blank!!",
 "Tidak ada di seri ini"
@@ -656,6 +657,7 @@ const SEC=[
 "o": [
 "Normal",
 "Getar!",
+"Blur!",
 "Jamur!",
 "Blank!!"
 ]
@@ -669,6 +671,7 @@ const SEC=[
 "o": [
 "Normal",
 "Getar!",
+"Blur!",
 "Jamur!",
 "Blank!!",
 "Tidak ada di seri ini"
@@ -683,6 +686,7 @@ const SEC=[
 "o": [
 "Normal",
 "Getar!",
+"Blur!",
 "Jamur!",
 "Blank!!",
 "Tidak ada di seri ini"
@@ -701,6 +705,7 @@ const SEC=[
 "o": [
 "Normal",
 "Getar!",
+"Blur (gambar tidak fokus)!",
 "Jamur!",
 "Blank!!",
 "Tidak ada TrueDepth (iPhone 8 ke bawah, SE)"
@@ -715,6 +720,7 @@ const SEC=[
 "o": [
 "Normal",
 "Getar!",
+"Blur!",
 "Jamur!",
 "Blank!!"
 ]
@@ -739,13 +745,6 @@ const SEC=[
 "Tidak sesuai / housing gantian!",
 "Tidak ada IMEI di SIM tray!"
 ]
-},
-{
-"id": "imei_n",
-"t": "Catat IMEI",
-"k": "t",
-"s": "IMEI",
-"ph": "15 digit IMEI"
 },
 {
 "id": "kartu",
@@ -939,8 +938,9 @@ const HOME_T=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus
 const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e"]); // gambar contoh pakai frame poni (notch)
 const VIS={cyc:t=>!PRE15.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
   // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
-  ceirku:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
-  ceir_tgl:()=>S.asal!=="iBox (resmi)"&&S.asal!=="Bea Cukai",
+  // ceirku.org & masa berlaku IMEI: dinonaktifkan sementara (aturan lama: tampil jika bukan iBox dan bukan Bea Cukai)
+  ceirku:()=>false,
+  ceir_tgl:()=>false,
   bc:()=>S.asal==="Bea Cukai",
   // Frame gambar contoh: tombol home, poni (notch), atau Dynamic Island
   frhome:t=>HOME_T.includes(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
@@ -954,8 +954,12 @@ if(/^Tidak ada MagSafe/.test(S.magsafe||""))delete S.magsafe; // pilihan lama, d
 for(const k in S){if(Array.isArray(S[k]))S[k]=S[k].map(x=>REN[x]||x);else if(REN[S[k]])S[k]=REN[S[k]]}
 
 // ===== Keterangan otomatis =====
+const OIS_TXT="⚠️ Ada kemungkinan kerusakan pada modul kamera belakang, khususnya komponen OIS (Optical Image Stabilization). OIS adalah penstabil lensa (magnet dan motor kecil) yang meredam goyangan tangan saat memotret dan merekam. Jika rusak, gambar bisa bergetar, sulit fokus, atau buram. Penyebab umumnya bekas jatuh/benturan atau getaran kuat terus-menerus (misalnya HP dipasang di holder motor). Perbaikannya biasanya harus ganti modul kamera.";
+const camBad=id=>(S[id]||[]).some(x=>x.indexOf("Getar")==0||x.indexOf("Blur")==0);
 const DYN={box:()=>{const a=S.box||[];const bad=a.some(x=>x.indexOf("Dus terasa ringan")==0||x.indexOf("Tatakan plastik")==0||x.indexOf("Label tanpa")==0);
   return bad?"📦 Keterangan: dus/box tersebut OEM (bukan dus original resmi dari importir).":""}};
+for(const id of ["c05","c1","c2","c5","cvid"])DYN[id]=()=>camBad(id)?OIS_TXT:"";
+DYN.cpot=()=>camBad("cpot")?"⚠️ Ada kemungkinan kerusakan pada modul kamera depan (lensa atau mekanisme fokusnya). Gambar yang bergetar atau buram biasanya karena bekas benturan atau komponen kamera depan yang sudah diganti, dan perbaikannya umumnya harus ganti modul kamera depan.":"";
 
 function renderColors(){
   const el=$("#opts_warna");if(!el)return;
