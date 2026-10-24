@@ -29,12 +29,13 @@ button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
 main{max-width:720px;margin:0 auto;padding:12px}
 section{margin-bottom:16px}
 #form section{display:none}
-#form section.cur{display:block}
-#form section.in-r{animation:secR .32s cubic-bezier(.2,.7,.2,1)}
-#form section.in-l{animation:secL .32s cubic-bezier(.2,.7,.2,1)}
-@keyframes secR{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
-@keyframes secL{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:none}}
-@media(prefers-reduced-motion:reduce){#form section.in-r,#form section.in-l{animation:none}}
+#form section.pg-on,#res.pg-on{display:block}
+.pg-in{animation:pgIn .34s cubic-bezier(.2,.7,.2,1) both}
+.pg-out{animation:pgOut .18s ease-in both;pointer-events:none}
+@keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pgOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px)}}
+@media(prefers-reduced-motion:reduce){.pg-in,.pg-out{animation:none}}
+#res h2{margin-top:4px}
 .steps{display:flex;gap:6px;overflow-x:auto;margin:8px -14px 0;padding:0 14px 2px;scrollbar-width:none;scroll-behavior:smooth}
 .steps::-webkit-scrollbar{display:none}
 .steps button{flex:0 0 auto;max-width:168px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;padding:5px 10px;border-radius:999px;background:var(--bg);color:var(--mu);transition:background .2s,color .2s,border-color .2s}
@@ -98,7 +99,7 @@ select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-
 #need{display:none;background:rgba(220,38,38,.12);border:1px solid var(--cx);border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:14px}
 #need ul{margin:6px 0 0;padding-left:18px;max-height:180px;overflow:auto}
 .oem{display:none;margin:6px 0;padding:8px 10px;border-radius:8px;background:rgba(217,119,6,.15);border-left:3px solid var(--bad);font-size:13px;font-weight:600}
-#res{display:none;scroll-margin-top:120px}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
+#res{display:none}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #pimg img.pimgreal{filter:drop-shadow(0 0 1px rgba(255,255,255,.45)) drop-shadow(0 6px 16px rgba(255,255,255,.08))}}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
 .ex{margin:6px 0}.ex .exl{font-size:12px;color:var(--mu);margin-bottom:2px}.ex img{display:block;max-width:100%;max-height:680px;width:auto;height:auto;margin:6px 0;border-radius:8px;border:1px solid var(--bd)}
 html{-webkit-text-size-adjust:100%}
@@ -124,7 +125,8 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
   <div id="warn"></div>
   <div id="need"></div>
   <div id="form"></div>
-  <div id="res"><div id="pimg"></div><div id="pcap"></div><pre id="out"></pre></div>
+  <div id="res"><div class="scount">Hasil akhir</div><h2>Hasil Check Status Device</h2><div id="pimg"></div><div id="pcap"></div><pre id="out"></pre>
+    <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang hasil</button></div></div>
 </main>
 <div class="foot">
   <button class="p" id="rep">Check Status Device</button>
@@ -1097,11 +1099,11 @@ const secOf=id=>SEC.findIndex(s=>s.i.some(x=>x.id==id));
 function stepsUI(){
   const st=$("#steps");if(!st)return;
   const V=visSecs();
-  if(!V.includes(STEP))STEP=V.find(i=>i>STEP)??V[V.length-1]??0;
+  if(STEP!==-1&&!V.includes(STEP))STEP=V.find(i=>i>STEP)??V[V.length-1]??0;
   st.innerHTML=V.map((i,k)=>{
     const s=SEC[i],req=s.i.filter(it=>REQ.includes(it)&&shown(it)),miss=req.filter(it=>level(it)<0).length;
     const cls=[i===STEP?"cur":"",req.length&&!miss?"done":"",reqTried&&miss?"miss":""].join(" ");
-    return `<button type="button" class="${cls}" data-step="${i}">${req.length&&!miss?"✓ ":""}${esc(s.h)}</button>`}).join("");
+    return `<button type="button" class="${cls}" data-step="${i}">${req.length&&!miss?"✓ ":""}${esc(s.h)}</button>`}).join("")+(RES?`<button type="button" class="${STEP===-1?"cur":"done"}" data-step="-1">📋 Hasil</button>`:"");
   const c=st.querySelector("button.cur");if(c)st.scrollLeft=c.offsetLeft-st.clientWidth/2+c.offsetWidth/2;
   V.forEach((i,k)=>{
     const sc=$("#scnt_"+i);if(sc)sc.textContent=`Bagian ${k+1} dari ${V.length}`;
@@ -1111,15 +1113,24 @@ function stepsUI(){
     nx.textContent=k<V.length-1?`Lanjut: ${SEC[V[k+1]].h} →`:"Selesai · Check Status Device";
   });
 }
+let RES=false,LAST=0,PGT=0;
 function goStep(i,anim){
-  const V=visSecs();if(!V.includes(i))return;
-  const old=STEP;STEP=i;try{localStorage.setItem(STEPKEY,String(i))}catch(e){}
-  document.querySelectorAll("#form section").forEach(x=>{const on=+x.dataset.si===STEP;x.classList.toggle("cur",on);x.classList.remove("in-r","in-l");
-    if(on&&anim&&old!==STEP){void x.offsetWidth;x.classList.add(STEP>old?"in-r":"in-l")}});
-  const intro=$("#intro");if(intro)intro.style.display=STEP===V[0]?"":"none";
-  stepsUI();
-  if(anim)window.scrollTo({top:0,behavior:"smooth"});
-  if(STEP===secOf("tipe"))requestAnimationFrame(()=>dslGo(S.tipe||DEV[DEV.length-1][0],false));
+  const V=visSecs(),toRes=i===-1;
+  if(!toRes&&!V.includes(i))return;
+  if(toRes&&!RES)return;
+  const cur=document.querySelector(".pg-on"),next=toRes?$("#res"):$("#sec_"+i);if(!next)return;
+  STEP=i;if(!toRes){LAST=i;try{localStorage.setItem(STEPKEY,String(i))}catch(e){}}
+  const show=()=>{
+    document.querySelectorAll("#form section,#res").forEach(x=>x.classList.remove("pg-on","pg-in","pg-out"));
+    next.classList.add("pg-on");if(anim){void next.offsetWidth;next.classList.add("pg-in")}
+    const intro=$("#intro");if(intro)intro.style.display=STEP===V[0]?"":"none";
+    if(toRes)$("#need").style.display="none";
+    stepsUI();
+    if(anim)window.scrollTo({top:0,behavior:"auto"});
+    if(STEP===secOf("tipe"))requestAnimationFrame(()=>dslGo(S.tipe||DEV[DEV.length-1][0],false));
+  };
+  clearTimeout(PGT);
+  if(anim&&cur&&cur!==next){cur.classList.remove("pg-in");cur.classList.add("pg-out");PGT=setTimeout(show,180)}else show();
 }
 document.addEventListener("click",e=>{
   const n=e.target.closest("[data-nav]"),c=e.target.closest("[data-step]");
@@ -1320,22 +1331,27 @@ $("#rep").onclick=async()=>{
     nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";
     b0.textContent="Masih ada "+ms.length+" poin kosong";setTimeout(()=>b0.textContent="Check Status Device",3000);
     const fid=ms[0].id=="warna"||ms[0].id=="storage"?"tipe":ms[0].id,first=$("#it_"+fid);
-    goStep(secOf(fid),true);if(first)setTimeout(()=>first.scrollIntoView({behavior:"smooth",block:"center"}),380);
-    $("#res").style.display="none";
+    goStep(secOf(fid),true);if(first)setTimeout(()=>first.scrollIntoView({behavior:"smooth",block:"center"}),420);
     return;
   }
   nb.style.display="none";
   const t=report(),o=$("#out"),b=$("#rep");
   showUnit();
-  $("#res").style.display="block";o.style.display="block";o.textContent=t;
+  o.style.display="block";o.textContent=t;
+  RES=true;goStep(-1,true);
+  const ok=await copyText(t,o);
+  b.textContent=ok?"✔ Tersalin! Tempel di WhatsApp":"Tekan lama teks, lalu Salin";
+  setTimeout(()=>b.textContent="Check Status Device",3500);
+};
+async function copyText(t,o){
   let ok=false;
   try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
   if(!ok){try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand("copy");a.remove()}catch(e){}}
   if(!ok){const r=document.createRange();r.selectNodeContents(o);const s=getSelection();s.removeAllRanges();s.addRange(r)}
-  b.textContent=ok?"✔ Tersalin! Tempel di WhatsApp":"Tekan lama teks, lalu Salin";
-  setTimeout(()=>b.textContent="Check Status Device",3500);
-  $("#res").scrollIntoView({behavior:"smooth"});
-};
+  return ok;
+}
+$("#resBack").onclick=()=>goStep(LAST,true);
+$("#resCopy").onclick=async()=>{const o=$("#out"),b=$("#resCopy"),ok=await copyText(o.textContent,o);b.textContent=ok?"✔ Tersalin":"Tekan lama teks, lalu Salin";setTimeout(()=>b.textContent="Salin ulang hasil",2500)};
 let rstT=null;
 $("#rst").onclick=()=>{
   const b=$("#rst");
@@ -1349,7 +1365,7 @@ $("#rst").onclick=()=>{
   S={};N={};reqTried=false;STEP=0;$("#need").style.display="none";
   try{localStorage.removeItem(KEY)}catch(e){}
   build();refresh();
-  const o=$("#out");o.style.display="none";o.textContent="";$("#res").style.display="none";
+  const o=$("#out");o.style.display="none";o.textContent="";RES=false;goStep(0,true);
   window.scrollTo({top:0,behavior:"smooth"});
 };
 
