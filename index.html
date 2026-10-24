@@ -28,6 +28,24 @@ button{font:inherit;border:1px solid var(--bd);background:var(--card);color:var(
 button.p{background:var(--ac);color:#fff;border-color:var(--ac)}
 main{max-width:720px;margin:0 auto;padding:12px}
 section{margin-bottom:16px}
+#form section{display:none}
+#form section.cur{display:block}
+#form section.in-r{animation:secR .32s cubic-bezier(.2,.7,.2,1)}
+#form section.in-l{animation:secL .32s cubic-bezier(.2,.7,.2,1)}
+@keyframes secR{from{opacity:0;transform:translateX(32px)}to{opacity:1;transform:none}}
+@keyframes secL{from{opacity:0;transform:translateX(-32px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){#form section.in-r,#form section.in-l{animation:none}}
+.steps{display:flex;gap:6px;overflow-x:auto;margin:8px -14px 0;padding:0 14px 2px;scrollbar-width:none;scroll-behavior:smooth}
+.steps::-webkit-scrollbar{display:none}
+.steps button{flex:0 0 auto;max-width:168px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;padding:5px 10px;border-radius:999px;background:var(--bg);color:var(--mu);transition:background .2s,color .2s,border-color .2s}
+.steps button.cur{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.steps button.done:not(.cur){color:var(--ok);border-color:var(--ok)}
+.steps button.miss:not(.cur){color:var(--cx);border-color:var(--cx)}
+.snav{display:flex;gap:8px;margin:14px 0 4px}
+.snav button{flex:1;padding:11px 10px;font-weight:600}
+.snav .prev{flex:0 0 auto}
+.snav .next{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scount{font-size:12px;color:var(--mu);margin:0 2px 6px}
 h2{font-size:15px;margin:14px 2px 8px;color:var(--ac)}
 .item{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:8px}
 .item.ok{border-left-color:var(--ok)}.item.bad{border-left-color:var(--bad)}.item.cx{border-left-color:var(--cx)}
@@ -98,9 +116,10 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
     <div class="row"><span class="timer" id="tm">00:00</span><button id="ts">Timer</button><button id="tr">↺</button></div></div>
   <div class="bar"><i id="pb"></i></div>
   <div class="row" style="font-size:12px;color:var(--mu);margin-top:4px"><span id="pt">0 / 0 terisi</span><span id="ofl"></span></div>
+  <div class="steps" id="steps"></div>
 </header>
 <main>
-  <div class="intro"><b>Form checklist ini dibuat untuk menghindari / meminimalisir adanya penipuan dalam bentuk unit yang tidak sesuai.</b>
+  <div class="intro" id="intro"><b>Form checklist ini dibuat untuk menghindari / meminimalisir adanya penipuan dalam bentuk unit yang tidak sesuai.</b>
     <div class="d">Catatan: tulisan abu-abu kecil di bawah judul setiap poin adalah cara melihat / mengecek poin tersebut. Kotak biru berisi alasan kenapa poin itu penting dicek. Semua pilihan wajib diisi sebelum menekan Check Status Device.</div></div>
   <div id="warn"></div>
   <div id="need"></div>
@@ -1069,10 +1088,52 @@ function initDSL(){
   document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
   requestAnimationFrame(()=>{dslGo(S.tipe||DEV[DEV.length-1][0],false);dslSetPhoto()});
 }
+// ===== Per bagian (wizard): satu bagian tampil, pindah dengan animasi geser =====
+const STEPKEY=KEY+"_step";
+let STEP=0;try{STEP=+localStorage.getItem(STEPKEY)||0}catch(e){}
+const secVis=i=>SEC[i].i.some(shown);
+const visSecs=()=>SEC.map((s,i)=>i).filter(secVis);
+const secOf=id=>SEC.findIndex(s=>s.i.some(x=>x.id==id));
+function stepsUI(){
+  const st=$("#steps");if(!st)return;
+  const V=visSecs();
+  if(!V.includes(STEP))STEP=V.find(i=>i>STEP)??V[V.length-1]??0;
+  st.innerHTML=V.map((i,k)=>{
+    const s=SEC[i],req=s.i.filter(it=>REQ.includes(it)&&shown(it)),miss=req.filter(it=>level(it)<0).length;
+    const cls=[i===STEP?"cur":"",req.length&&!miss?"done":"",reqTried&&miss?"miss":""].join(" ");
+    return `<button type="button" class="${cls}" data-step="${i}">${req.length&&!miss?"✓ ":""}${esc(s.h)}</button>`}).join("");
+  const c=st.querySelector("button.cur");if(c)st.scrollLeft=c.offsetLeft-st.clientWidth/2+c.offsetWidth/2;
+  V.forEach((i,k)=>{
+    const sc=$("#scnt_"+i);if(sc)sc.textContent=`Bagian ${k+1} dari ${V.length}`;
+    const sec=$("#sec_"+i);if(!sec)return;
+    const pv=sec.querySelector(".prev"),nx=sec.querySelector(".next");
+    pv.style.display=k?"":"none";
+    nx.textContent=k<V.length-1?`Lanjut: ${SEC[V[k+1]].h} →`:"Selesai · Check Status Device";
+  });
+}
+function goStep(i,anim){
+  const V=visSecs();if(!V.includes(i))return;
+  const old=STEP;STEP=i;try{localStorage.setItem(STEPKEY,String(i))}catch(e){}
+  document.querySelectorAll("#form section").forEach(x=>{const on=+x.dataset.si===STEP;x.classList.toggle("cur",on);x.classList.remove("in-r","in-l");
+    if(on&&anim&&old!==STEP){void x.offsetWidth;x.classList.add(STEP>old?"in-r":"in-l")}});
+  const intro=$("#intro");if(intro)intro.style.display=STEP===V[0]?"":"none";
+  stepsUI();
+  if(anim)window.scrollTo({top:0,behavior:"smooth"});
+  if(STEP===secOf("tipe"))requestAnimationFrame(()=>dslGo(S.tipe||DEV[DEV.length-1][0],false));
+}
+document.addEventListener("click",e=>{
+  const n=e.target.closest("[data-nav]"),c=e.target.closest("[data-step]");
+  if(c){goStep(+c.dataset.step,true);return}
+  if(!n)return;
+  const V=visSecs(),k=V.indexOf(STEP),d=+n.dataset.nav;
+  if(d>0&&k===V.length-1){$("#rep").click();return}
+  const t=V[k+d];if(t!=null)goStep(t,true);
+});
 function build(){
   let h="";
   for(const s of SEC){
-    h+=`<section><h2>${hd(s)}</h2>${s.d?`<div class="d">${s.d}</div>`:""}`;
+    const si=SEC.indexOf(s);
+    h+=`<section id="sec_${si}" data-si="${si}"><div class="scount" id="scnt_${si}"></div><h2>${esc(s.h)}</h2>${s.d?`<div class="d">${s.d}</div>`:""}`;
     for(const it of s.i){
       const A=it.alt||{},ak=Object.keys(A),un=f=>ak.filter(k=>A[k][f]).length?` data-unless="${ak.filter(k=>A[k][f]).join(" ")}"`:"";
       h+=`<div class="item" id="it_${it.id}"><div class="t">${it.t}</div>${it.d?`<div class="d"${un("d")}>${it.d}</div>`:""}`+ak.map(k=>A[k].d?`<div class="d" data-when="${k}">${A[k].d}</div>`:"").join("");
@@ -1098,10 +1159,11 @@ function build(){
       else h+=`<textarea data-id="${it.id}" placeholder="Tulis di sini… (kosongkan jika tidak ada)">${esc(S[it.id]||"")}</textarea>`;
       h+=`</div>`;
     }
-    h+=`</section>`;
+    h+=`<div class="snav"><button type="button" class="prev" data-nav="-1">← Sebelumnya</button><button type="button" class="next p" data-nav="1">Lanjut →</button></div></section>`;
   }
   $("#form").innerHTML=h;
   renderColors();initDSL();
+  goStep(STEP,false);
 }
 
 function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
@@ -1135,6 +1197,7 @@ function refresh(){
   document.querySelectorAll(".ex").forEach(e=>{e.style.display=[...e.querySelectorAll("img")].some(i=>i.style.display!=="none")?"":"none"});
   for(const k in DYN){const e=$("#dyn_"+k);if(e){const t=DYN[k]();e.textContent=t;e.style.display=t?"block":"none"}}
   for(const k of Object.keys(AUTO).concat("cyc")){const e=$("#auto_"+k);if(e)e.style.display=(k=="cyc"?cycNA():autoOn(k)&&hasV(k,AUTO[k].v))?"block":"none"}
+  if(typeof stepsUI==="function"&&$("#steps"))stepsUI();
   $("#pb").style.width=(done/total*100)+"%";
   $("#pt").textContent=done+" / "+total+" terisi";
   const w=$("#warn");
@@ -1256,7 +1319,8 @@ $("#rep").onclick=async()=>{
     nb.style.display="block";
     nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";
     b0.textContent="Masih ada "+ms.length+" poin kosong";setTimeout(()=>b0.textContent="Check Status Device",3000);
-    const first=$("#it_"+(ms[0].id=="warna"||ms[0].id=="storage"?"tipe":ms[0].id));if(first)first.scrollIntoView({behavior:"smooth",block:"center"});
+    const fid=ms[0].id=="warna"||ms[0].id=="storage"?"tipe":ms[0].id,first=$("#it_"+fid);
+    goStep(secOf(fid),true);if(first)setTimeout(()=>first.scrollIntoView({behavior:"smooth",block:"center"}),380);
     $("#res").style.display="none";
     return;
   }
@@ -1282,7 +1346,7 @@ $("#rst").onclick=()=>{
   }
   clearTimeout(rstT);rstT=null;
   b.textContent="Reset Form";b.style.background="";b.style.color="";
-  S={};N={};reqTried=false;$("#need").style.display="none";
+  S={};N={};reqTried=false;STEP=0;$("#need").style.display="none";
   try{localStorage.removeItem(KEY)}catch(e){}
   build();refresh();
   const o=$("#out");o.style.display="none";o.textContent="";$("#res").style.display="none";
