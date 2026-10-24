@@ -36,6 +36,15 @@ section{margin-bottom:16px}
 @keyframes pgOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px)}}
 @media(prefers-reduced-motion:reduce){.pg-in,.pg-out{animation:none}}
 #res h2{margin-top:4px}
+/* Gambar muncul halus: transparan sampai selesai dimuat, lalu fade in; diulang setiap kali gambar ditampilkan lagi */
+.ex img,#pimg img,.dcard .dimg img{opacity:0;transition:opacity .45s ease,transform .45s ease}
+.ex img{transform:translateY(6px) scale(.99)}
+.ex img.ld,#pimg img.ld,.dcard .dimg img.ld{opacity:1;transform:none}
+.ex img.ld{animation:imgIn .45s ease both}
+#pimg img.ld,#pimg svg{animation:imgIn .55s ease both}
+.dcard .dimg img.ld.swap{opacity:0;transform:scale(.9)}
+@keyframes imgIn{from{opacity:0;transform:translateY(6px) scale(.99)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.ex img,#pimg img,.dcard .dimg img{transition:none;animation:none!important}}
 .steps{display:flex;gap:6px;overflow-x:auto;margin:8px -14px 0;padding:0 14px 2px;scrollbar-width:none;scroll-behavior:smooth}
 .steps::-webkit-scrollbar{display:none}
 .steps button{flex:0 0 auto;max-width:168px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;padding:5px 10px;border-radius:999px;background:var(--bg);color:var(--mu);transition:background .2s,color .2s,border-color .2s}
@@ -1090,6 +1099,11 @@ function initDSL(){
   document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
   requestAnimationFrame(()=>{dslGo(S.tipe||DEV[DEV.length-1][0],false);dslSetPhoto()});
 }
+// Tandai gambar yang sudah dimuat supaya muncul dengan fade in
+const markImg=im=>{if(im&&im.tagName==="IMG")im.classList.add("ld")};
+document.addEventListener("load",e=>markImg(e.target),true);
+document.addEventListener("error",e=>markImg(e.target),true);
+const markLoaded=()=>document.querySelectorAll(".ex img,#pimg img,.dcard .dimg img").forEach(im=>{if(im.complete)markImg(im)});
 // ===== Per bagian (wizard): satu bagian tampil, pindah dengan animasi geser =====
 const STEPKEY=KEY+"_step";
 let STEP=0;try{STEP=+localStorage.getItem(STEPKEY)||0}catch(e){}
@@ -1174,7 +1188,7 @@ function build(){
   }
   $("#form").innerHTML=h;
   renderColors();initDSL();
-  goStep(STEP,false);
+  goStep(STEP,false);markLoaded();
 }
 
 function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
@@ -1272,7 +1286,7 @@ function showUnit(){
   if(!S.tipe||!DM[S.tipe])return;
   box.innerHTML=phone2D(S.tipe,S.warna);
   if(S.warna){const im=new Image();im.alt=info;im.className="pimgreal";
-    im.onload=()=>{box.innerHTML="";box.appendChild(im)};
+    im.onload=()=>{box.innerHTML="";im.classList.add("ld");box.appendChild(im)};
     const url="img/produk/"+slug(PHOTO_AS[S.tipe]||S.tipe)+"-"+slug(S.warna)+".png?v="+FOTO_V;
     // Kalau gagal (misalnya HP masih menyimpan jawaban "tidak ditemukan" yang lama), coba sekali lagi dengan alamat baru
     im.onerror=()=>{if(!im.dataset.retry&&navigator.onLine!==false){im.dataset.retry="1";im.src=url+"&r="+Date.now()}};
