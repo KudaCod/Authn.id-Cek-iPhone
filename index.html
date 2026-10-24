@@ -20,7 +20,7 @@ html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding-bottom:90px}
 header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--bd);padding:10px 14px}
 .row{display:flex;align-items:center;gap:10px;justify-content:space-between}
-h1{font-size:17px;margin:0}
+h1{font-size:17px;margin:0;line-height:1.15;white-space:nowrap}h1 small{display:block;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--mu)}
 .bar{height:6px;background:var(--bd);border-radius:9px;margin-top:8px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .2s}
 .timer{font-variant-numeric:tabular-nums;font-weight:700;font-size:16px}
@@ -71,7 +71,8 @@ h2{font-size:15px;margin:14px 2px 8px;color:var(--ac)}
 input[type=text],textarea{width:100%;margin-top:6px;padding:8px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
 textarea{min-height:64px;resize:vertical}
 #warn{display:none;background:var(--cx);color:#fff;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-weight:600}
-#warn ul{margin:6px 0 0;padding-left:18px;font-weight:400}
+#warn ul{margin:6px 0 0;padding-left:18px;font-weight:400}#warn a,#need a{color:inherit;text-decoration:underline;text-underline-offset:3px;font-weight:600;cursor:pointer;display:inline-block;padding:2px 0}#warn a::after,#need a::after{content:" →";text-decoration:none}
+.item.flash{animation:flash 1.6s ease}@keyframes flash{0%,35%{box-shadow:0 0 0 3px var(--cx)}100%{box-shadow:0 0 0 0 transparent}}@media(prefers-reduced-motion:reduce){.item.flash{animation:none;box-shadow:0 0 0 3px var(--cx)}}
 .foot{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--bd);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));display:flex;gap:8px;justify-content:center}
 .foot button{flex:1;max-width:240px;padding:10px}
 pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:13px;display:none}
@@ -123,7 +124,7 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
 </script>
 <noscript><p style="padding:16px">JavaScript harus aktif. Buka lewat Safari/Chrome (alamat github.io), bukan dari pratinjau file di Files/WhatsApp.</p></noscript>
 <header>
-  <div class="row"><h1>📱 Authn.id Cek iPhone</h1>
+  <div class="row"><h1><small>AUTHN.ID</small>📱 Cek iPhone</h1>
     <div class="row"><span class="timer" id="tm">00:00</span><button id="ts">Timer</button><button id="tr">↺</button></div></div>
   <div class="bar"><i id="pb"></i></div>
   <div class="row" style="font-size:12px;color:var(--mu);margin-top:4px"><span id="pt">0 / 0 terisi</span><span id="ofl"></span></div>
@@ -1721,7 +1722,7 @@ function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
 const gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
 const nm=i=>i.s||i.t;
 function refresh(){
-  let done=0,cx=[];
+  let done=0,cx=[],cxi=[];
   let total=0;
   for(const it of ALL){
     const l=level(it),el=$("#it_"+it.id);
@@ -1731,11 +1732,11 @@ function refresh(){
     el.classList.remove("ok","bad","cx","miss");
     if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))(it.id=="warna"||it.id=="storage"?$("#it_tipe"):el).classList.add("miss");
     if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
-    if(l==2)cx.push(nm(it));
+    if(l==2){cx.push(nm(it));cxi.push(it.id)}
   }
   if(typeof missing==="function"&&reqTried){const ms=missing(),nb=$("#need");
     if(!ms.length)nb.style.display="none";
-    else nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin yang belum diisi</b>. Semua poin wajib diisi sebelum menekan Check Status Device. Poin yang belum diisi ditandai dengan warna merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";}
+    else nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin yang belum diisi</b>. Semua poin wajib diisi sebelum menekan Check Status Device. Poin yang belum diisi ditandai dengan warna merah:<ul>"+ms.map(i=>{const g=i.id=="warna"||i.id=="storage"?"tipe":i.id;return "<li><a href=\"#it_"+g+"\" data-go=\""+g+"\">"+esc(nm(i))+"</a></li>"}).join("")+"</ul>";}
   const on=k=>VIS[k]?VIS[k](S.tipe):true;
   document.querySelectorAll("[data-when]").forEach(e=>{e.style.display=on(e.dataset.when)?"":"none"});
   document.querySelectorAll("[data-unless]").forEach(e=>{e.style.display=e.dataset.unless.split(" ").some(on)?"none":""});
@@ -1746,7 +1747,7 @@ function refresh(){
   $("#pb").style.width=(done/total*100)+"%";
   $("#pt").textContent=done+" / "+total+" terisi";
   const w=$("#warn");
-  if(cx.length){w.style.display="block";w.innerHTML="⚠️ PERTIMBANGKAN KEMBALI SEBELUM MEMBELI — ditemukan minus serius:<ul>"+cx.map(t=>"<li>"+t+"</li>").join("")+"</ul><div style=\"font-weight:400;font-size:13px;margin-top:4px\">Penjelasannya ada di bawah poin tersebut.</div>"}
+  if(cx.length){w.style.display="block";w.innerHTML="⚠️ PERTIMBANGKAN KEMBALI SEBELUM MEMBELI — ditemukan minus serius:<ul>"+cx.map((t,k)=>"<li><a href=\"#it_"+cxi[k]+"\" data-go=\""+cxi[k]+"\">"+t+"</a></li>").join("")+"</ul><div style=\"font-weight:400;font-size:13px;margin-top:4px\">Ketuk poin di atas untuk melihat penjelasannya.</div>"}
   else w.style.display="none";
 }
 document.addEventListener("input",e=>{
@@ -1859,12 +1860,20 @@ function report(){
 var REQ=ALL.filter(i=>i.k=="r"||i.k=="m"||i.k=="sel");
 var missing=()=>REQ.filter(i=>shown(i)&&level(i)<0);
 var reqTried=false;
+function goItem(id){
+  const sec=secOf(id);if(sec<0)return;
+  const go=()=>{const e=$("#it_"+id);if(!e)return;const hd=document.querySelector("header"),off=(hd&&getComputedStyle(hd).position!="static"?hd.offsetHeight:0)+10;
+    window.scrollTo({top:e.getBoundingClientRect().top+window.scrollY-off,behavior:"smooth"});
+    e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1700)};
+  if(STEP===sec)go();else{goStep(sec,true);setTimeout(go,420)}
+}
+for(const b of ["#warn","#need"])$(b).addEventListener("click",ev=>{const a=ev.target.closest("[data-go]");if(!a)return;ev.preventDefault();goItem(a.dataset.go)});
 $("#rep").onclick=async()=>{
   const ms=missing(),b0=$("#rep"),nb=$("#need");
   if(ms.length){
     reqTried=true;refresh();
     nb.style.display="block";
-    nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin yang belum diisi</b>. Semua poin wajib diisi sebelum menekan Check Status Device. Poin yang belum diisi ditandai dengan warna merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";
+    nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin yang belum diisi</b>. Semua poin wajib diisi sebelum menekan Check Status Device. Poin yang belum diisi ditandai dengan warna merah:<ul>"+ms.map(i=>{const g=i.id=="warna"||i.id=="storage"?"tipe":i.id;return "<li><a href=\"#it_"+g+"\" data-go=\""+g+"\">"+esc(nm(i))+"</a></li>"}).join("")+"</ul>";
     b0.textContent="Masih ada "+ms.length+" poin kosong";setTimeout(()=>b0.textContent="Check Status Device",3000);
     const fid=ms[0].id=="warna"||ms[0].id=="storage"?"tipe":ms[0].id,first=$("#it_"+fid);
     goStep(secOf(fid),true);if(first)setTimeout(()=>first.scrollIntoView({behavior:"smooth",block:"center"}),420);
