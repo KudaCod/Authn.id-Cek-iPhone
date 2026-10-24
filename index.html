@@ -1323,18 +1323,6 @@ const SEC=[
 "ph": "cth: 31 Desember 2026"
 }
 ]
-},
-{
-"h": "Minus Lain",
-"i": [
-{
-"id": "minus2",
-"t": "Minus lain di luar deskripsi penjual",
-"k": "x",
-"s": "Minus lain",
-"d": "Catat temuan di sini, lalu sampaikan kepada penjual jika kondisi unit tidak sesuai dengan deskripsi."
-}
-]
 }
 ];
 
@@ -1812,7 +1800,7 @@ function report(){
   const choice=ALL.filter(i=>(i.k=="r"||i.k=="m")&&!i.ns&&shown(i));
   const ans=choice.filter(i=>level(i)>=0), blank=choice.length-ans.length;
   const cx=ans.filter(i=>level(i)==2), pb=ans.filter(i=>level(i)==1);
-  const extra=(S.minus2||"").trim(), oem=OEMTXT();
+  const extra="", oem=OEMTXT();
   const sc=ans.filter(i=>!isNA(i));
   const pts=sc.reduce((a,i)=>a+(level(i)==0?1:level(i)==1?0.5:0),0);
   const pct=sc.length?Math.round(pts/sc.length*100):0;
@@ -1823,7 +1811,6 @@ function report(){
   if(cx.length)L.push("","⛔ *MINUS SERIUS*: "+cx.map(i=>nm(i)+" ("+gv(i)+")").join("; "));
   if(pb.length)L.push("","⚠️ *PERLU PERTIMBANGAN*: "+pb.map(i=>nm(i)+" ("+gv(i)+")").join("; "));
   if(oem)L.push("",oem);
-  if(extra)L.push("","📝 *Minus lain*: "+extra);
   const tek=cx.concat(pb).flatMap(i=>eduList(i.id).map(x=>"• *"+nm(i)+" ("+x.v+")*: "+x.t));
   if(tek.length)L.push("","🔧 *PENJELASAN MINUS*",...tek);
   if(cx.length||pb.length||extra||oem){
