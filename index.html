@@ -188,18 +188,6 @@ const SEC=[
 ]
 },
 {
-"h": "Minus di Deskripsi",
-"i": [
-{
-"id": "minus",
-"t": "Minus yang disebutkan penjual",
-"k": "x",
-"s": "Deskripsi penjual",
-"d": "Salin deskripsi atau daftar minus dari penjual ke kolom ini, lalu cocokkan satu per satu dengan kondisi unit saat pengecekan."
-}
-]
-},
-{
 "h": "Asal Unit",
 "skip": 1,
 "i": [
@@ -1626,7 +1614,7 @@ document.addEventListener("load",e=>markImg(e.target),true);
 document.addEventListener("error",e=>markImg(e.target),true);
 const markLoaded=()=>document.querySelectorAll(".ex img,#pimg img,.dcard .dimg img").forEach(im=>{if(im.complete)markImg(im)});
 // ===== Per bagian (wizard): satu bagian tampil, pindah dengan animasi geser =====
-const STEPKEY=KEY+"_step";
+const STEPKEY=KEY+"_step2";
 let STEP=0;try{STEP=+localStorage.getItem(STEPKEY)||0}catch(e){}
 const secVis=i=>SEC[i].i.some(shown);
 const visSecs=()=>SEC.map((s,i)=>i).filter(secVis);
