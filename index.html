@@ -54,6 +54,20 @@ pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);borde
 .why ul{margin:4px 0 0;padding-left:18px}.why li{margin:2px 0}
 details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-size:13px}
 .vb{display:flex;gap:6px;justify-content:center;margin:4px 0}.vb button{padding:6px 10px;font-size:13px}
+.dsl{position:relative;margin:6px -12px 0}
+.dtrack{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px calc(50% - 62px) 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.dtrack::-webkit-scrollbar{display:none}
+.dcard{flex:0 0 124px;scroll-snap-align:center;border:0;background:none;padding:0;margin:0;color:var(--tx);font:inherit;cursor:pointer;transform-origin:50% 60%;transition:transform .18s ease-out,opacity .18s ease-out;will-change:transform}
+.dcard .dimg{height:150px;display:flex;align-items:flex-end;justify-content:center}
+.dcard img{max-height:150px;max-width:112px;height:auto;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.16))}
+.dcard svg{height:140px;width:auto}
+.dcard .dlb{display:block;font-size:12px;margin-top:4px;color:var(--mu);white-space:nowrap}
+.dcard.sel .dlb{color:var(--ac);font-weight:700}
+.dcard .dother{height:150px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--mu)}
+.dsl::before,.dsl::after{content:"";position:absolute;top:0;bottom:22px;width:28px;z-index:1;pointer-events:none}
+.dsl::before{left:0;background:linear-gradient(90deg,var(--card),transparent)}.dsl::after{right:0;background:linear-gradient(270deg,var(--card),transparent)}
+.dhint{text-align:center;font-size:12px;color:var(--mu);margin-top:2px}
+.dname{text-align:center;font-weight:700;font-size:16px;margin-top:2px;min-height:22px;transition:opacity .15s}
 select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:16px}
 .item.miss{border-color:var(--cx);border-left-color:var(--cx);box-shadow:0 0 0 1px var(--cx)}
 .item.miss .t::after{content:" — wajib dipilih";color:var(--cx);font-size:12px;font-weight:600}
@@ -978,6 +992,54 @@ function renderColors(){
   const ss=storageFor();
   st.innerHTML=ss.length?ss.map(o=>`<label><input type="radio" name="storage" data-id="storage" value="${esc(o)}" ${S.storage===o?"checked":""}><span>${esc(o)}</span></label>`).join(""):'<span class="d">Pilih tipe device dulu.</span>';
 }
+// ===== Slider pilihan tipe device: geser, kartu di tengah membesar, lalu terpilih otomatis =====
+function dslPic(t){
+  const m=DM[t];if(!m)return '<div class="dother">?</div>';
+  if(t==="iPhone SE (2016)")return phone2D(t,m.cols[0]);
+  return `<img loading="lazy" alt="${esc(t)}" src="img/produk/${slug(PHOTO_AS[t]||t)}-${slug(m.cols[0])}.png?v=${FOTO_V}" onerror="this.outerHTML=phone2D('${t}','${m.cols[0]}')">`;
+}
+function dslHTML(){
+  const L=DEV.map(d=>d[0]).concat("Lainnya");
+  return `<div class="dsl"><div class="dtrack" id="dtrack">`+L.map(t=>`<button type="button" class="dcard" data-t="${esc(t)}"><div class="dimg">${dslPic(t)}</div><span class="dlb">${esc(t.replace("iPhone ",""))}</span></button>`).join("")+
+    `</div></div><div class="dname" id="dname"></div><div class="dhint">Geser untuk memilih tipe, atau pilih dari daftar di bawah</div>`;
+}
+let dslUser=false,dslTimer=0,dslProg=false;
+function dslCenter(){
+  const tr=$("#dtrack");if(!tr)return null;
+  const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,bd=1e9;
+  tr.querySelectorAll(".dcard").forEach(c=>{
+    const cx=c.offsetLeft+c.offsetWidth/2,dist=Math.abs(cx-mid),k=Math.min(dist/(c.offsetWidth*1.6),1);
+    c.style.transform=`scale(${(1-0.32*k).toFixed(3)})`;c.style.opacity=(1-0.6*k).toFixed(2);
+    if(dist<bd){bd=dist;best=c}
+  });
+  const nm=$("#dname");if(nm&&best){nm.textContent=best.dataset.t;nm.style.color=best.dataset.t===S.tipe?"":"var(--mu)"}
+  return best;
+}
+function dslPick(t){
+  if(!t||S.tipe===t)return;
+  const sel=document.querySelector('select[data-id=tipe]');sel.value=t;sel.dispatchEvent(new Event("input",{bubbles:true}));
+}
+function dslGo(t,smooth){
+  const tr=$("#dtrack");if(!tr)return;
+  const c=[...tr.querySelectorAll(".dcard")].find(x=>x.dataset.t===t);
+  tr.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",x.dataset.t===S.tipe));
+  if(!c){dslCenter();return}
+  dslProg=true;tr.scrollTo({left:c.offsetLeft+c.offsetWidth/2-tr.clientWidth/2,behavior:smooth?"smooth":"auto"});
+  setTimeout(()=>{dslProg=false;dslCenter()},smooth?450:30);
+}
+function initDSL(){
+  const tr=$("#dtrack");if(!tr)return;
+  const user=()=>{dslUser=true};
+  ["pointerdown","touchstart","wheel","keydown"].forEach(ev=>tr.addEventListener(ev,user,{passive:true}));
+  tr.addEventListener("scroll",()=>{
+    requestAnimationFrame(dslCenter);
+    clearTimeout(dslTimer);
+    dslTimer=setTimeout(()=>{if(dslProg||!dslUser)return;const c=dslCenter();if(c)dslPick(c.dataset.t);dslUser=false;dslCenter()},180);
+  },{passive:true});
+  tr.addEventListener("click",e=>{const c=e.target.closest(".dcard");if(!c)return;dslUser=false;dslGo(c.dataset.t,true);dslPick(c.dataset.t)});
+  document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
+  requestAnimationFrame(()=>dslGo(S.tipe||DEV[DEV.length-1][0],false));
+}
 function build(){
   let h="";
   for(const s of SEC){
@@ -992,6 +1054,7 @@ function build(){
       if(DYN[it.id])h+=`<div class="oem" id="dyn_${it.id}"></div>`;
       if(AUTO[it.id]||it.id=="cyc")h+=`<div class="d" id="auto_${it.id}" style="display:none;color:var(--ok);font-weight:600">${it.id=="cyc"?"✔ Dilewati otomatis: menu Cycle Count hanya ada di iPhone 15 ke atas.":"✔ Terisi otomatis: seri ini tidak memiliki fitur ini. Ubah jika tipe yang dipilih salah."}</div>`;
       if(it.k=="sel"){
+        if(it.id=="tipe")h+=dslHTML();
         h+=`<select data-id="${it.id}"><option value="">— pilih tipe —</option>`+DEV.map(d=>`<option ${S[it.id]===d[0]?"selected":""}>${esc(d[0])}</option>`).join("")+`<option ${S[it.id]==="Lainnya"?"selected":""}>Lainnya</option></select>`;
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional, cth: tipe lain)" value="${esc(N[it.id]||"")}">`;
       }else if(it.k=="r"||it.k=="m"){
@@ -1009,7 +1072,7 @@ function build(){
     h+=`</section>`;
   }
   $("#form").innerHTML=h;
-  renderColors();
+  renderColors();initDSL();
 }
 
 function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
@@ -1057,7 +1120,7 @@ document.addEventListener("input",e=>{
     if(it.k=="r")S[it.id]=t.value;
     else if(it.k=="sel"){
       S[it.id]=t.value;
-      if(it.id=="tipe"){if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto()}
+      if(it.id=="tipe"){document.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",x.dataset.t===S.tipe));if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto()}
     }else if(it.k=="m"){
       let a=S[it.id]||[];
       const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0||v.indexOf("Tidak ada di seri")==0||v.indexOf("Tidak ada TrueDepth")==0||v.indexOf("Tidak ada box")==0;
