@@ -81,6 +81,23 @@ pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);borde
 .intro .d{margin:6px 0 0}
 .why{margin:6px 0 4px;padding:8px 10px;border-radius:8px;background:rgba(37,99,235,.10);border-left:3px solid var(--ac);font-size:13px}
 .why ul{margin:4px 0 0;padding-left:18px}.why li{margin:2px 0}
+/* Keterangan (Kenapa penting + penjelasan minus) tampil sebagai pop up setelah jawaban dipilih */
+.item>.why,.item>.oem{display:none!important}
+.info{display:none;margin-top:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--bd);background:var(--bg);color:var(--ac);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.info.on{display:inline-block;animation:infoIn .3s ease}
+@keyframes infoIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+#pop{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;padding:12px;background:rgba(0,0,0,0);transition:background .25s ease}
+#pop.show{display:flex}#pop.on{background:rgba(0,0,0,.45)}
+#pop .pc{width:100%;max-width:520px;max-height:82vh;overflow:auto;background:var(--card);color:var(--tx);border-radius:16px;padding:16px 16px 12px;box-shadow:0 10px 40px rgba(0,0,0,.25);opacity:0;transform:translateY(16px);transition:opacity .25s ease,transform .25s ease;-webkit-overflow-scrolling:touch}
+#pop.on .pc{opacity:1;transform:none}
+#pop .pk{font-size:12px;font-weight:600;color:var(--mu);letter-spacing:.02em}
+#pop h3{margin:2px 0 6px;font-size:17px;line-height:1.3}
+#pop .pa{display:inline-block;margin-bottom:8px;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:600;background:rgba(22,163,74,.12);color:var(--ok)}
+#pop .pa.b{background:rgba(217,119,6,.15);color:var(--bad)}#pop .pa.c{background:rgba(220,38,38,.14);color:var(--cx)}
+#pop .why,#pop .oem{display:block;margin:8px 0}
+#pop .pb{display:block;width:100%;margin-top:10px;padding:12px;border:0;border-radius:10px;background:var(--ac);color:#fff;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+@media(min-width:600px){#pop{align-items:center}}
+@media(prefers-reduced-motion:reduce){#pop,#pop .pc,.info.on{transition:none;animation:none}}
 details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-size:13px}
 .vb{display:flex;gap:6px;justify-content:center;margin:4px 0}.vb button{padding:6px 10px;font-size:13px}
 .dsl{position:relative;margin:6px -12px 0}
@@ -132,8 +149,9 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
 </header>
 <main>
   <div class="intro" id="intro"><b>Checklist ini membantu memastikan kondisi iPhone sesuai dengan deskripsi penjual, sehingga risiko penipuan dan unit yang tidak sesuai dapat diminimalkan.</b>
-    <div class="d">Petunjuk: teks abu-abu di bawah judul setiap poin menjelaskan cara pengecekan, sedangkan kotak biru menjelaskan alasan poin tersebut perlu dicek. Semua poin wajib diisi sebelum menekan Check Status Device.</div></div>
+    <div class="d">Petunjuk: teks abu-abu di bawah judul setiap poin menjelaskan cara pengecekan. Setelah jawaban dipilih, keterangan dan alasan pengecekan akan muncul dalam pop up, dan dapat dibuka kembali melalui tombol ⓘ Lihat keterangan. Semua poin wajib diisi sebelum menekan Check Status Device.</div></div>
   <div id="warn"></div>
+  <div id="pop" role="dialog" aria-modal="true" aria-labelledby="popT"><div class="pc"><div class="pk">Keterangan</div><h3 id="popT"></h3><div id="popA"></div><div id="popB"></div><button type="button" class="pb" id="popX">Mengerti</button></div></div>
   <div id="need"></div>
   <div id="form"></div>
   <div id="res"><div class="scount">Hasil akhir</div><h2>Hasil Check Status Device</h2><div id="pimg"></div><div id="pcap"></div><pre id="out"></pre>
@@ -508,7 +526,7 @@ const SEC=[
 },
 {
 "h": "Pengecekan Fungsi & Pengaturan (Settings)",
-"d": "Buka Pengaturan (Settings), lalu periksa setiap poin di bawah secara berurutan. Teks abu-abu menjelaskan cara pengecekan, sedangkan kotak biru menjelaskan alasan poin tersebut perlu dicek.",
+"d": "Buka Pengaturan (Settings), lalu periksa setiap poin di bawah secara berurutan. Teks abu-abu menjelaskan cara pengecekan; keterangan lengkap muncul setelah jawaban dipilih.",
 "i": [
 {
 "id": "wifi",
@@ -1702,7 +1720,7 @@ function build(){
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional)" value="${esc(N[it.id]||"")}">`;
       }else if(it.k=="t")h+=`<input type="text" data-id="${it.id}" placeholder="${it.ph||""}" value="${esc(S[it.id]||"")}">`;
       else h+=`<textarea data-id="${it.id}" placeholder="Tulis di sini… (kosongkan jika tidak ada)">${esc(S[it.id]||"")}</textarea>`;
-      h+=`</div>`;
+      h+=`<button type="button" class="info" id="info_${it.id}" data-info="${it.id}">ⓘ Lihat keterangan</button></div>`;
     }
     h+=`<div class="snav"><button type="button" class="prev" data-nav="-1">← Sebelumnya</button><button type="button" class="next p" data-nav="1">Lanjut →</button></div></section>`;
   }
@@ -1720,6 +1738,26 @@ function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
 }
 const gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
 const nm=i=>i.s||i.t;
+// ===== Pop up keterangan =====
+const visEl=e=>e&&e.style.display!=="none";
+function infoHTML(id){
+  const box=$("#it_"+id);if(!box)return "";
+  let h=[...box.querySelectorAll(":scope>.why")].filter(visEl).map(e=>`<div class="why">${e.innerHTML}</div>`).join("");
+  const d=$("#dyn_"+id);if(d&&d._t)h+=`<div class="oem"><div style="margin-bottom:4px">Penjelasan:</div><div style="font-weight:400">${d._t}</div></div>`;
+  return h;
+}
+const answered=it=>{const v=S[it.id];return Array.isArray(v)?v.length>0:!!(v&&String(v).trim())};
+let POPT=0;
+function openInfo(id){
+  const it=ALL.find(x=>x.id==id),body=infoHTML(id);if(!it||!body)return;
+  const p=$("#pop"),l=level(it);
+  $("#popT").textContent=it.t;
+  $("#popA").innerHTML=answered(it)?`<span class="pa ${l==2?"c":l==1?"b":""}">${esc(gv(it))}</span>`:"";
+  $("#popB").innerHTML=body;
+  clearTimeout(POPT);p.classList.add("show");void p.offsetWidth;p.classList.add("on");p.querySelector(".pc").scrollTop=0;
+  setTimeout(()=>$("#popX").focus({preventScroll:true}),50);
+}
+function closeInfo(){const p=$("#pop");if(!p.classList.contains("show"))return;p.classList.remove("on");clearTimeout(POPT);POPT=setTimeout(()=>p.classList.remove("show"),250)}
 function refresh(){
   let done=0,cx=[],cxi=[];
   let total=0;
@@ -1745,6 +1783,7 @@ function refresh(){
   if(typeof stepsUI==="function"&&$("#steps"))stepsUI();
   $("#pb").style.width=(done/total*100)+"%";
   $("#pt").textContent=done+" / "+total+" terisi";
+  for(const it of ALL){const b=$("#info_"+it.id);if(b)b.classList.toggle("on",answered(it)&&!!infoHTML(it.id))}
   const w=$("#warn");
   if(cx.length){w.style.display="block";w.innerHTML="⚠️ PERTIMBANGKAN KEMBALI SEBELUM MEMBELI — ditemukan minus serius:<ul>"+cx.map((t,k)=>"<li><a href=\"#it_"+cxi[k]+"\" data-go=\""+cxi[k]+"\">"+t+"</a></li>").join("")+"</ul><div style=\"font-weight:400;font-size:13px;margin-top:4px\">Ketuk poin di atas untuk melihat penjelasannya.</div>"}
   else w.style.display="none";
@@ -1768,7 +1807,13 @@ document.addEventListener("input",e=>{
     }else S[it.id]=t.value;
   }
   save();refresh();
+  if(t.dataset.id&&(t.type=="radio"||(t.type=="checkbox"&&t.checked))&&!["tipe","warna","storage"].includes(t.dataset.id))openInfo(t.dataset.id);
 });
+document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.id&&t.type=="text"&&String(t.value).trim())openInfo(t.dataset.id)});
+document.addEventListener("click",e=>{const b=e.target.closest("[data-info]");if(b){e.preventDefault();openInfo(b.dataset.info)}});
+$("#popX").onclick=closeInfo;
+$("#pop").addEventListener("click",e=>{if(e.target.id=="pop")closeInfo()});
+document.addEventListener("keydown",e=>{if(e.key=="Escape")closeInfo()});
 
 // ===== Gambar produk: preview 2D (foto di img/produk, fallback ilustrasi) =====
 const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
@@ -1865,7 +1910,7 @@ function goItem(id){
     e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1700)};
   if(STEP===sec)go();else{goStep(sec,true);setTimeout(go,420)}
 }
-for(const b of ["#warn","#need"])$(b).addEventListener("click",ev=>{const a=ev.target.closest("[data-go]");if(!a)return;ev.preventDefault();goItem(a.dataset.go)});
+for(const b of ["#warn","#need"])$(b).addEventListener("click",ev=>{const a=ev.target.closest("[data-go]");if(!a)return;ev.preventDefault();goItem(a.dataset.go);if(b=="#warn")setTimeout(()=>openInfo(a.dataset.go),900)});
 $("#rep").onclick=async()=>{
   const ms=missing(),b0=$("#rep"),nb=$("#need");
   if(ms.length){
