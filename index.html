@@ -386,7 +386,7 @@ const SEC=[
 ],
 "k": "r",
 "s": "Action Button",
-"d": "Tekan dan tahan Action Button di sisi kiri (menggantikan tombol silent mulai iPhone 15 Pro). Fungsinya mengikuti pengaturan di Settings › Action Button (bawaan: mode senyap). Tombol harus langsung merespons, menampilkan indikator di layar atau Dynamic Island, dan disertai getaran.",
+"d": "Tekan dan tahan Action Button di sisi kiri (menggantikan tombol silent pada iPhone 15 Pro ke atas, 16e, dan 17e). Fungsinya mengikuti pengaturan di Settings › Action Button (bawaan: mode senyap). Tombol harus langsung merespons, menampilkan indikator di layar atau Dynamic Island, dan disertai getaran.",
 "w": [
 "Mulai iPhone 15 Pro, tombol silent digantikan oleh Action Button yang dapat diatur untuk berbagai fungsi (mode senyap, senter, kamera, dan lainnya). Tombol yang tidak merespons, harus ditekan keras, atau macet dapat menandakan kerusakan pada tombol atau flexible-nya, bekas jatuh, atau kemasukan air.",
 "Perhatikan juga getaran saat tombol ditekan. Getaran yang lemah atau kasar dapat menandakan Taptic Engine bermasalah atau sudah diganti."
@@ -1117,6 +1117,22 @@ const SEC=[
 ]
 },
 {
+"id": "aperture",
+"t": "Variable aperture kamera utama (khusus iPhone 18 Pro)",
+"k": "r",
+"s": "Variable aperture",
+"d": "Buka Kamera dalam mode Foto, lalu pilih pengaturan aperture (ƒ) dan ganti bukaan satu per satu: ƒ/1.48, ƒ/1.8, ƒ/2.8, dan ƒ/4. Arahkan kamera ke objek dekat dengan latar belakang yang jauh. Pada ƒ/4, latar belakang harus terlihat lebih tajam; saat kembali ke ƒ/1.48, latar belakang kembali blur.",
+"w": [
+"iPhone 18 Pro dan 18 Pro Max adalah iPhone pertama dengan variable aperture: bukaan lensa kamera utama diatur oleh enam bilah mekanis yang dapat membuka dan menutup. Komponen yang bergerak ini merupakan titik kerusakan baru, misalnya bilah yang macet akibat benturan, debu, atau cairan.",
+"Jika hasil foto tidak berubah di setiap pengaturan, atau gambar menjadi gelap maupun buram pada salah satu bukaan, kemungkinan mekanisme aperture bermasalah. Perbaikannya umumnya berupa penggantian modul kamera utama."
+],
+"o": [
+"Berfungsi (latar ikut berubah)",
+"Bukaan tidak berubah / macet!",
+"Gelap atau buram di salah satu bukaan!"
+]
+},
+{
 "id": "c2",
 "t": "Kamera 2x",
 "k": "m",
@@ -1349,7 +1365,7 @@ A13:["Pink","Blue","Midnight","Starlight","(PRODUCT)RED","Green"],A13P:["Graphit
 ASE22:["Midnight","Starlight","(PRODUCT)RED"],A14:["Blue","Purple","Midnight","Starlight","(PRODUCT)RED","Yellow"],A14P:["Space Black","Silver","Gold","Deep Purple"],
 A15:["Black","Blue","Green","Yellow","Pink"],A15P:["Black Titanium","White Titanium","Blue Titanium","Natural Titanium"],
 A16E:["Black","White"],A16:["Black","White","Pink","Teal","Ultramarine"],A16P:["Black Titanium","White Titanium","Natural Titanium","Desert Titanium"],
-A17:["Black","White","Mist Blue","Sage","Lavender"],AAIR:["Space Black","Cloud White","Light Gold","Sky Blue"],A17P:["Silver","Cosmic Orange","Deep Blue"]};
+A17:["Black","White","Mist Blue","Sage","Lavender"],AAIR:["Space Black","Cloud White","Light Gold","Sky Blue"],A17P:["Silver","Cosmic Orange","Deep Blue"],A17E:["Black","White","Soft Pink"],A18P:["Black","Silver","Glacier","Burgundy"]};
 const DEV=[["iPhone 6","home",1,"A6"],["iPhone 6 Plus","home",1,"A6"],["iPhone 6s","home",1,"A6S"],["iPhone 6s Plus","home",1,"A6S"],["iPhone SE (2016)","home",1,"A6S"],
 ["iPhone 7","home",1,"A7"],["iPhone 7 Plus","home",2,"A7"],["iPhone 8","home",1,"A8"],["iPhone 8 Plus","home",2,"A8"],
 ["iPhone X","notch",2,"AX"],["iPhone XR","notch",1,"AXR"],["iPhone XS","notch",2,"AXS"],["iPhone XS Max","notch",2,"AXS"],
@@ -1359,9 +1375,10 @@ const DEV=[["iPhone 6","home",1,"A6"],["iPhone 6 Plus","home",1,"A6"],["iPhone 6
 ["iPhone 14","notch",2,"A14"],["iPhone 14 Plus","notch",2,"A14"],["iPhone 14 Pro","island",3,"A14P"],["iPhone 14 Pro Max","island",3,"A14P"],
 ["iPhone 15","island",2,"A15"],["iPhone 15 Plus","island",2,"A15"],["iPhone 15 Pro","island",3,"A15P"],["iPhone 15 Pro Max","island",3,"A15P"],
 ["iPhone 16e","notch",1,"A16E"],["iPhone 16","island",2,"A16"],["iPhone 16 Plus","island",2,"A16"],["iPhone 16 Pro","island",3,"A16P"],["iPhone 16 Pro Max","island",3,"A16P"],
-["iPhone 17","island",2,"A17"],["iPhone Air","island",1,"AAIR"],["iPhone 17 Pro","island",3,"A17P"],["iPhone 17 Pro Max","island",3,"A17P"]];
+["iPhone 17","island",2,"A17"],["iPhone Air","island",1,"AAIR"],["iPhone 17 Pro","island",3,"A17P"],["iPhone 17 Pro Max","island",3,"A17P"],
+["iPhone 17e","notch",1,"A17E"],["iPhone 18 Pro","island",3,"A18P"],["iPhone 18 Pro Max","island",3,"A18P"]];
 const DM={};DEV.forEach(d=>DM[d[0]]={d:d[1],c:d[2],cols:CS[d[3]]});
-const HEX={"Space Gray":"#6e6e73","Silver":"#e3e4e6","Gold":"#e6cfae","Rose Gold":"#e8c3b9","Black":"#2b2b2d","Jet Black":"#101012","(PRODUCT)RED":"#bf0a1d","White":"#f2f2f0","Blue":"#9db9d8","Yellow":"#f4e48f","Coral":"#f2735a","Green":"#9fc7ac","Purple":"#c9b7e6","Midnight Green":"#4e5851","Graphite":"#54524f","Pacific Blue":"#2e5e73","Pink":"#f5c6d0","Midnight":"#2e3642","Starlight":"#efe9e1","Sierra Blue":"#a7c1d9","Alpine Green":"#576856","Space Black":"#2f2e30","Deep Purple":"#594f63","Black Titanium":"#3b3b3d","White Titanium":"#e0dfdc","Blue Titanium":"#3d4a5c","Natural Titanium":"#b9b1a6","Desert Titanium":"#bfa48f","Teal":"#b0d4d2","Ultramarine":"#9aaaf5","Mist Blue":"#b9ccd9","Sage":"#b5c2a8","Lavender":"#cdbfe0","Cloud White":"#f1f0ec","Light Gold":"#e5d3a8","Sky Blue":"#bcd3e6","Cosmic Orange":"#d96a2d","Deep Blue":"#2f3c54"};
+const HEX={"Space Gray":"#6e6e73","Silver":"#e3e4e6","Gold":"#e6cfae","Rose Gold":"#e8c3b9","Black":"#2b2b2d","Jet Black":"#101012","(PRODUCT)RED":"#bf0a1d","White":"#f2f2f0","Blue":"#9db9d8","Yellow":"#f4e48f","Coral":"#f2735a","Green":"#9fc7ac","Purple":"#c9b7e6","Midnight Green":"#4e5851","Graphite":"#54524f","Pacific Blue":"#2e5e73","Pink":"#f5c6d0","Midnight":"#2e3642","Starlight":"#efe9e1","Sierra Blue":"#a7c1d9","Alpine Green":"#576856","Space Black":"#2f2e30","Deep Purple":"#594f63","Black Titanium":"#3b3b3d","White Titanium":"#e0dfdc","Blue Titanium":"#3d4a5c","Natural Titanium":"#b9b1a6","Desert Titanium":"#bfa48f","Teal":"#b0d4d2","Ultramarine":"#9aaaf5","Mist Blue":"#b9ccd9","Sage":"#b5c2a8","Lavender":"#cdbfe0","Cloud White":"#f1f0ec","Light Gold":"#e5d3a8","Sky Blue":"#bcd3e6","Cosmic Orange":"#d96a2d","Deep Blue":"#2f3c54","Soft Pink":"#f3d3d6","Glacier":"#b9cde0","Burgundy":"#6b1f2a"};
 const colorsFor=()=>{const m=DM[S.tipe];return m?m.cols.concat(["Lainnya"]):(S.tipe==="Lainnya"?["Lainnya"]:[])};
 
 // ===== Storage per seri =====
@@ -1376,14 +1393,15 @@ const STO_GRP=[
   [SP(["SE (2020)","SE (2022)"]),"64GB","256GB"],
   [SP(["X","XR","XS","XS Max","11","11 Pro","11 Pro Max","12 mini","12"]),"64GB","512GB"],
   [SP(["12 Pro","12 Pro Max","13 mini","13","13 Pro","13 Pro Max","14","14 Plus","14 Pro","14 Pro Max","15","15 Plus","15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max"]),"128GB","1TB"],
-  [SP(["17","Air","17 Pro","17 Pro Max"]),"256GB","2TB"]];
+  [SP(["17e"]),"256GB","512GB"],
+  [SP(["17","Air","17 Pro","17 Pro Max","18 Pro","18 Pro Max"]),"256GB","2TB"]];
 const storageFor=()=>{if(!S.tipe)return [];const g=STO_GRP.find(x=>x[0].includes(S.tipe));return g?stoRange(g[1],g[2]):STO};
 
 // ===== Fitur per seri: isi otomatis "tidak ada" untuk fitur yang tidak dimiliki seri =====
 const P=a=>a.map(x=>"iPhone "+x);
 const OLD=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus"]), SE2=P(["SE (2020)","SE (2022)"]);
-const NO_UW=OLD.concat(P(["X","XR","XS","XS Max","16e","Air"]),SE2);           // tanpa kamera 0.5 (ultra wide)
-const NO_TELE=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air"]).concat(SE2); // tanpa lensa telefoto
+const NO_UW=OLD.concat(P(["X","XR","XS","XS Max","16e","Air","17e"]),SE2);           // tanpa kamera 0.5 (ultra wide)
+const NO_TELE=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air","17e"]).concat(SE2); // tanpa lensa telefoto
 const HAS_5X=P(["15 Pro Max","16 Pro","16 Pro Max"]);                            // telefoto 5x
 const NO_WL=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus"]);            // tanpa wireless charging (mulai iPhone 8)
 const NO_TD=OLD.concat(SE2);                                                     // tanpa TrueDepth
@@ -1411,25 +1429,28 @@ function applyAuto(){
   }
 }
 // ===== Poin yang tampil sesuai tipe =====
-const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
-const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max"]);
+const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max","17e","18 Pro","18 Pro Max"]);
+const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max","18 Pro","18 Pro Max"]);
+const APERTURE_T=P(["18 Pro","18 Pro Max"]); // variable aperture kamera utama
 const HOME_T=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus","SE (2020)","SE (2022)"]);
 const X1112_T=P(["11","11 Pro","11 Pro Max","12 mini","12","12 Pro","12 Pro Max"]);
-const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e"]); // gambar contoh pakai frame poni (notch)
-const F1314_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus"]); // screenshot iPhone 13 dengan frame iPhone 13
-const VIS={cyc:t=>!PRE15.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
+const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e","17e"]); // gambar contoh pakai frame poni (notch)
+const F1314_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","17e"]); // screenshot iPhone 13 dengan frame iPhone 13
+const DI15=t=>!!t&&!PRE15.includes(t)&&t!=="iPhone 16e"&&!F1314_T.includes(t)&&t!=="Lainnya"; // gambar contoh seri 15 ke atas (frame Dynamic Island)
+const FR15=t=>!!t&&!PRE15.includes(t)&&!F1314_T.includes(t)&&t!=="Lainnya";
+const VIS={cyc:t=>!PRE15.includes(t),aperture:t=>APERTURE_T.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
   // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
   // ceirku.org & masa berlaku IMEI: dinonaktifkan sementara (aturan lama: tampil jika bukan iBox dan bukan Bea Cukai)
   ceirku:()=>false,
   ceir_tgl:()=>false,
   bc:()=>S.asal==="Bea Cukai",
   // Frame gambar contoh: tombol home, poni (notch), atau Dynamic Island
-  frhome:t=>HOME_T.includes(t),fr15:t=>!!t&&!PRE15.includes(t)&&t!=="Lainnya",not15:t=>!(!!t&&!PRE15.includes(t)&&t!=="Lainnya"),
+  frhome:t=>HOME_T.includes(t),fr15:FR15,not15:t=>!FR15(t),
   // screenshot iPhone 12 Pro dengan frame poni lebar: iPhone 11 sampai 12 Pro Max
   fr1314:t=>F1314_T.includes(t),frnotchb:t=>NOTCH_T.includes(t)&&!F1314_T.includes(t),
   fr1112:t=>X1112_T.includes(t),frislandb:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t)&&!X1112_T.includes(t),
   // screenshot iPhone 17 dengan frame Dynamic Island: iPhone 15 ke atas, kecuali 16e (poni)
-  frdi15:t=>!!t&&!PRE15.includes(t)&&t!=="iPhone 16e"&&t!=="Lainnya",senterlama:t=>!HOME_T.includes(t)&&!F1314_T.includes(t)&&!X1112_T.includes(t)&&!(!!t&&!PRE15.includes(t)&&t!=="iPhone 16e"&&t!=="Lainnya"),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
+  frdi15:DI15,senterlama:t=>!HOME_T.includes(t)&&!F1314_T.includes(t)&&!X1112_T.includes(t)&&!DI15(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Tidak ada wireless charging","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
@@ -1499,6 +1520,8 @@ const EDU={
   "ceirku|Tidak terdaftar (roamer)":"IMEI berstatus roamer berarti tidak terdaftar secara resmi di Indonesia. Setelah masa berlakunya habis, unit akan diblokir oleh operator dan hanya dapat digunakan melalui Wi-Fi.",
   "bc|Tidak terdaftar / data tidak sesuai":"Jika IMEI tidak terdaftar di Bea Cukai atau datanya tidak sesuai dengan unit, klaim \"resmi Bea Cukai\" dari penjual tidak terbukti, dan unit berisiko diblokir oleh operator."
 };
+EDU["aperture|Bukaan tidak berubah / macet"]="Bukaan yang tidak berubah menandakan bilah aperture pada kamera utama macet atau motor penggeraknya tidak bekerja, biasanya akibat benturan, debu, atau cairan yang masuk ke modul kamera. Akibatnya, kontrol bukaan dan efek kedalaman (depth of field) tidak dapat digunakan. Perbaikannya berupa penggantian modul kamera utama.";
+EDU["aperture|Gelap atau buram di salah satu bukaan"]="Gambar yang gelap atau buram hanya pada bukaan tertentu menandakan bilah aperture tidak membuka atau menutup dengan sempurna. Kondisi ini dapat memburuk seiring waktu dan memengaruhi kualitas foto di kondisi tertentu. Perbaikannya berupa penggantian modul kamera utama.";
 for(const c of ["c05","c1","c2","c5","cvid"])for(const k in CAM_BELAKANG)EDU[c+"|"+k]=CAM_BELAKANG[k];
 EDU["cpot|Getar"]="Gambar kamera depan yang bergetar atau tidak stabil umumnya menandakan modul kamera depan bermasalah, biasanya akibat benturan.";
 EDU["cpot|Blur (gambar tidak fokus)"]="Kamera depan yang buram umumnya disebabkan oleh lensa atau mekanisme fokus yang bermasalah, atau kaca pelindungnya tergores. Kamera depan merupakan bagian dari modul TrueDepth, sehingga perbaikannya perlu dilakukan dengan hati-hati agar Face ID tidak ikut terganggu.";
@@ -1773,8 +1796,8 @@ function phone2D(tipe,warna){
 const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s","iPhone XS Max":"iPhone XS","iPhone 11 Pro Max":"iPhone 11 Pro",
   "iPhone 12 mini":"iPhone 12","iPhone 12 Pro Max":"iPhone 12 Pro","iPhone 13 mini":"iPhone 13",
   "iPhone 13 Pro Max":"iPhone 13 Pro","iPhone 14 Plus":"iPhone 14","iPhone 14 Pro Max":"iPhone 14 Pro",
-  "iPhone 15 Plus":"iPhone 15","iPhone 15 Pro Max":"iPhone 15 Pro","iPhone 16 Plus":"iPhone 16","iPhone 16 Pro Max":"iPhone 16 Pro","iPhone 17 Pro Max":"iPhone 17 Pro"};
-const FOTO_V=12; // naikkan setiap kali foto di img/produk diganti, supaya HP checker mengambil foto baru
+  "iPhone 15 Plus":"iPhone 15","iPhone 15 Pro Max":"iPhone 15 Pro","iPhone 16 Plus":"iPhone 16","iPhone 16 Pro Max":"iPhone 16 Pro","iPhone 17 Pro Max":"iPhone 17 Pro","iPhone 18 Pro Max":"iPhone 18 Pro"};
+const FOTO_V=13; // naikkan setiap kali foto di img/produk diganti, supaya HP checker mengambil foto baru
 function showUnit(){
   const box=$("#pimg"),cap=$("#pcap");
   const info=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
