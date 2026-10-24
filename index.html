@@ -124,10 +124,9 @@ const SEC=[
 "i": [
 {
 "id": "tipe",
-"t": "Jenis tipe & warna device",
+"t": "Jenis tipe, warna & storage device",
 "k": "sel",
 "s": "Tipe",
-"n": 1,
 "ns": 1
 },
 {
@@ -1084,12 +1083,12 @@ function build(){
       if(DYN[it.id])h+=`<div class="oem" id="dyn_${it.id}"></div>`;
       if(AUTO[it.id]||it.id=="cyc")h+=`<div class="d" id="auto_${it.id}" style="display:none;color:var(--ok);font-weight:600">${it.id=="cyc"?"✔ Dilewati otomatis: menu Cycle Count hanya ada di iPhone 15 ke atas.":"✔ Terisi otomatis: seri ini tidak memiliki fitur ini. Ubah jika tipe yang dipilih salah."}</div>`;
       if(it.k=="sel"){
-        if(it.id=="tipe")h+=dslHTML()+`<div class="sub">Warna device</div><div class="opts" id="opts_warna"></div><div class="sub">Tipe (daftar)</div>`;
+        if(it.id=="tipe")h+=dslHTML()+`<div class="sub">Warna device</div><div class="opts" id="opts_warna"></div><div class="sub">Storage / internal</div><div class="opts" id="opts_storage"></div><div class="sub">Tipe (daftar)</div>`;
         h+=`<select data-id="${it.id}"><option value="">— pilih tipe —</option>`+DEV.map(d=>`<option ${S[it.id]===d[0]?"selected":""}>${esc(d[0])}</option>`).join("")+`<option ${S[it.id]==="Lainnya"?"selected":""}>Lainnya</option></select>`;
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional, cth: tipe lain)" value="${esc(N[it.id]||"")}">`;
       }else if(it.k=="r"||it.k=="m"){
         if(it.id=="warna")h+="";  // pilihan warna ditampilkan di bagian tipe device
-        else if(it.id=="storage")h+=`<div class="opts" id="opts_storage"></div>`;
+        else if(it.id=="storage")h+="";  // pilihan storage ditampilkan di bagian tipe device
         else h+=`<div class="opts">`+it.o.map(o=>{
           const sel=it.k=="r"?S[it.id]===cl(o):(S[it.id]||[]).includes(cl(o));
           const c=lv(o)==2?"c":lv(o)==1?"b":"";
@@ -1119,11 +1118,11 @@ function refresh(){
   let total=0;
   for(const it of ALL){
     const l=level(it),el=$("#it_"+it.id);
-    const vis=shown(it);el.style.display=vis&&it.id!=="warna"?"":"none";
+    const vis=shown(it);el.style.display=vis&&it.id!=="warna"&&it.id!=="storage"?"":"none";
     if(!vis){el.classList.remove("ok","bad","cx","miss");continue}
     total++;
     el.classList.remove("ok","bad","cx","miss");
-    if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))(it.id=="warna"?$("#it_tipe"):el).classList.add("miss");
+    if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))(it.id=="warna"||it.id=="storage"?$("#it_tipe"):el).classList.add("miss");
     if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
     if(l==2)cx.push(nm(it));
   }
@@ -1257,7 +1256,7 @@ $("#rep").onclick=async()=>{
     nb.style.display="block";
     nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";
     b0.textContent="Masih ada "+ms.length+" poin kosong";setTimeout(()=>b0.textContent="Check Status Device",3000);
-    const first=$("#it_"+(ms[0].id=="warna"?"tipe":ms[0].id));if(first)first.scrollIntoView({behavior:"smooth",block:"center"});
+    const first=$("#it_"+(ms[0].id=="warna"||ms[0].id=="storage"?"tipe":ms[0].id));if(first)first.scrollIntoView({behavior:"smooth",block:"center"});
     $("#res").style.display="none";
     return;
   }
