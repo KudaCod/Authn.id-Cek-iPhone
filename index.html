@@ -61,7 +61,7 @@ details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-s
 .dcard .dimg{height:150px;display:flex;align-items:flex-end;justify-content:center}
 .dcard img{max-height:150px;max-width:112px;height:auto;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.16))}
 .dcard svg{height:140px;width:auto}
-.dcard .dlb{display:block;font-size:12px;margin-top:4px;color:var(--mu);white-space:nowrap}
+.dcard .dlb{display:block;font-size:11.5px;line-height:1.25;margin-top:4px;color:var(--mu);min-height:29px}
 .dcard.sel .dlb{color:var(--ac);font-weight:700}
 .dcard .dother{height:150px;display:flex;align-items:center;justify-content:center;font-size:40px;color:var(--mu)}
 .dsl::before,.dsl::after{content:"";position:absolute;top:0;bottom:22px;width:28px;z-index:1;pointer-events:none}
@@ -70,6 +70,9 @@ details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-s
 .dcard .dimg img{transition:opacity .25s ease,transform .25s ease}.dcard .dimg img.swap{opacity:0;transform:scale(.9)}
 .sub{font-weight:600;font-size:14px;margin:12px 0 2px}
 .sw{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid rgba(127,127,127,.55);margin-right:6px;vertical-align:-1px}
+.dvar{display:flex;justify-content:center;gap:6px;margin-top:6px;flex-wrap:wrap}.dvar:empty{display:none}
+.dvar button{padding:6px 14px;border-radius:999px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);font:inherit;font-size:14px}
+.dvar button.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
 .dname{text-align:center;font-weight:700;font-size:16px;margin-top:2px;min-height:22px;transition:opacity .15s}
 select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:16px}
 .item.miss{border-color:var(--cx);border-left-color:var(--cx);box-shadow:0 0 0 1px var(--cx)}
@@ -1001,25 +1004,33 @@ function dslPic(t){
   if(t==="iPhone SE (2016)")return phone2D(t,m.cols[0]);
   return `<img loading="lazy" alt="${esc(t)}" src="img/produk/${slug(PHOTO_AS[t]||t)}-${slug(m.cols[0])}.png?v=${FOTO_V}" onerror="this.outerHTML=phone2D('${t}','${m.cols[0]}')">`;
 }
+// Tipe dengan foto yang sama (mis. 13 mini & 13) jadi satu kartu; ukurannya dipilih lewat tombol di bawah nama
+let _dg=null;const DGS=()=>_dg||(_dg=(()=>{const g=[],ix={};DEV.forEach(d=>{const k=PHOTO_AS[d[0]]||d[0];if(ix[k]==null){ix[k]=g.length;g.push({k,m:[]})}g[ix[k]].m.push(d[0])});g.push({k:"Lainnya",m:["Lainnya"]});return g})());
+const dgOf=t=>DGS().find(g=>g.m.includes(t));
+const dgLabel=g=>g.m.map(x=>x.replace("iPhone ","")).join(" / ");
 function dslSetPhoto(){
   document.querySelectorAll(".dcard").forEach(c=>{
-    const t=c.dataset.t,m=DM[t];if(!m)return;
-    const col=(t===S.tipe&&S.warna&&m.cols.includes(S.warna))?S.warna:m.cols[0];
-    if((c.dataset.c||m.cols[0])===col)return;c.dataset.c=col;
+    const g=dgOf(c.dataset.t),t=g.m.includes(S.tipe)?S.tipe:g.k,m=DM[t];if(!m)return;
+    const col=(g.m.includes(S.tipe)&&S.warna&&m.cols.includes(S.warna))?S.warna:DM[g.k].cols[0];
+    if((c.dataset.c||DM[g.k].cols[0])===col)return;c.dataset.c=col;
     const box=c.querySelector(".dimg"),im=box.querySelector("img");
-    if(t==="iPhone SE (2016)"||!im){box.innerHTML=phone2D(t,col);return}
-    const url=`img/produk/${slug(PHOTO_AS[t]||t)}-${slug(col)}.png?v=${FOTO_V}`;
+    if(g.k==="iPhone SE (2016)"||!im){box.innerHTML=phone2D(t,col);return}
+    const url=`img/produk/${slug(g.k)}-${slug(col)}.png?v=${FOTO_V}`;
     im.classList.add("swap");const pre=new Image();
     pre.onload=()=>{setTimeout(()=>{im.src=url;im.classList.remove("swap")},120)};
     pre.onerror=()=>{box.innerHTML=phone2D(t,col)};pre.src=url;
   });
 }
 function dslHTML(){
-  const L=DEV.map(d=>d[0]).concat("Lainnya");
-  return `<div class="dsl"><div class="dtrack" id="dtrack">`+L.map(t=>`<button type="button" class="dcard" data-t="${esc(t)}"><div class="dimg">${dslPic(t)}</div><span class="dlb">${esc(t.replace("iPhone ",""))}</span></button>`).join("")+
-    `</div></div><div class="dname" id="dname"></div><div class="dhint">Geser untuk memilih tipe, atau pilih dari daftar di bawah</div>`;
+  return `<div class="dsl"><div class="dtrack" id="dtrack">`+DGS().map(g=>`<button type="button" class="dcard" data-t="${esc(g.k)}"><div class="dimg">${dslPic(g.k)}</div><span class="dlb">${esc(dgLabel(g))}</span></button>`).join("")+
+    `</div></div><div class="dname" id="dname"></div><div class="dvar" id="dvar"></div><div class="dhint">Geser untuk memilih tipe, atau pilih dari daftar di bawah</div>`;
 }
 let dslUser=false,dslTimer=0,dslProg=false;
+function dslVar(g){
+  const v=$("#dvar");if(!v)return;
+  if(!g||g.m.length<2||!g.m.includes(S.tipe)){v.innerHTML="";return}
+  v.innerHTML=g.m.map(t=>`<button type="button" class="${t===S.tipe?"on":""}" data-v="${esc(t)}">${esc(t.replace("iPhone ",""))}</button>`).join("");
+}
 function dslCenter(){
   const tr=$("#dtrack");if(!tr)return null;
   const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,bd=1e9;
@@ -1028,17 +1039,19 @@ function dslCenter(){
     c.style.transform=`scale(${(1-0.32*k).toFixed(3)})`;c.style.opacity=(1-0.6*k).toFixed(2);
     if(dist<bd){bd=dist;best=c}
   });
-  const nm=$("#dname");if(nm&&best){nm.textContent=best.dataset.t;nm.style.color=best.dataset.t===S.tipe?"":"var(--mu)"}
+  const nm=$("#dname");
+  if(nm&&best){const g=dgOf(best.dataset.t),on=g.m.includes(S.tipe);nm.textContent=on?S.tipe:(g.m.length>1?"iPhone "+dgLabel(g):g.k);nm.style.color=on?"":"var(--mu)";dslVar(g)}
   return best;
 }
 function dslPick(t){
   if(!t||S.tipe===t)return;
   const sel=document.querySelector('select[data-id=tipe]');sel.value=t;sel.dispatchEvent(new Event("input",{bubbles:true}));
 }
+function dslPickGroup(k){const g=dgOf(k);if(!g.m.includes(S.tipe))dslPick(g.k)}   // tipe dasar (mis. iPhone 13) sebagai bawaan
 function dslGo(t,smooth){
   const tr=$("#dtrack");if(!tr)return;
-  const c=[...tr.querySelectorAll(".dcard")].find(x=>x.dataset.t===t);
-  tr.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",x.dataset.t===S.tipe));
+  const g=dgOf(t),c=g&&[...tr.querySelectorAll(".dcard")].find(x=>x.dataset.t===g.k);
+  tr.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",dgOf(x.dataset.t).m.includes(S.tipe)));
   if(!c){dslCenter();return}
   dslProg=true;tr.scrollTo({left:c.offsetLeft+c.offsetWidth/2-tr.clientWidth/2,behavior:smooth?"smooth":"auto"});
   setTimeout(()=>{dslProg=false;dslCenter()},smooth?450:30);
@@ -1050,9 +1063,10 @@ function initDSL(){
   tr.addEventListener("scroll",()=>{
     requestAnimationFrame(dslCenter);
     clearTimeout(dslTimer);
-    dslTimer=setTimeout(()=>{if(dslProg||!dslUser)return;const c=dslCenter();if(c)dslPick(c.dataset.t);dslUser=false;dslCenter()},180);
+    dslTimer=setTimeout(()=>{if(dslProg||!dslUser)return;const c=dslCenter();if(c)dslPickGroup(c.dataset.t);dslUser=false;dslCenter()},180);
   },{passive:true});
-  tr.addEventListener("click",e=>{const c=e.target.closest(".dcard");if(!c)return;dslUser=false;dslGo(c.dataset.t,true);dslPick(c.dataset.t)});
+  tr.addEventListener("click",e=>{const c=e.target.closest(".dcard");if(!c)return;dslUser=false;dslGo(c.dataset.t,true);dslPickGroup(c.dataset.t)});
+  $("#dvar").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;dslPick(b.dataset.v);dslCenter();dslSetPhoto()});
   document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
   requestAnimationFrame(()=>{dslGo(S.tipe||DEV[DEV.length-1][0],false);dslSetPhoto()});
 }
@@ -1136,7 +1150,7 @@ document.addEventListener("input",e=>{
     if(it.k=="r"){S[it.id]=t.value;if(it.id=="warna")dslSetPhoto()}
     else if(it.k=="sel"){
       S[it.id]=t.value;
-      if(it.id=="tipe"){document.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",x.dataset.t===S.tipe));if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto();dslSetPhoto()}
+      if(it.id=="tipe"){document.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",dgOf(x.dataset.t).m.includes(S.tipe)));if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto();dslSetPhoto()}
     }else if(it.k=="m"){
       let a=S[it.id]||[];
       const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0||v.indexOf("Tidak ada di seri")==0||v.indexOf("Tidak ada TrueDepth")==0||v.indexOf("Tidak ada box")==0;
