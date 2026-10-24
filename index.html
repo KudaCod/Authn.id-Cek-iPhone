@@ -67,6 +67,9 @@ details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-s
 .dsl::before,.dsl::after{content:"";position:absolute;top:0;bottom:22px;width:28px;z-index:1;pointer-events:none}
 .dsl::before{left:0;background:linear-gradient(90deg,var(--card),transparent)}.dsl::after{right:0;background:linear-gradient(270deg,var(--card),transparent)}
 .dhint{text-align:center;font-size:12px;color:var(--mu);margin-top:2px}
+.dcard .dimg img{transition:opacity .25s ease,transform .25s ease}.dcard .dimg img.swap{opacity:0;transform:scale(.9)}
+.sub{font-weight:600;font-size:14px;margin:12px 0 2px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;border:1px solid rgba(127,127,127,.55);margin-right:6px;vertical-align:-1px}
 .dname{text-align:center;font-weight:700;font-size:16px;margin-top:2px;min-height:22px;transition:opacity .15s}
 select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit;font-size:16px}
 .item.miss{border-color:var(--cx);border-left-color:var(--cx);box-shadow:0 0 0 1px var(--cx)}
@@ -118,7 +121,7 @@ const SEC=[
 "i": [
 {
 "id": "tipe",
-"t": "Jenis tipe device",
+"t": "Jenis tipe & warna device",
 "k": "sel",
 "s": "Tipe",
 "n": 1,
@@ -987,7 +990,7 @@ DYN.cpot=()=>camBad("cpot")?"⚠️ Ada kemungkinan kerusakan pada modul kamera 
 function renderColors(){
   const el=$("#opts_warna");if(!el)return;
   const cs=colorsFor();
-  el.innerHTML=cs.length?cs.map(o=>`<label><input type="radio" name="warna" data-id="warna" value="${esc(o)}" ${S.warna===o?"checked":""}><span>${esc(o)}</span></label>`).join(""):'<span class="d">Pilih tipe device dulu.</span>';
+  el.innerHTML=cs.length?cs.map(o=>`<label><input type="radio" name="warna" data-id="warna" value="${esc(o)}" ${S.warna===o?"checked":""}><span>${HEX[o]?`<i class="sw" style="background:${HEX[o]}"></i>`:""}${esc(o)}</span></label>`).join(""):'<span class="d">Pilih tipe device dulu.</span>';
   const st=$("#opts_storage");if(!st)return;
   const ss=storageFor();
   st.innerHTML=ss.length?ss.map(o=>`<label><input type="radio" name="storage" data-id="storage" value="${esc(o)}" ${S.storage===o?"checked":""}><span>${esc(o)}</span></label>`).join(""):'<span class="d">Pilih tipe device dulu.</span>';
@@ -997,6 +1000,19 @@ function dslPic(t){
   const m=DM[t];if(!m)return '<div class="dother">?</div>';
   if(t==="iPhone SE (2016)")return phone2D(t,m.cols[0]);
   return `<img loading="lazy" alt="${esc(t)}" src="img/produk/${slug(PHOTO_AS[t]||t)}-${slug(m.cols[0])}.png?v=${FOTO_V}" onerror="this.outerHTML=phone2D('${t}','${m.cols[0]}')">`;
+}
+function dslSetPhoto(){
+  document.querySelectorAll(".dcard").forEach(c=>{
+    const t=c.dataset.t,m=DM[t];if(!m)return;
+    const col=(t===S.tipe&&S.warna&&m.cols.includes(S.warna))?S.warna:m.cols[0];
+    if((c.dataset.c||m.cols[0])===col)return;c.dataset.c=col;
+    const box=c.querySelector(".dimg"),im=box.querySelector("img");
+    if(t==="iPhone SE (2016)"||!im){box.innerHTML=phone2D(t,col);return}
+    const url=`img/produk/${slug(PHOTO_AS[t]||t)}-${slug(col)}.png?v=${FOTO_V}`;
+    im.classList.add("swap");const pre=new Image();
+    pre.onload=()=>{setTimeout(()=>{im.src=url;im.classList.remove("swap")},120)};
+    pre.onerror=()=>{box.innerHTML=phone2D(t,col)};pre.src=url;
+  });
 }
 function dslHTML(){
   const L=DEV.map(d=>d[0]).concat("Lainnya");
@@ -1038,7 +1054,7 @@ function initDSL(){
   },{passive:true});
   tr.addEventListener("click",e=>{const c=e.target.closest(".dcard");if(!c)return;dslUser=false;dslGo(c.dataset.t,true);dslPick(c.dataset.t)});
   document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
-  requestAnimationFrame(()=>dslGo(S.tipe||DEV[DEV.length-1][0],false));
+  requestAnimationFrame(()=>{dslGo(S.tipe||DEV[DEV.length-1][0],false);dslSetPhoto()});
 }
 function build(){
   let h="";
@@ -1054,11 +1070,11 @@ function build(){
       if(DYN[it.id])h+=`<div class="oem" id="dyn_${it.id}"></div>`;
       if(AUTO[it.id]||it.id=="cyc")h+=`<div class="d" id="auto_${it.id}" style="display:none;color:var(--ok);font-weight:600">${it.id=="cyc"?"✔ Dilewati otomatis: menu Cycle Count hanya ada di iPhone 15 ke atas.":"✔ Terisi otomatis: seri ini tidak memiliki fitur ini. Ubah jika tipe yang dipilih salah."}</div>`;
       if(it.k=="sel"){
-        if(it.id=="tipe")h+=dslHTML();
+        if(it.id=="tipe")h+=dslHTML()+`<div class="sub">Warna device</div><div class="opts" id="opts_warna"></div><div class="sub">Tipe (daftar)</div>`;
         h+=`<select data-id="${it.id}"><option value="">— pilih tipe —</option>`+DEV.map(d=>`<option ${S[it.id]===d[0]?"selected":""}>${esc(d[0])}</option>`).join("")+`<option ${S[it.id]==="Lainnya"?"selected":""}>Lainnya</option></select>`;
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional, cth: tipe lain)" value="${esc(N[it.id]||"")}">`;
       }else if(it.k=="r"||it.k=="m"){
-        if(it.id=="warna")h+=`<div class="opts" id="opts_warna"></div>`;
+        if(it.id=="warna")h+="";  // pilihan warna ditampilkan di bagian tipe device
         else if(it.id=="storage")h+=`<div class="opts" id="opts_storage"></div>`;
         else h+=`<div class="opts">`+it.o.map(o=>{
           const sel=it.k=="r"?S[it.id]===cl(o):(S[it.id]||[]).includes(cl(o));
@@ -1089,11 +1105,11 @@ function refresh(){
   let total=0;
   for(const it of ALL){
     const l=level(it),el=$("#it_"+it.id);
-    const vis=shown(it);el.style.display=vis?"":"none";
+    const vis=shown(it);el.style.display=vis&&it.id!=="warna"?"":"none";
     if(!vis){el.classList.remove("ok","bad","cx","miss");continue}
     total++;
     el.classList.remove("ok","bad","cx","miss");
-    if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))el.classList.add("miss");
+    if(reqTried&&l<0&&(it.k=="r"||it.k=="m"||it.k=="sel"))(it.id=="warna"?$("#it_tipe"):el).classList.add("miss");
     if(l>=0){done++;el.classList.add(l==2?"cx":l==1?"bad":"ok")}
     if(l==2)cx.push(nm(it));
   }
@@ -1117,10 +1133,10 @@ document.addEventListener("input",e=>{
   if(t.dataset.note)N[t.dataset.note]=t.value;
   else if(t.dataset.id){
     const it=ALL.find(x=>x.id==t.dataset.id);
-    if(it.k=="r")S[it.id]=t.value;
+    if(it.k=="r"){S[it.id]=t.value;if(it.id=="warna")dslSetPhoto()}
     else if(it.k=="sel"){
       S[it.id]=t.value;
-      if(it.id=="tipe"){document.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",x.dataset.t===S.tipe));if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto()}
+      if(it.id=="tipe"){document.querySelectorAll(".dcard").forEach(x=>x.classList.toggle("sel",x.dataset.t===S.tipe));if(S.warna&&!colorsFor().includes(S.warna))delete S.warna;if(S.storage&&!storageFor().includes(S.storage))delete S.storage;renderColors();applyAuto();dslSetPhoto()}
     }else if(it.k=="m"){
       let a=S[it.id]||[];
       const EX=v=>v==cl(it.o[0])||v.indexOf("Tidak dicek")==0||v.indexOf("Tidak ada di seri")==0||v.indexOf("Tidak ada TrueDepth")==0||v.indexOf("Tidak ada box")==0;
@@ -1227,7 +1243,7 @@ $("#rep").onclick=async()=>{
     nb.style.display="block";
     nb.innerHTML="⚠️ Masih ada <b>"+ms.length+" poin belum dipilih</b>. Semua pilihan wajib diisi sebelum Check Status Device. Poin yang belum dipilih ditandai merah:<ul>"+ms.map(i=>"<li>"+esc(nm(i))+"</li>").join("")+"</ul>";
     b0.textContent="Masih ada "+ms.length+" poin kosong";setTimeout(()=>b0.textContent="Check Status Device",3000);
-    const first=$("#it_"+ms[0].id);if(first)first.scrollIntoView({behavior:"smooth",block:"center"});
+    const first=$("#it_"+(ms[0].id=="warna"?"tipe":ms[0].id));if(first)first.scrollIntoView({behavior:"smooth",block:"center"});
     $("#res").style.display="none";
     return;
   }
