@@ -68,6 +68,35 @@ section{margin-bottom:16px}
 body.view .rshare,body.view #resBack,body.view .foot,body.view #steps,body.view .bar,body.view #pt,body.view #ofl,body.view #tm,body.view #ts,body.view #tr,body.view #warn,body.view #need,body.view #intro{display:none!important}
 body.view .rview{display:block}body.view main{padding-bottom:24px}
 .vbad{margin:24px 0;padding:16px;border-radius:12px;background:rgba(220,38,38,.1);border:1px solid var(--cx);font-size:14px}
+.phg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.phs{position:relative;aspect-ratio:3/4;border:2px dashed var(--bd);border-radius:12px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;text-align:center;cursor:pointer;overflow:hidden;color:var(--tx);font:inherit;transition:border-color .2s}
+.phs .pi{font-size:26px;opacity:.7}.phs b{font-size:13.5px}.phs small{font-size:11px;color:var(--mu);line-height:1.3}
+.phs.has{border-style:solid;border-color:var(--ok);padding:0}
+.phs img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:phIn .35s ease}
+.phs .pl{position:absolute;left:6px;bottom:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px}
+.phx{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:15px;line-height:28px;padding:0;z-index:1}
+.phs.add{aspect-ratio:auto;min-height:84px;grid-column:1/-1}
+.phwarn{font-size:11.5px;color:var(--bad);margin-top:6px}
+@keyframes phIn{from{opacity:0;transform:scale(1.04)}to{opacity:1;transform:none}}
+.proof{display:none;margin-top:8px;animation:infoIn .3s ease}.proof.on{display:block}
+.proof .pr{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.proof .pbt{padding:7px 12px;border-radius:999px;border:1px dashed var(--bad);background:rgba(217,119,6,.08);color:var(--bad);font:inherit;font-size:13px;font-weight:600}
+.proof .pt{position:relative;width:64px;height:64px;border-radius:10px;overflow:hidden;border:1px solid var(--bd)}.proof .pt img{width:100%;height:100%;object-fit:cover}
+.proof .pt .phx{width:22px;height:22px;line-height:22px;font-size:12px;top:3px;right:3px}
+#rgal{margin:0 0 12px}#rgal .gh{font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+#rgal .gs{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+#rgal .gt{flex:0 0 96px;height:128px;border-radius:10px;overflow:hidden;position:relative;border:1px solid var(--bd);scroll-snap-align:start;padding:0;background:var(--bg);cursor:pointer;opacity:0;animation:rowIn .35s ease forwards;animation-delay:var(--d,0ms)}
+#rgal .gt img{width:100%;height:100%;object-fit:cover}#rgal .gt span{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.65));color:#fff;font-size:10.5px;font-weight:600;padding:12px 6px 4px;text-align:left}
+#rgal .gt.m{border:2px solid var(--bad)}
+.rrow .rph{font-size:13px;margin-left:2px}
+#pop .pph{display:flex;gap:8px;overflow-x:auto;margin:8px 0}#pop .pph button{flex:0 0 auto;width:110px;height:110px;border-radius:10px;overflow:hidden;border:1px solid var(--bd);padding:0}#pop .pph img{width:100%;height:100%;object-fit:cover}
+#lb{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0);display:none;flex-direction:column;align-items:center;justify-content:center;transition:background .25s}
+#lb.show{display:flex}#lb.on{background:rgba(0,0,0,.92)}
+#lb img{max-width:100%;max-height:78vh;object-fit:contain;opacity:0;transform:scale(.97);transition:opacity .25s,transform .25s}#lb.on img.ld2{opacity:1;transform:none}
+#lb .lc{color:#fff;font-size:14px;font-weight:600;margin-top:12px;text-align:center;padding:0 16px}#lb .lc small{display:block;font-weight:400;opacity:.7;margin-top:2px}
+#lb .lx{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:20px}
+#lb .ln{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:56px;border:0;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;font-size:24px}#lb .lp{left:8px}#lb .lnx{right:8px}
+.simu{font-size:11.5px;color:var(--mu);margin-top:8px;padding:6px 8px;border-radius:8px;background:var(--bg);border:1px dashed var(--bd)}
 #cfb{display:none;width:100%;margin:12px 0 0;padding:10px;border:1px solid var(--ac);border-radius:10px;background:var(--bg);color:var(--tx);font:13px/1.4 inherit;resize:none}#cfb.on{display:block}
 @media(prefers-reduced-motion:reduce){.rrow,#rsum{animation:none;opacity:1}}
 /* Gambar muncul halus: transparan sampai selesai dimuat, lalu fade in; diulang setiap kali gambar ditampilkan lagi */
@@ -185,11 +214,12 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
   <div class="intro" id="intro"><b>Checklist ini membantu memastikan kondisi iPhone sesuai dengan deskripsi penjual, sehingga risiko penipuan dan unit yang tidak sesuai dapat diminimalkan.</b>
     <div class="d">Petunjuk: teks abu-abu di bawah judul setiap poin menjelaskan cara pengecekan. Setelah jawaban dipilih, keterangan dan alasan pengecekan akan muncul dalam pop up, dan dapat dibuka kembali melalui tombol ⓘ Lihat keterangan. Semua poin wajib diisi sebelum menekan Check Status Device.</div></div>
   <div id="warn"></div>
+  <input type="file" id="phIn" accept="image/*" hidden><div id="lb"><button class="lx" type="button" aria-label="Tutup">✕</button><button class="ln lp" type="button" aria-label="Sebelumnya">‹</button><img alt=""><button class="ln lnx" type="button" aria-label="Berikutnya">›</button><div class="lc"></div></div>
   <div id="pop" role="dialog" aria-modal="true" aria-labelledby="popT"><div class="pc"><div class="pk">Keterangan</div><h3 id="popT"></h3><div id="popA"></div><div id="popB"></div><button type="button" class="pb" id="popX">Mengerti</button></div></div>
   <div id="need"></div>
   <div id="form"></div>
   <div id="res"><div class="scount">Hasil akhir</div><h2>Hasil Check Status Device</h2>
-    <div id="rsum"></div>
+    <div id="rsum"></div><div id="rgal" hidden></div>
     <div class="rgrid"><div class="rphoto"><div id="pimg"></div><div id="pcap"></div></div>
       <div class="rcol"><div class="rtabs"><button type="button" class="on" data-rf="all">Semua</button><button type="button" data-rf="min" id="rfMin">Minus</button></div><div id="rlist"></div><div class="rhint" id="rhint">↕ Geser untuk melihat semua poin</div></div></div>
     <div class="rshare" id="rshare"><button type="button" class="wa" id="resWA">Kirim link hasil ke WhatsApp</button></div>
@@ -561,6 +591,19 @@ const SEC=[
 "Tidak bisa dipastikan!"
 ],
 "n": 1
+}
+]
+},
+{
+"h": "Foto Kondisi Unit",
+"skip": 1,
+"d": "Opsional. Ambil foto asli unit dari sudut berikut sebagai bukti kondisi. Foto akan ditampilkan pada halaman hasil.",
+"i": [
+{
+"id": "foto",
+"t": "Foto kondisi unit",
+"k": "photo",
+"s": "Foto kondisi"
 }
 ]
 },
@@ -1685,7 +1728,7 @@ document.addEventListener("load",e=>markImg(e.target),true);
 document.addEventListener("error",e=>markImg(e.target),true);
 const markLoaded=()=>document.querySelectorAll(".ex img,#pimg img,.dcard .dimg img").forEach(im=>{if(im.complete)markImg(im)});
 // ===== Per bagian (wizard): satu bagian tampil, pindah dengan animasi geser =====
-const STEPKEY=KEY+"_step2";
+const STEPKEY=KEY+"_step3";
 let STEP=0;try{STEP=+localStorage.getItem(STEPKEY)||0}catch(e){}
 const secVis=i=>SEC[i].i.some(shown);
 const visSecs=()=>SEC.map((s,i)=>i).filter(secVis);
@@ -1761,13 +1804,15 @@ function build(){
           return `<label><input type="${it.k=="r"?"radio":"checkbox"}" name="${it.id}" class="${c}" data-id="${it.id}" value="${esc(cl(o))}" ${sel?"checked":""}><span>${cl(o)}</span></label>`}).join("")+`</div>`;
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional)" value="${esc(N[it.id]||"")}">`;
       }else if(it.k=="t")h+=`<input type="text" data-id="${it.id}" placeholder="${it.ph||""}" value="${esc(S[it.id]||"")}">`;
+      else if(it.k=="photo")h+=`<div class="phg" id="phg"></div><div class="phwarn">⚠️ Hindari IMEI, nomor seri, atau data pribadi terlihat di foto.</div><div class="simu">Foto tersimpan di HP ini dan dapat dikirim bersama link hasil melalui tombol Kirim ke WhatsApp. Foto akan terhapus saat Reset Form.</div>`;
       else h+=`<textarea data-id="${it.id}" placeholder="Tulis di sini… (kosongkan jika tidak ada)">${esc(S[it.id]||"")}</textarea>`;
+      if(it.o&&it.o.some(o=>lv(o)>=1))h+=`<div class="proof" id="proof_${it.id}"><div class="pr"></div></div>`;
       h+=`<button type="button" class="info" id="info_${it.id}" data-info="${it.id}">ⓘ Lihat keterangan</button></div>`;
     }
     h+=`<div class="snav"><button type="button" class="prev" data-nav="-1">← Sebelumnya</button><button type="button" class="next p" data-nav="1">Lanjut →</button></div></section>`;
   }
   $("#form").innerHTML=h;
-  renderColors();initDSL();
+  renderColors();initDSL();renderSlots();
   goStep(STEP,false);markLoaded();
 }
 
@@ -1780,12 +1825,58 @@ function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
 }
 const gv=i=>Array.isArray(S[i.id])?S[i.id].join(" + "):S[i.id];
 const nm=i=>i.s||i.t;
+// ===== Foto kondisi unit (preview: disimpan di memori HP) =====
+const SLOTS=[["depan","Depan","Layar mati, seluruh bodi terlihat"],["belakang","Belakang","Bodi & kamera belakang"],["kiri","Sisi kiri","Frame & tombol volume"],["kanan","Sisi kanan","Frame & tombol power"],["bawah","Atas & bawah","Port charger & speaker"],["layar","Layar putih","Brightness penuh"],["dus","Kelengkapan dus","Dus, label & isi (khusus iBox)"]];
+const slotOn=k=>k!=="dus"||S.asal==="iBox (resmi)";
+const PH={},PHB={};let PHT=null; // PH: url tampilan, PHB: file foto (disimpan di IndexedDB HP checker)
+const phUrl=k=>(PH[k]||[]);
+const PDB=()=>new Promise((ok,no)=>{try{const r=indexedDB.open("cek_iphone_foto",1);r.onupgradeneeded=()=>r.result.createObjectStore("ph");r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}});
+async function phSave(k){if(VIEW)return;try{const db=await PDB(),tx=db.transaction("ph","readwrite");if((PHB[k]||[]).length)tx.objectStore("ph").put(PHB[k],k);else tx.objectStore("ph").delete(k)}catch(e){}}
+async function phLoad(){if(VIEW)return;try{const db=await PDB();const st=db.transaction("ph").objectStore("ph");
+  const keys=await new Promise(r=>{const q=st.getAllKeys();q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])});
+  for(const k of keys){const v=await new Promise(r=>{const q=db.transaction("ph").objectStore("ph").get(k);q.onsuccess=()=>r(q.result||[]);q.onerror=()=>r([])});PHB[k]=v;PH[k]=v.map(b=>URL.createObjectURL(b))}
+  renderSlots();renderProof()}catch(e){}}
+async function phClear(){for(const k in PH){PH[k].forEach(u=>URL.revokeObjectURL(u));delete PH[k];delete PHB[k]}try{const db=await PDB();db.transaction("ph","readwrite").objectStore("ph").clear()}catch(e){}}
+function renderSlots(){const g=$("#phg");if(!g)return;
+  g.innerHTML=SLOTS.filter(([k])=>slotOn(k)).map(([k,t,d])=>{const p=phUrl(k)[0];return p?`<div class="phs has" data-ph="${k}"><img src="${p}" alt="${t}"><span class="pl">${t}</span><button type="button" class="phx" data-phx="${k}|0" aria-label="Hapus foto">✕</button></div>`:`<button type="button" class="phs" data-ph="${k}"><span class="pi">📷</span><b>${t}</b><small>${d}</small></button>`}).join("")
+   +phUrl("lain").map((p,i)=>`<div class="phs has" data-ph="lain"><img src="${p}" alt="Foto tambahan"><span class="pl">Tambahan ${i+1}</span><button type="button" class="phx" data-phx="lain|${i}" aria-label="Hapus foto">✕</button></div>`).join("")
+   +`<button type="button" class="phs add" data-ph="lain"><span class="pi">＋</span><b>Foto tambahan</b><small>Detail minus, aksesori, atau kondisi lain</small></button>`}
+function renderProof(){for(const it of ALL){const e=$("#proof_"+it.id);if(!e)continue;const on=level(it)>=1;e.classList.toggle("on",on);if(!on)continue;
+  e.querySelector(".pr").innerHTML=phUrl("m_"+it.id).map((p,i)=>`<div class="pt"><img src="${p}" alt="Foto bukti"><button type="button" class="phx" data-phx="m_${it.id}|${i}" aria-label="Hapus">✕</button></div>`).join("")+`<button type="button" class="pbt" data-ph="m_${it.id}">📷 ${phUrl("m_"+it.id).length?"Tambah":"Tambah foto bukti"}</button>`}}
+function shrink(file){return new Promise(res=>{const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const m=1280,s=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);c.toBlob(b=>res(b),"image/jpeg",.8)};im.onerror=()=>res(null);im.src=u})}
+document.addEventListener("click",e=>{
+  const x=e.target.closest("[data-phx]");if(x){e.preventDefault();e.stopPropagation();const[k,i]=x.dataset.phx.split("|");const u=(PH[k]||[]).splice(+i,1)[0];(PHB[k]||[]).splice(+i,1);if(u)URL.revokeObjectURL(u);phSave(k);renderSlots();renderProof();return}
+  const b=e.target.closest("[data-ph]");if(b&&!b.classList.contains("has")){PHT=b.dataset.ph;$("#phIn").value="";$("#phIn").click();return}
+  if(b&&b.classList.contains("has")){openLB(allPhotos().findIndex(p=>p.src===b.querySelector("img").getAttribute("src")))}
+},true);
+$("#phIn").addEventListener("change",async e=>{const f=e.target.files[0];if(!f||!PHT)return;const b=await shrink(f);if(!b)return;const u=URL.createObjectURL(b),k=PHT;
+  if(k=="lain"||k.startsWith("m_")){(PH[k]=PH[k]||[]).push(u);(PHB[k]=PHB[k]||[]).push(b)}else{(PH[k]||[]).forEach(x=>URL.revokeObjectURL(x));PH[k]=[u];PHB[k]=[b]}
+  phSave(k);renderSlots();renderProof()});
+function allPhotos(){const a=[];
+  for(const[k,t]of SLOTS)if(slotOn(k))phUrl(k).forEach((src,i)=>a.push({src,t,k,b:PHB[k][i]}));
+  phUrl("lain").forEach((src,i)=>a.push({src,t:"Foto tambahan "+(i+1),k:"lain",b:PHB.lain[i]}));
+  for(const it of ALL)if(level(it)>=1)phUrl("m_"+it.id).forEach((src,i)=>a.push({src,t:nm(it)+" · "+gv(it),k:"m_"+it.id,m:1,b:PHB["m_"+it.id][i]}));
+  return a}
+let LBI=0,LBA=[];
+function openLB(i,list){LBA=list||allPhotos();if(!LBA.length)return;LBI=Math.max(0,i);const l=$("#lb");l.classList.add("show");void l.offsetWidth;l.classList.add("on");showLB()}
+function showLB(){const p=LBA[LBI],im=$("#lb img");im.classList.remove("ld2");setTimeout(()=>{im.onload=()=>im.classList.add("ld2");im.src=p.src;if(im.complete)im.classList.add("ld2")},120);
+  $("#lb .lc").innerHTML=`${esc(p.t)}<small>${LBI+1} / ${LBA.length}${p.m?" · foto bukti minus":""}</small>`;$("#lb .lp").style.visibility=LBI>0?"visible":"hidden";$("#lb .lnx").style.visibility=LBI<LBA.length-1?"visible":"hidden"}
+function closeLB(){const l=$("#lb");l.classList.remove("on");setTimeout(()=>l.classList.remove("show"),250)}
+$("#lb .lx").onclick=closeLB;$("#lb .lp").onclick=()=>{if(LBI>0){LBI--;showLB()}};$("#lb .lnx").onclick=()=>{if(LBI<LBA.length-1){LBI++;showLB()}};
+$("#lb").addEventListener("click",e=>{if(e.target.id=="lb")closeLB()});
+{let x0=null;$("#lb").addEventListener("touchstart",e=>{x0=e.touches[0].clientX},{passive:true});$("#lb").addEventListener("touchend",e=>{if(x0===null)return;const d=e.changedTouches[0].clientX-x0;if(d<-50)$("#lb .lnx").click();else if(d>50)$("#lb .lp").click();x0=null})}
+function renderGallery(){const g=$("#rgal");const a=allPhotos();g.hidden=!a.length;if(!a.length){g.innerHTML="";return}
+  g.innerHTML=`<div class="gh">📷 Foto kondisi asli (${a.length})</div><div class="gs">`+a.map((p,i)=>`<button type="button" class="gt${p.m?" m":""}" data-lb="${i}" style="--d:${i*40}ms"><img src="${p.src}" alt="${esc(p.t)}"><span>${p.m?"⚠️ ":""}${esc(p.t)}</span></button>`).join("")+`</div>`}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-lb]");if(b)openLB(+b.dataset.lb);const q=e.target.closest("[data-lbm]");if(q){const a=allPhotos();openLB(a.findIndex(p=>p.src===q.dataset.lbm))}});
+
 // ===== Pop up keterangan =====
 const visEl=e=>e&&e.style.display!=="none";
 function infoHTML(id){
   const box=$("#it_"+id);if(!box)return "";
   let h=[...box.querySelectorAll(":scope>.why")].filter(visEl).map(e=>`<div class="why">${e.innerHTML}</div>`).join("");
+  const fp=phUrl("m_"+id);
   const d=$("#dyn_"+id);if(d&&d._t)h+=`<div class="oem"><div style="margin-bottom:4px">Penjelasan:</div><div style="font-weight:400">${d._t}</div></div>`;
+  if(fp.length&&ALL.find(x=>x.id==id)&&level(ALL.find(x=>x.id==id))>=1)h+=`<div class="pph">`+fp.map(u=>`<button type="button" data-lbm="${u}"><img src="${u}" alt="Foto bukti"></button>`).join("")+`</div>`;
   return h;
 }
 const answered=it=>{const v=S[it.id];return Array.isArray(v)?v.length>0:!!(v&&String(v).trim())};
@@ -1826,6 +1917,7 @@ function refresh(){
   $("#pb").style.width=(done/total*100)+"%";
   $("#pt").textContent=done+" / "+total+" terisi";
   for(const it of ALL){const b=$("#info_"+it.id);if(b)b.classList.toggle("on",answered(it)&&!!infoHTML(it.id))}
+  renderProof();{const di=slotOn("dus");if(di!==window._dus){window._dus=di;renderSlots()}}
   const w=$("#warn");
   if(cx.length){w.style.display="block";w.innerHTML="⚠️ PERTIMBANGKAN KEMBALI SEBELUM MEMBELI — ditemukan minus serius:<ul>"+cx.map((t,k)=>"<li><a href=\"#it_"+cxi[k]+"\" data-go=\""+cxi[k]+"\">"+t+"</a></li>").join("")+"</ul><div style=\"font-weight:400;font-size:13px;margin-top:4px\">Ketuk poin di atas untuk melihat penjelasannya.</div>"}
   else w.style.display="none";
@@ -1897,7 +1989,7 @@ function renderStatus(){
       const l=level(it);let v=gv(it)||"—";if(it.id=="bat")v+="%";if(it.id=="cyc"&&!cycNA())v+=" siklus";if(N[it.id]&&N[it.id].trim())v+=" — "+N[it.id].trim();
       const na=NA.test(v)||(it.id=="cyc"&&cycNA()),c=na?"na":l==2?"c":l==1?"b":"ok";if(!na)n[c]++;if(c=="b"||c=="c")bad++;
       const inf=!!infoHTML(it.id);
-      rows+=`<button type="button" class="rrow ${c}" ${inf?`data-info="${it.id}"`:"disabled"} style="--d:${Math.min(k++,30)*28}ms"><span class="ric">${na?"–":c=="c"?"✕":c=="b"?"!":"✓"}</span><span class="rtx"><b>${esc(nm(it))}</b><small>${esc(v)}</small></span>${inf?'<span class="rch">›</span>':""}</button>`;
+      rows+=`<button type="button" class="rrow ${c}" ${inf?`data-info="${it.id}"`:"disabled"} style="--d:${Math.min(k++,30)*28}ms"><span class="ric">${na?"–":c=="c"?"✕":c=="b"?"!":"✓"}</span><span class="rtx"><b>${esc(nm(it))}</b><small>${esc(v)}</small></span>${phUrl("m_"+it.id).length&&l>=1?'<span class="rph">📷</span>':""}${inf?'<span class="rch">›</span>':""}</button>`;
     }
     h+=`<div class="rsec${bad?"":" e"}">${esc(s.h.replace(/ \(Settings\)/,""))}</div>`+rows;
   }
@@ -1905,7 +1997,8 @@ function renderStatus(){
   const r=$("#rsum"),lvl=n.c?"c":n.b?"b":"ok";
   r.className=lvl;
   r.innerHTML=`<div class="rk">Rekomendasi</div><div class="rt">${lvl=="c"?"⛔ Pertimbangkan kembali sebelum membeli":lvl=="b"?"⚠️ Tinjau kembali sebelum membeli":"✅ Unit sesuai hasil pengecekan"}</div><div class="rc"><span style="color:var(--ok)">✓ ${n.ok} normal</span>${n.b?`<span style="color:var(--bad)">! ${n.b} minus</span>`:""}${n.c?`<span style="color:var(--cx)">✕ ${n.c} minus serius</span>`:""}</div>`;
-  $("#rfMin").textContent="Minus ("+(n.b+n.c)+")";
+  $("#rfMin").textContent="Minus ("+(n.b+n.c)+")";renderGallery();
+  const np=VIEW?0:allPhotos().length;$("#resWA").textContent=np?"Kirim link + "+np+" foto ke WhatsApp":"Kirim link hasil ke WhatsApp";
   box.querySelector(".rnone").style.display="none";box.scrollTop=0;
   const hint=$("#rhint");box.onscroll=()=>{hint.style.opacity=box.clientHeight>0&&box.scrollTop+box.clientHeight>=box.scrollHeight-8?0:1};setTimeout(box.onscroll,600);
 }
@@ -1983,7 +2076,10 @@ function goItem(id){
   if(STEP===sec)go();else{goStep(sec,true);setTimeout(go,420)}
 }
 for(const b of ["#warn","#need"])$(b).addEventListener("click",ev=>{const a=ev.target.closest("[data-go]");if(!a)return;ev.preventDefault();goItem(a.dataset.go);if(b=="#warn")setTimeout(()=>openInfo(a.dataset.go),900)});
-$("#resWA").onclick=()=>{const m=shareMsg(resultLink());window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener")};
+$("#resWA").onclick=async()=>{const m=shareMsg(resultLink()),ph=VIEW?[]:allPhotos();
+  if(ph.length&&navigator.canShare){const files=ph.map((p,i)=>new File([p.b],"foto-"+String(i+1).padStart(2,"0")+"-"+slug(p.t)+".jpg",{type:"image/jpeg"}));
+    if(navigator.canShare({files,text:m})){try{await navigator.share({files,text:m});return}catch(e){if(e&&e.name=="AbortError")return}}}
+  window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener")};
 window.addEventListener("hashchange",()=>{if(/^#r=/.test(location.hash)||VIEW)location.reload()});
 $("#rep").onclick=async()=>{
   const ms=missing(),b0=$("#rep"),nb=$("#need");
@@ -2066,7 +2162,7 @@ $("#rst").onclick=()=>{
   }
   clearTimeout(rstT);rstT=null;
   b.textContent="Reset Form";b.style.background="";b.style.color="";
-  S={};N={};reqTried=false;STEP=0;$("#need").style.display="none";
+  S={};N={};reqTried=false;STEP=0;$("#need").style.display="none";phClear();
   try{localStorage.removeItem(KEY)}catch(e){}
   build();refresh();
   $("#out").textContent="";$("#cfb").classList.remove("on");RES=false;goStep(0,true);
@@ -2090,7 +2186,7 @@ if(VIEW){
   }else{
     build();$("#form").innerHTML='<div class="vbad"><b>Link hasil tidak valid.</b><br>Link mungkin terpotong saat disalin atau isinya sudah diubah. Minta checker mengirim ulang link hasilnya.</div><div class="rview" style="display:block"><a href="./">Buka form cek baru</a></div>';
   }
-}else{build();applyAuto();save();refresh()}
+}else{build();applyAuto();save();refresh();phLoad()}
 if("serviceWorker" in navigator){
   // Muat ulang sekali saat versi baru aktif, supaya checker langsung melihat versi terbaru
   const hadCtl=!!navigator.serviceWorker.controller;let reloaded=false;
