@@ -1,4 +1,4 @@
-const C="cek-iphone-v49";
+const C="cek-iphone-v50";
 const CORE=["./","./index.html"];
 self.addEventListener("install",e=>{
   // cache:"reload" = ambil langsung dari server, jangan dari cache browser

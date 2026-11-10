@@ -62,6 +62,12 @@ section{margin-bottom:16px}
 #rlist.min .rrow.ok,#rlist.min .rrow.na,#rlist.min .rsec.e{display:none}
 #rlist .rnone{font-size:13px;color:var(--mu);padding:10px 4px}
 @keyframes rowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.rshare{display:flex;gap:8px;margin:14px 0 0}.rshare button{flex:1;padding:11px 10px;font-weight:600}
+.rshare .wa{flex:1.4;background:#25d366;border-color:#25d366;color:#fff}
+.rview{display:none;margin:14px 0 0}.rview a{display:block;text-align:center;padding:12px;border-radius:10px;background:var(--ac);color:#fff;font-weight:600;text-decoration:none}
+body.view .rshare,body.view #resBack,body.view .foot,body.view #steps,body.view .bar,body.view #pt,body.view #ofl,body.view #tm,body.view #ts,body.view #tr,body.view #warn,body.view #need,body.view #intro{display:none!important}
+body.view .rview{display:block}body.view main{padding-bottom:24px}
+.vbad{margin:24px 0;padding:16px;border-radius:12px;background:rgba(220,38,38,.1);border:1px solid var(--cx);font-size:14px}
 #rtext{margin:14px 0 4px;border:1px solid var(--bd);border-radius:12px;background:var(--card)}#rtext summary{padding:10px 12px;font-weight:600;cursor:pointer}#rtext pre{margin:0 12px 12px}
 @media(prefers-reduced-motion:reduce){.rrow,#rsum{animation:none;opacity:1}}
 /* Gambar muncul halus: transparan sampai selesai dimuat, lalu fade in; diulang setiap kali gambar ditampilkan lagi */
@@ -186,6 +192,8 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
     <div id="rsum"></div>
     <div class="rgrid"><div class="rphoto"><div id="pimg"></div><div id="pcap"></div></div>
       <div class="rcol"><div class="rtabs"><button type="button" class="on" data-rf="all">Semua</button><button type="button" data-rf="min" id="rfMin">Minus</button></div><div id="rlist"></div><div class="rhint" id="rhint">↕ Geser untuk melihat semua poin</div></div></div>
+    <div class="rshare" id="rshare"><button type="button" class="wa" id="resWA">Kirim link hasil ke WhatsApp</button><button type="button" id="resLink">Salin link hasil</button></div>
+    <div class="rview" id="rview"><a class="p" href="./" id="resNew">Buka form cek baru</a></div>
     <details id="rtext"><summary>Lihat teks laporan (untuk WhatsApp)</summary><pre id="out"></pre></details>
     <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang hasil</button></div></div>
 </main>
@@ -1393,10 +1401,12 @@ const SEC=[
 ];
 
 const KEY="cek_iphone_v3";
+const VIEW=/^#r=/.test(location.hash); // mode lihat hasil dari link: tidak menyentuh data checker
+let RTIME=0;
 let S={},N={};
 try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");S=j.S||{};N=j.N||{}}catch(e){}
 {const R={"Berfungsi, getaran normal (mendem)": "Berfungsi, getaran normal", "Naik sendiri": "Kecerahan naik otomatis", "Brightness stuck": "Kecerahan tidak berubah", "Layar delay": "Respons layar tertunda (delay)", "Ada bagian yg gabisa disentuh": "Ada area yang tidak bisa disentuh"};for(const k in S){const v=S[k];if(Array.isArray(v))S[k]=v.map(x=>R[x]||x);else if(R[v])S[k]=R[v]}}
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify({S,N}))}catch(e){}};
+const save=()=>{if(VIEW)return;try{localStorage.setItem(KEY,JSON.stringify({S,N}))}catch(e){}};
 const cl=o=>o.replace(/!+$/,""), lv=o=>o.endsWith("!!")?2:o.endsWith("!")?1:0;
 const $=s=>document.querySelector(s);
 let _c=0;SEC.forEach(s=>{if(!s.nonum)s.no=++_c});
@@ -1884,7 +1894,7 @@ function renderStatus(){
     const its=s.i.filter(it=>shown(it)&&!["tipe","warna","storage"].includes(it.id)&&!it.ns&&level(it)>=0);if(!its.length)continue;
     let rows="",bad=0;
     for(const it of its){
-      const l=level(it);let v=gv(it)||"—";if(it.id=="bat")v+="%";if(it.id=="cyc"&&!cycNA())v+=" siklus";
+      const l=level(it);let v=gv(it)||"—";if(it.id=="bat")v+="%";if(it.id=="cyc"&&!cycNA())v+=" siklus";if(N[it.id]&&N[it.id].trim())v+=" — "+N[it.id].trim();
       const na=NA.test(v)||(it.id=="cyc"&&cycNA()),c=na?"na":l==2?"c":l==1?"b":"ok";if(!na)n[c]++;if(c=="b"||c=="c")bad++;
       const inf=!!infoHTML(it.id);
       rows+=`<button type="button" class="rrow ${c}" ${inf?`data-info="${it.id}"`:"disabled"} style="--d:${Math.min(k++,30)*28}ms"><span class="ric">${na?"–":c=="c"?"✕":c=="b"?"!":"✓"}</span><span class="rtx"><b>${esc(nm(it))}</b><small>${esc(v)}</small></span>${inf?'<span class="rch">›</span>':""}</button>`;
@@ -1897,7 +1907,7 @@ function renderStatus(){
   r.innerHTML=`<div class="rk">Rekomendasi</div><div class="rt">${lvl=="c"?"⛔ Pertimbangkan kembali sebelum membeli":lvl=="b"?"⚠️ Tinjau kembali sebelum membeli":"✅ Unit sesuai hasil pengecekan"}</div><div class="rc"><span style="color:var(--ok)">✓ ${n.ok} normal</span>${n.b?`<span style="color:var(--bad)">! ${n.b} minus</span>`:""}${n.c?`<span style="color:var(--cx)">✕ ${n.c} minus serius</span>`:""}</div>`;
   $("#rfMin").textContent="Minus ("+(n.b+n.c)+")";
   box.querySelector(".rnone").style.display="none";box.scrollTop=0;
-  const hint=$("#rhint");box.onscroll=()=>{hint.style.opacity=box.scrollTop+box.clientHeight>=box.scrollHeight-8?0:1};setTimeout(box.onscroll,50);
+  const hint=$("#rhint");box.onscroll=()=>{hint.style.opacity=box.clientHeight>0&&box.scrollTop+box.clientHeight>=box.scrollHeight-8?0:1};setTimeout(box.onscroll,600);
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rf]");if(!b)return;
   document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));
@@ -1923,7 +1933,7 @@ function showUnit(){
 function report(){
   const L=[];
   L.push("*HASIL CEK IPHONE*");
-  L.push("Waktu: "+new Date().toLocaleString("id-ID"));
+  L.push("Waktu: "+new Date(RTIME||Date.now()).toLocaleString("id-ID"));
   const unit=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
   L.push("Unit: "+(unit||"(belum diisi)")+(N.tipe?" ("+N.tipe+")":""));
   L.push("Asal unit: "+(S.asal||"(belum diisi)"));
@@ -1973,6 +1983,9 @@ function goItem(id){
   if(STEP===sec)go();else{goStep(sec,true);setTimeout(go,420)}
 }
 for(const b of ["#warn","#need"])$(b).addEventListener("click",ev=>{const a=ev.target.closest("[data-go]");if(!a)return;ev.preventDefault();goItem(a.dataset.go);if(b=="#warn")setTimeout(()=>openInfo(a.dataset.go),900)});
+$("#resWA").onclick=()=>{const m=shareMsg(resultLink());window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener")};
+$("#resLink").onclick=async()=>{const b=$("#resLink"),ok=await copyText(resultLink(),$("#out"));b.textContent=ok?"✔ Link tersalin":"Gagal menyalin";setTimeout(()=>b.textContent="Salin link hasil",2500)};
+window.addEventListener("hashchange",()=>{if(/^#r=/.test(location.hash)||VIEW)location.reload()});
 $("#rep").onclick=async()=>{
   const ms=missing(),b0=$("#rep"),nb=$("#need");
   if(ms.length){
@@ -1993,6 +2006,46 @@ $("#rep").onclick=async()=>{
   b.textContent=ok?"✔ Tersalin! Tempel di WhatsApp":"Tekan lama teks, lalu Salin";
   setTimeout(()=>b.textContent="Check Status Device",3500);
 };
+// ===== Link hasil (data hasil disimpan di dalam link, tanpa server) =====
+// PENTING: urutan LINK_IDS dan urutan opsi tiap poin jangan diubah, supaya link lama tetap terbaca.
+// Poin baru ditambahkan di akhir LINK_IDS, opsi baru ditambahkan di akhir daftar opsi.
+const LINK_IDS=["asal","bright","timer","box","fisik","btn","silent","action","camctl","senter","lcd","lcd_ori","wifi","bt","bat","cyc","riw","model","modem","sim","autob","magsafe","spk","fid","panic","mic","comp","touch","nfc","c05","c1","aperture","c2","c5","cpot","cvid","imei_m","kartu","prox","loud","ceirku","bc","ceir_tgl"];
+const A64="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
+const chk=t=>{let h=0x811c9dc5;for(const c of t+"|authn.id"){h^=c.charCodeAt(0);h=Math.imul(h,0x01000193)>>>0}return h.toString(36).padStart(7,"0")};
+const b64u=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+const unb64u=t=>decodeURIComponent(escape(atob(t.replace(/-/g,"+").replace(/_/g,"/"))));
+const tslug=t=>slug(t).replace(/^iphone-/,"");
+function encodeResult(){
+  let ans="";const tv=[],notes={};
+  for(const id of LINK_IDS){const it=ALL.find(x=>x.id==id);const v=S[id];
+    if(!it){ans+="0";continue}
+    if(it.k=="r"){const i=v?it.o.findIndex(o=>cl(o)===v):-1;ans+=A64[i+1]||"0"}
+    else if(it.k=="m"){let m=0;(v||[]).forEach(x=>{const i=it.o.findIndex(o=>cl(o)===x);if(i>=0)m|=1<<i});ans+=A64[m]||"0"}
+    else tv.push(String(v||"").replace(/[^0-9a-zA-Z]/g,"").slice(0,6));
+    if(N[id]&&N[id].trim())notes[id]=N[id].trim().slice(0,200);
+  }
+  const pl=["1",Math.floor(Date.now()/60000).toString(36),tslug(S.tipe||""),slug(S.warna||""),(S.storage||"").replace(/[^0-9A-Za-z]/g,""),ans,tv.join(","),Object.keys(notes).length?b64u(JSON.stringify(notes)):""].join(".");
+  return pl+"."+chk(pl);
+}
+function decodeResult(code){
+  const f=code.split(".");if(f.length!==9||f[0]!=="1")return null;
+  const pl=f.slice(0,8).join(".");if(chk(pl)!==f[8])return null;
+  const R={};const tp=DEV.map(d=>d[0]).concat(["Lainnya"]).find(n=>tslug(n)===f[2]);if(!tp)return null;R.tipe=tp;
+  const S0=S;S=R;const w=colorsFor().find(c=>slug(c)===f[3]);if(w)R.warna=w;const st=storageFor().find(x=>x.replace(/[^0-9A-Za-z]/g,"")===f[4]);if(st)R.storage=st;S=S0;
+  const tv=f[6]?f[6].split(","):[];let k=0,q=0;
+  LINK_IDS.forEach(id=>{const it=ALL.find(x=>x.id==id);if(!it){q++;return}const n=it.k=="r"||it.k=="m"?Math.max(0,A64.indexOf(f[5][q++]||"0")):0;
+    if(it.k=="r"){if(n>0&&it.o[n-1])R[id]=cl(it.o[n-1])}
+    else if(it.k=="m"){const a=it.o.filter((o,j)=>n&(1<<j)).map(cl);if(a.length)R[id]=a}
+    else{const v=tv[k++];if(v)R[id]=v}});
+  let notes={};try{if(f[7])notes=JSON.parse(unb64u(f[7]))}catch(e){}
+  return {S:R,N:notes,t:parseInt(f[1],36)*60000};
+}
+const resultLink=()=>location.origin+location.pathname+"#r="+encodeResult();
+function shareMsg(link){
+  const it=ALL.filter(i=>(i.k=="r"||i.k=="m")&&!i.ns&&shown(i));const c=it.filter(i=>level(i)==2).length,b=it.filter(i=>level(i)==1).length;
+  const rek=c?"⛔ Pertimbangkan kembali sebelum membeli ("+c+" minus serius"+(b?", "+b+" minus":"")+")":b?"⚠️ Tinjau kembali sebelum membeli ("+b+" minus)":"✅ Unit sesuai hasil pengecekan";
+  return "*Hasil Cek iPhone · Authn.id*\n"+[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ")+"\n"+rek+"\n\nLihat detail hasil:\n"+link;
+}
 async function copyText(t,o){
   let ok=false;
   try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
@@ -2025,7 +2078,18 @@ const fm=()=>{$("#tm").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":
 $("#ts").onclick=()=>{if(iv){clearInterval(iv);iv=null;$("#ts").textContent="Timer"}else{iv=setInterval(()=>{sec++;fm()},1000);$("#ts").textContent="Stop"}};
 $("#tr").onclick=()=>{clearInterval(iv);iv=null;sec=0;fm();$("#ts").textContent="Timer"};
 
-build();applyAuto();save();refresh();
+if(VIEW){
+  const d=decodeResult(location.hash.slice(3));document.body.classList.add("view");
+  if(d){
+    S=d.S;N=d.N;RTIME=d.t;build();refresh();
+    $("#res .scount").textContent="Hasil cek · "+new Date(RTIME).toLocaleString("id-ID",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
+    $("#resCopy").textContent="Salin teks laporan";
+    showUnit();const o=$("#out");o.style.display="block";o.textContent=report();RES=true;goStep(-1,false);
+    document.title="Hasil Cek "+(S.tipe||"iPhone")+" · Authn.id";
+  }else{
+    build();$("#form").innerHTML='<div class="vbad"><b>Link hasil tidak valid.</b><br>Link mungkin terpotong saat disalin atau isinya sudah diubah. Minta checker mengirim ulang link hasilnya.</div><div class="rview" style="display:block"><a href="./">Buka form cek baru</a></div>';
+  }
+}else{build();applyAuto();save();refresh()}
 if("serviceWorker" in navigator){
   // Muat ulang sekali saat versi baru aktif, supaya checker langsung melihat versi terbaru
   const hadCtl=!!navigator.serviceWorker.controller;let reloaded=false;
