@@ -36,6 +36,34 @@ section{margin-bottom:16px}
 @keyframes pgOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-6px)}}
 @media(prefers-reduced-motion:reduce){.pg-in,.pg-out{animation:none}}
 #res h2{margin-top:4px}
+#rsum{border-radius:14px;padding:12px 14px;margin:6px 0 12px;background:rgba(22,163,74,.10);border:1px solid rgba(22,163,74,.35);animation:rowIn .4s ease both}
+#rsum.b{background:rgba(217,119,6,.10);border-color:rgba(217,119,6,.45)}#rsum.c{background:rgba(220,38,38,.09);border-color:rgba(220,38,38,.45)}
+#rsum .rk{font-size:12px;font-weight:600;color:var(--mu)}#rsum .rt{font-size:16px;font-weight:700;margin:2px 0 8px}
+#rsum .rc{display:flex;gap:6px;flex-wrap:wrap}#rsum .rc span{font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--card);border:1px solid var(--bd)}
+.rgrid{display:grid;grid-template-columns:42% 1fr;gap:10px;align-items:center}
+.rphoto{text-align:center}
+.rphoto #pimg img.pimgreal{max-width:100%;width:100%}
+.rphoto #pcap{font-weight:400;font-size:12.5px;line-height:1.35;margin-top:6px}.rphoto #pcap b{display:block;font-size:14px}
+.rtabs{display:flex;gap:6px;margin-bottom:8px}.rtabs button{flex:1;padding:6px 8px;border-radius:999px;border:1px solid var(--bd);background:var(--card);color:var(--tx);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .2s,color .2s}
+.rtabs button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.rsec{font-size:10.5px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em;margin:10px 2px 5px}.rsec:first-child{margin-top:0}
+.rrow{display:flex;width:100%;align-items:center;gap:8px;padding:7px 8px;margin:0 0 5px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;text-align:left;cursor:pointer;opacity:0;animation:rowIn .35s ease forwards;animation-delay:var(--d,0ms);transition:transform .15s}
+.rrow:active{transform:scale(.98)}.rrow[disabled]{cursor:default}
+.rrow .ric{flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;background:var(--ok)}
+.rrow.b{border-color:rgba(217,119,6,.5);background:rgba(217,119,6,.08)}.rrow.b .ric{background:var(--bad)}
+.rrow.c{border-color:rgba(220,38,38,.5);background:rgba(220,38,38,.07)}.rrow.c .ric{background:var(--cx)}
+.rrow.na{opacity:.55}.rrow.na .ric{background:var(--mu)}
+.rrow .rtx{flex:1;min-width:0;line-height:1.25}.rrow .rtx b{display:block;font-size:12.5px}.rrow .rtx small{display:block;font-size:11.5px;color:var(--mu);overflow-wrap:anywhere}
+.rrow .rch{color:var(--mu);font-size:18px;line-height:1}
+#rlist{height:clamp(340px,52vh,460px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:2px 2px 6px;scroll-behavior:smooth;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 14px,#000 calc(100% - 26px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,#000 14px,#000 calc(100% - 26px),transparent 100%)}
+#rlist::-webkit-scrollbar{width:3px}#rlist::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.rhint{font-size:11px;color:var(--mu);text-align:center;margin-top:4px;transition:opacity .3s}
+#rlist.min .rrow.ok,#rlist.min .rrow.na,#rlist.min .rsec.e{display:none}
+#rlist .rnone{font-size:13px;color:var(--mu);padding:10px 4px}
+@keyframes rowIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#rtext{margin:14px 0 4px;border:1px solid var(--bd);border-radius:12px;background:var(--card)}#rtext summary{padding:10px 12px;font-weight:600;cursor:pointer}#rtext pre{margin:0 12px 12px}
+@media(prefers-reduced-motion:reduce){.rrow,#rsum{animation:none;opacity:1}}
 /* Gambar muncul halus: transparan sampai selesai dimuat, lalu fade in; diulang setiap kali gambar ditampilkan lagi */
 .ex img,#pimg img,.dcard .dimg img{opacity:0;transition:opacity .45s ease,transform .45s ease}
 .ex img{transform:translateY(6px) scale(.99)}
@@ -154,7 +182,11 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
   <div id="pop" role="dialog" aria-modal="true" aria-labelledby="popT"><div class="pc"><div class="pk">Keterangan</div><h3 id="popT"></h3><div id="popA"></div><div id="popB"></div><button type="button" class="pb" id="popX">Mengerti</button></div></div>
   <div id="need"></div>
   <div id="form"></div>
-  <div id="res"><div class="scount">Hasil akhir</div><h2>Hasil Check Status Device</h2><div id="pimg"></div><div id="pcap"></div><pre id="out"></pre>
+  <div id="res"><div class="scount">Hasil akhir</div><h2>Hasil Check Status Device</h2>
+    <div id="rsum"></div>
+    <div class="rgrid"><div class="rphoto"><div id="pimg"></div><div id="pcap"></div></div>
+      <div class="rcol"><div class="rtabs"><button type="button" class="on" data-rf="all">Semua</button><button type="button" data-rf="min" id="rfMin">Minus</button></div><div id="rlist"></div><div class="rhint" id="rhint">↕ Geser untuk melihat semua poin</div></div></div>
+    <details id="rtext"><summary>Lihat teks laporan (untuk WhatsApp)</summary><pre id="out"></pre></details>
     <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang hasil</button></div></div>
 </main>
 <div class="foot">
@@ -1843,10 +1875,40 @@ const PHOTO_AS={"iPhone 6 Plus":"iPhone 6","iPhone 6s Plus":"iPhone 6s","iPhone 
   "iPhone 13 Pro Max":"iPhone 13 Pro","iPhone 14 Plus":"iPhone 14","iPhone 14 Pro Max":"iPhone 14 Pro",
   "iPhone 15 Plus":"iPhone 15","iPhone 15 Pro Max":"iPhone 15 Pro","iPhone 16 Plus":"iPhone 16","iPhone 16 Pro Max":"iPhone 16 Pro","iPhone 17 Pro Max":"iPhone 17 Pro","iPhone 18 Pro Max":"iPhone 18 Pro"};
 const FOTO_V=13; // naikkan setiap kali foto di img/produk diganti, supaya HP checker mengambil foto baru
+function renderStatus(){
+  const box=$("#rlist");if(!box)return;
+  const hd=document.querySelector("header");$("#res").style.setProperty("--rtop",((hd?hd.offsetHeight:0)+10)+"px");
+  const NA=/^(Tidak ada di seri|Tidak ada TrueDepth|Menu tidak tersedia|Tidak ada wireless)/;
+  let h="",k=0;const n={ok:0,b:0,c:0};
+  for(const s of SEC){
+    const its=s.i.filter(it=>shown(it)&&!["tipe","warna","storage"].includes(it.id)&&!it.ns&&level(it)>=0);if(!its.length)continue;
+    let rows="",bad=0;
+    for(const it of its){
+      const l=level(it);let v=gv(it)||"—";if(it.id=="bat")v+="%";if(it.id=="cyc"&&!cycNA())v+=" siklus";
+      const na=NA.test(v)||(it.id=="cyc"&&cycNA()),c=na?"na":l==2?"c":l==1?"b":"ok";if(!na)n[c]++;if(c=="b"||c=="c")bad++;
+      const inf=!!infoHTML(it.id);
+      rows+=`<button type="button" class="rrow ${c}" ${inf?`data-info="${it.id}"`:"disabled"} style="--d:${Math.min(k++,30)*28}ms"><span class="ric">${na?"–":c=="c"?"✕":c=="b"?"!":"✓"}</span><span class="rtx"><b>${esc(nm(it))}</b><small>${esc(v)}</small></span>${inf?'<span class="rch">›</span>':""}</button>`;
+    }
+    h+=`<div class="rsec${bad?"":" e"}">${esc(s.h.replace(/ \(Settings\)/,""))}</div>`+rows;
+  }
+  box.innerHTML=h+`<div class="rnone" style="display:none">Tidak ada minus yang ditemukan.</div>`;
+  const r=$("#rsum"),lvl=n.c?"c":n.b?"b":"ok";
+  r.className=lvl;
+  r.innerHTML=`<div class="rk">Rekomendasi</div><div class="rt">${lvl=="c"?"⛔ Pertimbangkan kembali sebelum membeli":lvl=="b"?"⚠️ Tinjau kembali sebelum membeli":"✅ Unit sesuai hasil pengecekan"}</div><div class="rc"><span style="color:var(--ok)">✓ ${n.ok} normal</span>${n.b?`<span style="color:var(--bad)">! ${n.b} minus</span>`:""}${n.c?`<span style="color:var(--cx)">✕ ${n.c} minus serius</span>`:""}</div>`;
+  $("#rfMin").textContent="Minus ("+(n.b+n.c)+")";
+  box.querySelector(".rnone").style.display="none";box.scrollTop=0;
+  const hint=$("#rhint");box.onscroll=()=>{hint.style.opacity=box.scrollTop+box.clientHeight>=box.scrollHeight-8?0:1};setTimeout(box.onscroll,50);
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-rf]");if(!b)return;
+  document.querySelectorAll("[data-rf]").forEach(x=>x.classList.toggle("on",x===b));
+  const L=$("#rlist"),m=b.dataset.rf=="min";L.classList.toggle("min",m);
+  L.querySelectorAll(".rrow").forEach((r,i)=>{r.style.animation="none";void r.offsetWidth;r.style.animation="";r.style.setProperty("--d",Math.min(i,30)*20+"ms")});
+  L.querySelector(".rnone").style.display=m&&!L.querySelector(".rrow.b,.rrow.c")?"block":"none";L.scrollTop=0;L.onscroll&&L.onscroll()});
 function showUnit(){
   const box=$("#pimg"),cap=$("#pcap");
   const info=[S.tipe,S.warna,S.storage].filter(Boolean).join(" • ");
-  cap.textContent=(info||"Data unit belum diisi")+(S.asal?"  |  "+S.asal:"");
+  cap.innerHTML=S.tipe?`<b>${esc(S.tipe)}</b>${esc([S.warna,S.storage].filter(Boolean).join(" • "))}${S.asal?`<br>${esc(S.asal)}`:""}`:"Data unit belum diisi";
+  renderStatus();
   box.innerHTML="";
   if(!S.tipe||!DM[S.tipe])return;
   box.innerHTML=phone2D(S.tipe,S.warna);
