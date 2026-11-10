@@ -68,7 +68,7 @@ section{margin-bottom:16px}
 body.view .rshare,body.view #resBack,body.view .foot,body.view #steps,body.view .bar,body.view #pt,body.view #ofl,body.view #tm,body.view #ts,body.view #tr,body.view #warn,body.view #need,body.view #intro{display:none!important}
 body.view .rview{display:block}body.view main{padding-bottom:24px}
 .vbad{margin:24px 0;padding:16px;border-radius:12px;background:rgba(220,38,38,.1);border:1px solid var(--cx);font-size:14px}
-#rtext{margin:14px 0 4px;border:1px solid var(--bd);border-radius:12px;background:var(--card)}#rtext summary{padding:10px 12px;font-weight:600;cursor:pointer}#rtext pre{margin:0 12px 12px}
+#cfb{display:none;width:100%;margin:12px 0 0;padding:10px;border:1px solid var(--ac);border-radius:10px;background:var(--bg);color:var(--tx);font:13px/1.4 inherit;resize:none}#cfb.on{display:block}
 @media(prefers-reduced-motion:reduce){.rrow,#rsum{animation:none;opacity:1}}
 /* Gambar muncul halus: transparan sampai selesai dimuat, lalu fade in; diulang setiap kali gambar ditampilkan lagi */
 .ex img,#pimg img,.dcard .dimg img{opacity:0;transition:opacity .45s ease,transform .45s ease}
@@ -192,10 +192,10 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
     <div id="rsum"></div>
     <div class="rgrid"><div class="rphoto"><div id="pimg"></div><div id="pcap"></div></div>
       <div class="rcol"><div class="rtabs"><button type="button" class="on" data-rf="all">Semua</button><button type="button" data-rf="min" id="rfMin">Minus</button></div><div id="rlist"></div><div class="rhint" id="rhint">↕ Geser untuk melihat semua poin</div></div></div>
-    <div class="rshare" id="rshare"><button type="button" class="wa" id="resWA">Kirim link hasil ke WhatsApp</button><button type="button" id="resLink">Salin link hasil</button></div>
+    <div class="rshare" id="rshare"><button type="button" class="wa" id="resWA">Kirim link hasil ke WhatsApp</button></div>
     <div class="rview" id="rview"><a class="p" href="./" id="resNew">Buka form cek baru</a></div>
-    <details id="rtext"><summary>Lihat teks laporan (untuk WhatsApp)</summary><pre id="out"></pre></details>
-    <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang hasil</button></div></div>
+    <pre id="out" hidden></pre><textarea id="cfb" readonly rows="4" aria-label="Link hasil"></textarea>
+    <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang link</button></div></div>
 </main>
 <div class="foot">
   <button class="p" id="rep">Check Status Device</button>
@@ -1984,7 +1984,6 @@ function goItem(id){
 }
 for(const b of ["#warn","#need"])$(b).addEventListener("click",ev=>{const a=ev.target.closest("[data-go]");if(!a)return;ev.preventDefault();goItem(a.dataset.go);if(b=="#warn")setTimeout(()=>openInfo(a.dataset.go),900)});
 $("#resWA").onclick=()=>{const m=shareMsg(resultLink());window.open("https://wa.me/?text="+encodeURIComponent(m),"_blank","noopener")};
-$("#resLink").onclick=async()=>{const b=$("#resLink"),ok=await copyText(resultLink(),$("#out"));b.textContent=ok?"✔ Link tersalin":"Gagal menyalin";setTimeout(()=>b.textContent="Salin link hasil",2500)};
 window.addEventListener("hashchange",()=>{if(/^#r=/.test(location.hash)||VIEW)location.reload()});
 $("#rep").onclick=async()=>{
   const ms=missing(),b0=$("#rep"),nb=$("#need");
@@ -1998,12 +1997,12 @@ $("#rep").onclick=async()=>{
     return;
   }
   nb.style.display="none";
-  const t=report(),o=$("#out"),b=$("#rep");
+  const o=$("#out"),b=$("#rep");
   showUnit();
-  o.style.display="block";o.textContent=t;
+  o.textContent=report();
   RES=true;goStep(-1,true);
-  const ok=await copyText(t,o);
-  b.textContent=ok?"✔ Tersalin! Tempel di WhatsApp":"Tekan lama teks, lalu Salin";
+  const ok=await copyText(shareMsg(resultLink()));
+  b.textContent=ok?"✔ Link hasil tersalin! Tempel di WhatsApp":"Salin manual dari kotak di bawah";
   setTimeout(()=>b.textContent="Check Status Device",3500);
 };
 // ===== Link hasil (data hasil disimpan di dalam link, tanpa server) =====
@@ -2050,11 +2049,13 @@ async function copyText(t,o){
   let ok=false;
   try{await navigator.clipboard.writeText(t);ok=true}catch(e){}
   if(!ok){try{const a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.focus();a.select();a.setSelectionRange(0,t.length);ok=document.execCommand("copy");a.remove()}catch(e){}}
-  if(!ok){const r=document.createRange();r.selectNodeContents(o);const s=getSelection();s.removeAllRanges();s.addRange(r)}
+  const f=$("#cfb");
+  if(!ok&&f){f.value=t;f.classList.add("on");f.focus();f.select();try{f.setSelectionRange(0,t.length)}catch(e){}}
+  else if(f)f.classList.remove("on");
   return ok;
 }
 $("#resBack").onclick=()=>goStep(LAST,true);
-$("#resCopy").onclick=async()=>{const o=$("#out"),b=$("#resCopy"),ok=await copyText(o.textContent,o);b.textContent=ok?"✔ Tersalin":"Tekan lama teks, lalu Salin";setTimeout(()=>b.textContent="Salin ulang hasil",2500)};
+$("#resCopy").onclick=async()=>{const b=$("#resCopy"),lbl=b.textContent,t=VIEW?location.href:shareMsg(resultLink()),ok=await copyText(t);b.textContent=ok?"✔ Tersalin":"Salin manual dari kotak di atas";setTimeout(()=>b.textContent=lbl,2500)};
 let rstT=null;
 $("#rst").onclick=()=>{
   const b=$("#rst");
@@ -2068,7 +2069,7 @@ $("#rst").onclick=()=>{
   S={};N={};reqTried=false;STEP=0;$("#need").style.display="none";
   try{localStorage.removeItem(KEY)}catch(e){}
   build();refresh();
-  const o=$("#out");o.style.display="none";o.textContent="";RES=false;goStep(0,true);
+  $("#out").textContent="";$("#cfb").classList.remove("on");RES=false;goStep(0,true);
   window.scrollTo({top:0,behavior:"smooth"});
 };
 
@@ -2083,8 +2084,8 @@ if(VIEW){
   if(d){
     S=d.S;N=d.N;RTIME=d.t;build();refresh();
     $("#res .scount").textContent="Hasil cek · "+new Date(RTIME).toLocaleString("id-ID",{day:"numeric",month:"long",year:"numeric",hour:"2-digit",minute:"2-digit"});
-    $("#resCopy").textContent="Salin teks laporan";
-    showUnit();const o=$("#out");o.style.display="block";o.textContent=report();RES=true;goStep(-1,false);
+    $("#resCopy").textContent="Salin link hasil";
+    showUnit();$("#out").textContent=report();RES=true;goStep(-1,false);
     document.title="Hasil Cek "+(S.tipe||"iPhone")+" · Authn.id";
   }else{
     build();$("#form").innerHTML='<div class="vbad"><b>Link hasil tidak valid.</b><br>Link mungkin terpotong saat disalin atau isinya sudah diubah. Minta checker mengirim ulang link hasilnya.</div><div class="rview" style="display:block"><a href="./">Buka form cek baru</a></div>';
