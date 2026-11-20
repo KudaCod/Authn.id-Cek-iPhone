@@ -819,6 +819,39 @@ const SEC=[
 ]
 },
 {
+"id": "eid",
+"t": "EID (nomor chip eSIM)",
+"img": [
+{
+"src": "img/contoh/contoh-eid-home.jpg",
+"when": "frhome"
+},
+{
+"src": "img/contoh/contoh-eid-15.jpg",
+"when": "frdi15"
+},
+{
+"src": "img/contoh/contoh-eid-1112.jpg",
+"when": "fr1112"
+},
+{
+"src": "img/contoh/contoh-eid-1314.jpg",
+"when": "fr1314"
+}
+],
+"k": "r",
+"s": "EID",
+"d": "Settings › General › About, gulir ke bawah sampai baris EID (Pengaturan › Umum › Mengenai › EID). Pastikan baris EID ada dan terisi deretan angka. Nomor EID tidak perlu dicatat atau dibagikan.",
+"w": [
+"EID (eUICC Identifier) adalah nomor identitas chip eSIM di dalam iPhone. Baris ini selalu muncul pada iPhone yang mendukung eSIM (mulai iPhone XS, XR, dan SE 2020), baik eSIM sedang dipakai maupun tidak.",
+"Jika EID tidak ada atau kosong, biasanya modem (baseband) atau chip eSIM tidak terbaca oleh sistem, umumnya akibat kerusakan mainboard atau unit yang pernah dimodifikasi. Pada kondisi ini kartu SIM fisik umumnya juga tidak dapat digunakan. Disarankan untuk mempertimbangkan kembali sebelum membeli."
+],
+"o": [
+"Ada (terisi)",
+"Tidak ada / kosong!!"
+]
+},
+{
 "id": "sim",
 "t": "Carrier Lock / Pembatasan SIM",
 "img": [
@@ -1503,6 +1536,7 @@ const storageFor=()=>{if(!S.tipe)return [];const g=STO_GRP.find(x=>x[0].includes
 // ===== Fitur per seri: isi otomatis "tidak ada" untuk fitur yang tidak dimiliki seri =====
 const P=a=>a.map(x=>"iPhone "+x);
 const OLD=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus"]), SE2=P(["SE (2020)","SE (2022)"]);
+const NO_EID=OLD.concat(P(["X"])); // belum mendukung eSIM, tidak ada baris EID
 const NO_UW=OLD.concat(P(["X","XR","XS","XS Max","16e","Air","17e"]),SE2);           // tanpa kamera 0.5 (ultra wide)
 const NO_TELE=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air","17e"]).concat(SE2); // tanpa lensa telefoto
 const HAS_5X=P(["15 Pro Max","16 Pro","16 Pro Max"]);                            // telefoto 5x
@@ -1541,7 +1575,7 @@ const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e","17e"
 const F1314_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","17e"]); // screenshot iPhone 13 dengan frame iPhone 13
 const DI15=t=>!!t&&!PRE15.includes(t)&&t!=="iPhone 16e"&&!F1314_T.includes(t)&&t!=="Lainnya"; // gambar contoh seri 15 ke atas (frame Dynamic Island)
 const FR15=t=>!!t&&!PRE15.includes(t)&&!F1314_T.includes(t)&&t!=="Lainnya";
-const VIS={cyc:t=>!PRE15.includes(t),aperture:t=>APERTURE_T.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
+const VIS={cyc:t=>!PRE15.includes(t),eid:t=>!NO_EID.includes(t),aperture:t=>APERTURE_T.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
   // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
   // ceirku.org & masa berlaku IMEI: dinonaktifkan sementara (aturan lama: tampil jika bukan iBox dan bukan Bea Cukai)
   ceirku:()=>false,
@@ -1625,6 +1659,7 @@ const EDU={
 };
 EDU["aperture|Bukaan tidak berubah / macet"]="Bukaan yang tidak berubah menandakan bilah aperture pada kamera utama macet atau motor penggeraknya tidak bekerja, biasanya akibat benturan, debu, atau cairan yang masuk ke modul kamera. Akibatnya, kontrol bukaan dan efek kedalaman (depth of field) tidak dapat digunakan. Perbaikannya berupa penggantian modul kamera utama.";
 EDU["aperture|Gelap atau buram di salah satu bukaan"]="Gambar yang gelap atau buram hanya pada bukaan tertentu menandakan bilah aperture tidak membuka atau menutup dengan sempurna. Kondisi ini dapat memburuk seiring waktu dan memengaruhi kualitas foto di kondisi tertentu. Perbaikannya berupa penggantian modul kamera utama.";
+EDU["eid|Tidak ada / kosong"]="Baris EID yang hilang atau kosong menandakan chip eSIM atau modem (baseband) tidak terbaca oleh sistem. Penyebab yang paling umum adalah kerusakan pada mainboard, atau unit yang pernah dimodifikasi atau di-bypass. Pada kondisi ini kartu SIM fisik umumnya juga tidak dapat digunakan, sehingga unit berisiko tidak mendapat sinyal. "+SARAN;
 for(const c of ["c05","c1","c2","c5","cvid"])for(const k in CAM_BELAKANG)EDU[c+"|"+k]=CAM_BELAKANG[k];
 EDU["cpot|Getar"]="Gambar kamera depan yang bergetar atau tidak stabil umumnya menandakan modul kamera depan bermasalah, biasanya akibat benturan.";
 EDU["cpot|Blur (gambar tidak fokus)"]="Kamera depan yang buram umumnya disebabkan oleh lensa atau mekanisme fokus yang bermasalah, atau kaca pelindungnya tergores. Kamera depan merupakan bagian dari modul TrueDepth, sehingga perbaikannya perlu dilakukan dengan hati-hati agar Face ID tidak ikut terganggu.";
@@ -2104,7 +2139,7 @@ $("#rep").onclick=async()=>{
 // ===== Link hasil (data hasil disimpan di dalam link, tanpa server) =====
 // PENTING: urutan LINK_IDS dan urutan opsi tiap poin jangan diubah, supaya link lama tetap terbaca.
 // Poin baru ditambahkan di akhir LINK_IDS, opsi baru ditambahkan di akhir daftar opsi.
-const LINK_IDS=["asal","bright","timer","box","fisik","btn","silent","action","camctl","senter","lcd","lcd_ori","wifi","bt","bat","cyc","riw","model","modem","sim","autob","magsafe","spk","fid","panic","mic","comp","touch","nfc","c05","c1","aperture","c2","c5","cpot","cvid","imei_m","kartu","prox","loud","ceirku","bc","ceir_tgl"];
+const LINK_IDS=["asal","bright","timer","box","fisik","btn","silent","action","camctl","senter","lcd","lcd_ori","wifi","bt","bat","cyc","riw","model","modem","sim","autob","magsafe","spk","fid","panic","mic","comp","touch","nfc","c05","c1","aperture","c2","c5","cpot","cvid","imei_m","kartu","prox","loud","ceirku","bc","ceir_tgl","eid"];
 const A64="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_";
 const chk=t=>{let h=0x811c9dc5;for(const c of t+"|authn.id"){h^=c.charCodeAt(0);h=Math.imul(h,0x01000193)>>>0}return h.toString(36).padStart(7,"0")};
 const b64u=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
