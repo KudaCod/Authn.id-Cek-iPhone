@@ -167,7 +167,8 @@ details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-s
 .dsl{position:relative;margin:6px -12px 0}
 .dtrack{display:flex;gap:4px;overflow-x:auto;scroll-snap-type:x mandatory;padding:8px calc(50% - 85px) 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .dtrack::-webkit-scrollbar{display:none}
-.dcard{flex:0 0 170px;scroll-snap-align:center;border:0;background:none;padding:0;margin:0;color:var(--tx);font:inherit;cursor:pointer;transform-origin:50% 60%;transition:transform .18s ease-out,opacity .18s ease-out;will-change:transform}
+.dcard{flex:0 0 170px;scroll-snap-align:center;border:0;background:none;padding:0;margin:0;color:var(--tx);font:inherit;cursor:pointer;transform-origin:50% 60%;will-change:transform,opacity;backface-visibility:hidden}
+#dvar{min-height:38px}
 .dcard .dimg{height:212px;display:flex;align-items:flex-end;justify-content:center}
 .dcard img{max-height:212px;max-width:158px;height:auto;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.16))}
 .dcard svg{height:198px;width:auto}
@@ -1091,7 +1092,7 @@ const SEC=[
 ]
 }
 },
-"t": "Face ID / Touch ID",
+"t": "Face ID",
 "img": [
 {
 "src": "img/contoh/contoh-touchid-home.jpg",
@@ -1099,18 +1100,19 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-faceid-15.jpg",
-"when": "frdi15"
+"when": "fidisland"
 },
 {
 "src": "img/contoh/contoh-faceid-1314.jpg",
-"when": "fr1314"
+"when": "fidnotch"
 }
 ],
 "k": "r",
-"s": "Face ID / Touch ID",
-"d": "Pastikan berfungsi normal dan responsif.",
+"s": "Face ID",
+"d": "Settings › Face ID & Passcode (Pengaturan › Face ID & Kode Sandi). Pastikan semua opsi Face ID dapat diaktifkan, lalu ketuk Atur Penampilan Alternatif dan pindai wajah hingga selesai. Setelah itu kunci layar dan buka kembali dengan Face ID.",
 "w": [
-"Face ID/Touch ID yang rusak umumnya sulit dan mahal diperbaiki karena komponennya terikat dengan unit."
+"Face ID menggunakan modul TrueDepth di bagian atas layar yang terikat (paired) dengan mainboard unit. Jika modul pernah diganti atau rusak, misalnya akibat benturan atau terkena air, pemindaian wajah gagal atau muncul pesan Face ID tidak tersedia.",
+"Face ID yang rusak sulit dan mahal diperbaiki, dan fitur seperti Apple Pay serta isi otomatis kata sandi tidak dapat digunakan."
 ],
 "o": [
 "Responsif",
@@ -1663,7 +1665,8 @@ const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e","17e"
 const F1314_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","17e"]); // screenshot iPhone 13 dengan frame iPhone 13
 const DI15=t=>!!t&&!PRE15.includes(t)&&t!=="iPhone 16e"&&!F1314_T.includes(t)&&t!=="Lainnya"; // gambar contoh seri 15 ke atas (frame Dynamic Island)
 const FR15=t=>!!t&&!PRE15.includes(t)&&!F1314_T.includes(t)&&t!=="Lainnya";
-const VIS={cyc:t=>!PRE15.includes(t),eid:t=>!NO_EID.includes(t),aperture:t=>APERTURE_T.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
+const devTy=t=>(DEV.find(d=>d[0]==t)||[])[1];
+const VIS={cyc:t=>!PRE15.includes(t),fidisland:t=>devTy(t)=="island",fidnotch:t=>devTy(t)=="notch",eid:t=>!NO_EID.includes(t),aperture:t=>APERTURE_T.includes(t),silent:t=>!ACTION_T.includes(t),action:t=>ACTION_T.includes(t),camctl:t=>CAMCTL_T.includes(t),
   // Asal unit: iBox = tanpa cek IMEI eksternal; Inter = ceirku.org; Bea Cukai = website Bea Cukai
   // ceirku.org & masa berlaku IMEI: dinonaktifkan sementara (aturan lama: tampil jika bukan iBox dan bukan Bea Cukai)
   ceirku:()=>false,
@@ -1806,6 +1809,7 @@ function dslVar(g){
   if(!g||g.m.length<2||!g.m.includes(S.tipe)){v.innerHTML="";return}
   v.innerHTML=g.m.map(t=>`<button type="button" class="${t===S.tipe?"on":""}" data-v="${esc(t)}">${esc(t.replace("iPhone ",""))}</button>`).join("");
 }
+let dslLastKey="",dslTouch=false;
 function dslCenter(){
   const tr=$("#dtrack");if(!tr)return null;
   const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,bd=1e9;
@@ -1815,7 +1819,8 @@ function dslCenter(){
     if(dist<bd){bd=dist;best=c}
   });
   const nm=$("#dname");
-  if(nm&&best){const g=dgOf(best.dataset.t),on=g.m.includes(S.tipe);nm.textContent=on?S.tipe:(g.m.length>1?"iPhone "+dgLabel(g):g.k);nm.style.color=on?"":"var(--mu)";dslVar(g)}
+  if(nm&&best){const g=dgOf(best.dataset.t),on=g.m.includes(S.tipe),key=g.k+"|"+S.tipe;
+    if(dslLastKey!==key){dslLastKey=key;nm.textContent=on?S.tipe:(g.m.length>1?"iPhone "+dgLabel(g):g.k);nm.style.color=on?"":"var(--mu)";dslVar(g)}}
   return best;
 }
 function dslPick(t){
@@ -1834,14 +1839,16 @@ function dslGo(t,smooth){
 function initDSL(){
   const tr=$("#dtrack");if(!tr)return;
   const user=()=>{dslUser=true};
+  tr.addEventListener("touchstart",()=>{dslTouch=true},{passive:true});
+  tr.addEventListener("touchend",()=>{dslTouch=false;tr.dispatchEvent(new Event("scroll"))},{passive:true});
   ["pointerdown","touchstart","wheel","keydown"].forEach(ev=>tr.addEventListener(ev,user,{passive:true}));
   tr.addEventListener("scroll",()=>{
     requestAnimationFrame(dslCenter);
     clearTimeout(dslTimer);
-    dslTimer=setTimeout(()=>{if(dslProg||!dslUser)return;const c=dslCenter();if(c)dslPickGroup(c.dataset.t);dslUser=false;dslCenter()},180);
+    dslTimer=setTimeout(()=>{if(dslProg||!dslUser||dslTouch)return;const c=dslCenter();if(c)dslPickGroup(c.dataset.t);dslUser=false;dslLastKey="";dslCenter()},260);
   },{passive:true});
   tr.addEventListener("click",e=>{const c=e.target.closest(".dcard");if(!c)return;dslUser=false;dslGo(c.dataset.t,true);dslPickGroup(c.dataset.t)});
-  $("#dvar").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;dslPick(b.dataset.v);dslCenter();dslSetPhoto()});
+  $("#dvar").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;dslPick(b.dataset.v);dslLastKey="";dslCenter();dslSetPhoto()});
   document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
   requestAnimationFrame(()=>{dslGo(S.tipe||DEV[DEV.length-1][0],false);dslSetPhoto()});
 }
@@ -2349,16 +2356,20 @@ $("#fNext").onclick=()=>{const L=secItems(STEP);if(ITM<L.length-1){ITM++;showIte
 $("#fPrev").onclick=()=>{if(ITM>0){ITM--;showItem(true);return}const V=visSecs(),k=V.indexOf(STEP);if(k>0)goStep(V[k-1],true,9999)};
 // Otomatis lanjut ke poin berikutnya setelah jawaban (pilihan tunggal) dipilih
 let AUTOT=0;
-const autoNext=(id,ms)=>{clearTimeout(AUTOT);AUTOT=setTimeout(()=>{const L=secItems(STEP);if(!L[ITM]||L[ITM].id!==id||$("#fNext").hidden||$("#pop").classList.contains("show")||document.querySelector(".sheet.show"))return;$("#fNext").click()},ms||450)};
+let LASTMISS=1;
+const autoDone=()=>{if(VIEW||STEP===-1)return false;const m=missing().length;if(LASTMISS>0&&m===0){clearTimeout(AUTOT);LASTMISS=0;$("#rep").click();return true}return false};
+const autoNext=(id,ms)=>{if(autoDone())return;clearTimeout(AUTOT);AUTOT=setTimeout(()=>{const L=secItems(STEP);if(!L[ITM]||L[ITM].id!==id||$("#fNext").hidden||$("#pop").classList.contains("show")||document.querySelector(".sheet.show"))return;$("#fNext").click()},ms||450)};
 document.addEventListener("input",e=>{const t=e.target;clearTimeout(AUTOT);
   if(VIEW||!t.dataset||!t.dataset.id)return;const id=t.dataset.id;
-  if(id=="warna"||id=="storage"){if(S.tipe&&S.warna&&S.storage)autoNext("tipe",700);return}
-  if(id=="tipe")return;
+  if(id=="warna"||id=="storage"){if(S.tipe&&S.warna&&S.storage)autoNext("tipe",700);LASTMISS=missing().length;return}
+  if(id=="tipe"){LASTMISS=missing().length;return}
   const it=ALL.find(x=>x.id==id);if(!it)return;
+  if(it.k=="t"){if(missing().length)LASTMISS=missing().length;return}
   if(it.k=="r"&&t.type=="radio")autoNext(id);
   // pilihan ganda: lanjut otomatis bila yang dipilih opsi tunggal (Normal / sesuai / tidak ada di seri ini); bila minus, tunggu karena bisa lebih dari satu
   else if(it.k=="m"&&t.type=="checkbox"&&t.checked){const o=it.o.find(o=>cl(o)===t.value);const v=t.value;
     if(v==cl(it.o[0])||/^(Tidak dicek|Tidak ada di seri|Tidak ada TrueDepth|Tidak ada box)/.test(v))autoNext(id)}
+  LASTMISS=missing().length;
 });
 document.addEventListener("keydown",e=>{const t=e.target;if(e.key!=="Enter"||VIEW||t.type!=="text"||!t.dataset.id)return;e.preventDefault();t.blur();if(String(t.value).trim())autoNext(t.dataset.id,150)});
 const _goStep=goStep;goStep=function(i,anim,itm){if(i!==-1&&i!==STEP)ITM=itm!=null?itm:0;else if(itm!=null)ITM=itm;_goStep(i,anim)};
@@ -2373,7 +2384,10 @@ const _stepsUI=stepsUI;stepsUI=function(){_stepsUI();
   document.body.classList.toggle("onres",res);if(res)$("#snP").textContent="";
   if(!res&&!ITT)showItem(false);
 };
-const _refresh=refresh;refresh=function(){_refresh();
+const _refresh=refresh;refresh=function(){
+  {const fi=ALL.find(x=>x.id=="fid");if(fi){const ty=devTy(S.tipe),nt=!ty?"Face ID / Touch ID":ty=="home"?"Touch ID":"Face ID";
+    if(fi.t!==nt){fi.t=nt;fi.s=nt;const e=$("#it_fid>.t");if(e)e.textContent=nt}}}
+  _refresh();
   document.querySelectorAll("#form .exw").forEach(w=>{const ex=w.querySelector(".ex"),b=w.previousElementSibling;if(ex&&b&&b.classList.contains("exb"))b.style.display=ex.style.display==="none"?"none":""});
 };
 if(VIEW){
@@ -2387,7 +2401,7 @@ if(VIEW){
   }else{
     build();$("#form").innerHTML='<div class="vbad"><b>Link hasil tidak valid.</b><br>Link mungkin terpotong saat disalin atau isinya sudah diubah. Minta checker mengirim ulang link hasilnya.</div><div class="rview" style="display:block"><a href="./">Buka form cek baru</a></div>';
   }
-}else{build();applyAuto();save();refresh();phLoad()}
+}else{build();applyAuto();save();refresh();phLoad();LASTMISS=missing().length}
 if("serviceWorker" in navigator){
   // Muat ulang sekali saat versi baru aktif, supaya checker langsung melihat versi terbaru
   const hadCtl=!!navigator.serviceWorker.controller;let reloaded=false;
