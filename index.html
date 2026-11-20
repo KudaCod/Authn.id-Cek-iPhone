@@ -2340,6 +2340,12 @@ function updNav(){
 $("#fNext").onclick=()=>{const L=secItems(STEP);if(ITM<L.length-1){ITM++;showItem(true);return}
   const V=visSecs(),k=V.indexOf(STEP);if(k<V.length-1)goStep(V[k+1],true,0);else $("#rep").click()};
 $("#fPrev").onclick=()=>{if(ITM>0){ITM--;showItem(true);return}const V=visSecs(),k=V.indexOf(STEP);if(k>0)goStep(V[k-1],true,9999)};
+// Otomatis lanjut ke poin berikutnya setelah jawaban (pilihan tunggal) dipilih
+let AUTOT=0;
+document.addEventListener("input",e=>{const t=e.target;clearTimeout(AUTOT);
+  if(VIEW||t.type!=="radio"||!t.dataset.id||["tipe","warna","storage"].includes(t.dataset.id))return;
+  const id=t.dataset.id,it=ALL.find(x=>x.id==id);if(!it||it.k!=="r")return;
+  AUTOT=setTimeout(()=>{const L=secItems(STEP);if(!L[ITM]||L[ITM].id!==id||$("#fNext").hidden||$("#pop").classList.contains("show"))return;$("#fNext").click()},450)});
 const _goStep=goStep;goStep=function(i,anim,itm){if(i!==-1&&i!==STEP)ITM=itm!=null?itm:0;else if(itm!=null)ITM=itm;_goStep(i,anim)};
 goItem=function(id){const sec=secOf(id);if(sec<0)return;const t=(id=="warna"||id=="storage")?"tipe":id;
   const idx=Math.max(0,secItems(sec).findIndex(x=>x.id==t));
