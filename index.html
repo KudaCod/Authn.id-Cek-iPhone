@@ -196,6 +196,67 @@ select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-
 html{-webkit-text-size-adjust:100%}
 button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 input[type=text],textarea{font-size:16px}
+
+/* ===== Tampilan simpel ===== */
+:root{--ease:cubic-bezier(.45,0,.55,1)}
+header{padding:10px 16px 0}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+h1.brand{font-size:18px;line-height:1.1;margin:0;white-space:nowrap}h1.brand small{display:block;font-size:10.5px;letter-spacing:.07em;color:var(--mu);font-weight:700}
+.hact{display:flex;gap:8px;align-items:center}
+.tpill{display:flex;align-items:center;gap:6px;border:1px solid var(--bd);border-radius:999px;padding:3px 3px 3px 11px;background:var(--bg)}
+.tpill .timer{font-variant-numeric:tabular-nums;font-weight:600;font-size:14px}
+.tpill #ts{border:0;border-radius:999px;padding:5px 11px;font-size:12.5px;background:var(--ac);color:#fff;font-weight:600}
+#menuB{width:36px;height:36px;border-radius:50%;background:var(--bg);font-size:18px;line-height:1;padding:0}
+.secnav{display:flex;align-items:center;gap:8px;width:100%;margin:8px 0;padding:8px 12px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);text-align:left;transition:background .25s var(--ease)}
+.secnav:active{background:var(--bd)}
+.secnav .sn-k{font-size:12px;color:var(--mu);font-weight:600;white-space:nowrap}.secnav .sn-t{font-size:15px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.secnav .sn-p{font-size:12px;color:var(--mu);white-space:nowrap}.secnav .sn-c{color:var(--mu);font-size:12px}
+header .bar{margin:0 -16px;height:3px;border-radius:0}.bar i{transition:width .5s var(--ease)}
+.sheet{position:fixed;inset:0;z-index:40;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,0);transition:background .3s var(--ease)}
+.sheet.show{display:flex}.sheet.on{background:rgba(0,0,0,.42)}
+.sheet .shc{width:100%;max-width:520px;max-height:80vh;overflow:auto;background:var(--card);border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));opacity:0;transform:translateY(24px);transition:opacity .3s var(--ease),transform .35s var(--ease)}
+.sheet.on .shc{opacity:1;transform:none}
+.shh{font-weight:700;font-size:16px;margin:0 2px 12px}
+#sheet .steps{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;overflow:visible}
+#sheet .steps button{max-width:none;width:100%;text-align:left;padding:12px 14px;border-radius:12px;font-size:15px;white-space:normal;background:var(--bg)}
+#sheet .steps button:not(.cur){color:var(--tx)}#sheet .steps button.done:not(.cur){color:var(--ok)}#sheet .steps button.miss:not(.cur){color:var(--cx)}#sheet .steps button.cur{background:var(--ac);border-color:var(--ac);color:#fff}
+#menu button{display:block;width:100%;text-align:left;padding:13px 14px;border-radius:12px;margin-bottom:8px;font-size:15px;background:var(--bg);transition:background .25s var(--ease),color .25s var(--ease)}
+#menu button.warnb{background:var(--cx);border-color:var(--cx);color:#fff}#menu .mc{text-align:center;background:var(--card)}
+main{padding-top:6px}
+section .scount{display:none}
+section>h2{font-size:21px;margin:8px 2px 4px}
+section>.d{font-size:13.5px;color:var(--mu);margin:0 2px 12px}
+section .snav{display:none}
+.item{border:0;border-radius:16px;padding:14px 14px 12px;margin-bottom:12px;box-shadow:0 1px 2px rgba(0,0,0,.05),0 2px 10px rgba(0,0,0,.04);transition:box-shadow .3s var(--ease)}
+.item>.t{display:flex;gap:9px;align-items:flex-start;font-size:16px;font-weight:700;line-height:1.3}
+.item>.t::before{content:"";flex:0 0 22px;height:22px;border-radius:50%;border:2px solid var(--bd);box-sizing:border-box;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;transition:background .3s var(--ease),border-color .3s var(--ease)}
+.item.ok>.t::before{content:"✓";background:var(--ok);border-color:var(--ok)}
+.item.bad>.t::before{content:"!";background:var(--bad);border-color:var(--bad)}
+.item.cx>.t::before{content:"✕";background:var(--cx);border-color:var(--cx)}
+.item>.d{font-size:13.5px;margin-top:4px;padding-left:31px}
+.item.miss{box-shadow:0 0 0 2px var(--cx)}
+.item:not(#it_tipe) .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-top:12px}
+.item:not(#it_tipe) .opts span{display:block;text-align:center;padding:11px 8px;border-radius:12px;border-width:1.5px;font-size:14px;font-weight:500;transition:background .25s var(--ease),border-color .25s var(--ease),color .25s var(--ease),transform .15s var(--ease)}
+.item:not(#it_tipe) .opts label:active span{transform:scale(.97)}
+.exb,.nb{display:inline-block;margin:8px 8px 0 31px;padding:4px 0;border:0;background:none;color:var(--ac);font-size:13.5px;font-weight:600;border-radius:0}
+.nb{color:var(--mu);margin-left:0;margin-top:10px}
+.exw{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s var(--ease),opacity .35s var(--ease)}
+.exw.open{grid-template-rows:1fr;opacity:1}.exw>.exi{overflow:hidden;min-height:0}
+.ex .exl{display:none}
+input.nh{display:none}input.nin{animation:fadeIO .35s var(--ease) both}
+@keyframes fadeIO{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.intb{display:flex;width:100%;align-items:center;justify-content:space-between;border:0;background:none;padding:0;font-weight:600;font-size:14px;color:var(--tx)}
+.intro{padding:12px 14px;border-radius:14px}
+.foot{gap:10px;padding:10px 16px calc(10px + env(safe-area-inset-bottom,0px))}
+.foot [hidden]{display:none!important}
+#fPrev{flex:0 0 52px;max-width:52px;font-size:18px;border-radius:14px;transition:opacity .3s var(--ease)}
+#fNext,.foot #rep{flex:1;max-width:none;padding:13px;font-size:16px;font-weight:700;border-radius:14px}
+body.onres .foot{display:none}
+body.view .tpill,body.view #menuB,body.view #secNav{display:none!important}
+@media(prefers-reduced-motion:no-preference){
+  .pg-in{animation:pgIn .42s var(--ease) both}.pg-out{animation:pgOut .18s var(--ease) both}
+  #pop,#pop .pc{transition-timing-function:var(--ease)}
+}
 </style>
 </head>
 <body>
@@ -204,12 +265,15 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
 </script>
 <noscript><p style="padding:16px">JavaScript harus aktif. Buka lewat Safari/Chrome (alamat github.io), bukan dari pratinjau file di Files/WhatsApp.</p></noscript>
 <header>
-  <div class="row"><h1><small>AUTHN.ID</small>📱 Cek iPhone</h1>
-    <div class="row"><span class="timer" id="tm">00:00</span><button id="ts">Timer</button><button id="tr">↺</button></div></div>
+  <div class="hrow"><h1 class="brand"><small>AUTHN.ID</small>Cek iPhone</h1>
+    <div class="hact"><div class="tpill"><span class="timer" id="tm">00:00</span><button id="ts" type="button">Timer</button></div><button id="menuB" type="button" aria-label="Menu">⋯</button></div></div>
+  <button type="button" class="secnav" id="secNav" aria-label="Pilih bagian"><span class="sn-k" id="snK">Bagian 1/9</span><span class="sn-t" id="snT">Data Unit</span><span class="sn-p" id="snP"></span><span class="sn-c">▾</span></button>
   <div class="bar"><i id="pb"></i></div>
-  <div class="row" style="font-size:12px;color:var(--mu);margin-top:4px"><span id="pt">0 / 0 terisi</span><span id="ofl"></span></div>
-  <div class="steps" id="steps"></div>
+  <div hidden><span id="pt">0 / 0 terisi</span><span id="ofl"></span><button id="tr" type="button">↺</button></div>
 </header>
+<div class="sheet" id="sheet"><div class="shc"><div class="shh">Bagian pengecekan</div><div class="steps" id="steps"></div></div></div>
+<div class="sheet" id="menu"><div class="shc"><div class="shh">Menu</div>
+  <button type="button" id="mRep">📋 Check Status Device</button><button type="button" id="mTimer">↺ Reset timer</button><button type="button" id="mReset">🗑 Reset form</button><button type="button" id="mClose" class="mc">Tutup</button></div></div>
 <main>
   <div class="intro" id="intro"><b>Checklist ini membantu memastikan kondisi iPhone sesuai dengan deskripsi penjual, sehingga risiko penipuan dan unit yang tidak sesuai dapat diminimalkan.</b>
     <div class="d">Petunjuk: teks abu-abu di bawah judul setiap poin menjelaskan cara pengecekan. Setelah jawaban dipilih, keterangan dan alasan pengecekan akan muncul dalam pop up, dan dapat dibuka kembali melalui tombol ⓘ Lihat keterangan. Semua poin wajib diisi sebelum menekan Check Status Device.</div></div>
@@ -228,8 +292,10 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
     <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang link</button></div></div>
 </main>
 <div class="foot">
-  <button class="p" id="rep">Check Status Device</button>
-  <button id="rst">Reset Form</button>
+  <button type="button" id="fPrev" data-nav="-1" aria-label="Bagian sebelumnya">←</button>
+  <button type="button" class="p" id="fNext" data-nav="1">Lanjut →</button>
+  <button class="p" id="rep" hidden>Check Status Device</button>
+  <button id="rst" hidden>Reset Form</button>
 </div>
 
 <script>
@@ -2210,6 +2276,43 @@ const fm=()=>{$("#tm").textContent=String(Math.floor(sec/60)).padStart(2,"0")+":
 $("#ts").onclick=()=>{if(iv){clearInterval(iv);iv=null;$("#ts").textContent="Timer"}else{iv=setInterval(()=>{sec++;fm()},1000);$("#ts").textContent="Stop"}};
 $("#tr").onclick=()=>{clearInterval(iv);iv=null;sec=0;fm();$("#ts").textContent="Timer"};
 
+// ===== Tampilan simpel: header ringkas, daftar bagian & menu sebagai sheet, contoh gambar & catatan dilipat =====
+function openSheet(id){const s=$(id);s.classList.add("show");void s.offsetWidth;s.classList.add("on")}
+function closeSheet(id){const s=$(id);s.classList.remove("on");setTimeout(()=>s.classList.remove("show"),320)}
+$("#secNav").onclick=()=>openSheet("#sheet");
+$("#menuB").onclick=()=>{rsC=0;const r=$("#mReset");r.textContent="🗑 Reset form";r.classList.remove("warnb");openSheet("#menu")};
+document.querySelectorAll(".sheet").forEach(s=>s.addEventListener("click",e=>{if(e.target===s)closeSheet("#"+s.id)}));
+$("#sheet").addEventListener("click",e=>{if(e.target.closest("[data-step]"))closeSheet("#sheet")});
+let rsC=0;
+$("#mRep").onclick=()=>{closeSheet("#menu");$("#rep").click()};
+$("#mTimer").onclick=()=>{$("#tr").click();closeSheet("#menu")};
+$("#mReset").onclick=()=>{const r=$("#mReset");if(!rsC){rsC=1;r.textContent="Ketuk lagi untuk menghapus semua isian";r.classList.add("warnb");return}$("#rst").click();$("#rst").click();closeSheet("#menu")};
+$("#mClose").onclick=()=>closeSheet("#menu");
+function simplify(){
+  document.querySelectorAll("#form .item .ex").forEach(ex=>{if(ex.parentElement.classList.contains("exi"))return;
+    const w=document.createElement("div");w.className="exw";w.innerHTML='<div class="exi"></div>';ex.before(w);w.firstChild.appendChild(ex);
+    const b=document.createElement("button");b.type="button";b.className="exb";b.textContent="📷 Lihat contoh gambar";w.before(b);
+    b.onclick=()=>{const o=w.classList.toggle("open");b.textContent=o?"Sembunyikan contoh":"📷 Lihat contoh gambar"}});
+  document.querySelectorAll("#form input[data-note]").forEach(n=>{if(n.dataset.s)return;n.dataset.s=1;if(n.value)return;n.classList.add("nh");
+    const b=document.createElement("button");b.type="button";b.className="nb";b.textContent="+ Tambah catatan";n.before(b);
+    b.onclick=()=>{b.remove();n.classList.remove("nh");n.classList.add("nin");n.focus()}});
+  const it=$("#intro");if(it&&!it.dataset.s){it.dataset.s=1;const inner=it.innerHTML;
+    it.innerHTML='<button type="button" class="intb">ℹ️ Cara pakai form ini <span>▾</span></button><div class="exw"><div class="exi"><div style="padding-top:8px">'+inner+'</div></div></div>';
+    it.querySelector(".intb").onclick=()=>{const o=it.querySelector(".exw").classList.toggle("open");it.querySelector(".intb span").textContent=o?"▴":"▾"}}
+}
+const _build=build;build=function(){_build();simplify()};
+const _stepsUI=stepsUI;stepsUI=function(){_stepsUI();
+  const V=visSecs(),k=V.indexOf(STEP),res=STEP===-1;
+  $("#snK").textContent=res?"Selesai":`Bagian ${k+1}/${V.length}`;
+  $("#snT").textContent=res?"Hasil Check Status Device":SEC[STEP].h.replace(/ \(Settings\)/,"");
+  document.body.classList.toggle("onres",res);
+  $("#fPrev").style.visibility=k>0?"visible":"hidden";
+  const last=k===V.length-1;$("#fNext").hidden=last;$("#rep").hidden=!last;
+};
+const _refresh=refresh;refresh=function(){_refresh();
+  document.querySelectorAll("#form .exw").forEach(w=>{const ex=w.querySelector(".ex"),b=w.previousElementSibling;if(ex&&b&&b.classList.contains("exb"))b.style.display=ex.style.display==="none"?"none":""});
+  const pt=$("#pt");if(pt)$("#snP").textContent=pt.textContent.replace(" terisi","");
+};
 if(VIEW){
   const d=decodeResult(location.hash.slice(3));document.body.classList.add("view");
   if(d){
