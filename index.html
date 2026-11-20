@@ -1903,6 +1903,13 @@ const eduList=id=>minusOf(id).map(v=>({v,t:EDU[id+"|"+v]})).filter(x=>x.t);
 const OEMTXT=()=>{const a=S.box||[];const bad=a.some(x=>x.indexOf("Dus terasa ringan")==0||x.indexOf("Tatakan plastik")==0||x.indexOf("Label tanpa")==0);
   return bad?"📦 Keterangan: dus tersebut OEM (bukan dus original dari importir resmi).":""};
 const DYN={box:OEMTXT};
+// Battery Health vs Cycle Count: BH terlalu tinggi untuk jumlah siklusnya -> tanda BH suntik / sel diganti
+const BHMAX=cy=>100-Math.max(0,cy-300)*0.03; // batas longgar: hanya kasus ekstrem (s.d. 300 siklus tidak pernah ditandai)
+const batSus=()=>{if(!known()||PRE15.includes(S.tipe))return null;
+  const bh=parseFloat(String(S.bat||"").replace(",",".").replace(/[^0-9.]/g,"")),cy=parseInt(String(S.cyc||"").replace(/[^0-9]/g,""),10);
+  if(!(bh>0&&bh<=100)||!(cy>=0))return null;const mx=BHMAX(cy);return bh>mx+1e-9?{bh,cy,mx:Math.floor(mx)}:null};
+DYN.cyc=()=>{const b=batSus();if(!b)return "";
+  return `<div class="edu1"><b>Perlu dicek:</b> Battery Health ${b.bh}% lebih tinggi dari biasanya untuk ${b.cy} siklus. Pada jumlah siklus ini, baterai original umumnya sudah di angka ${b.mx}% atau lebih rendah.</div><div class="edu1">Angka ini belum tentu berarti baterai bermasalah, karena sebagian baterai original memang awet (misalnya sering memakai batas pengisian 80%). Namun kombinasi ini juga sering ditemukan pada Battery Health hasil suntik (angka kesehatan ditulis ulang, cycle count tidak ikut direset) atau sel baterai yang sudah diganti. Pastikan dengan Riwayat Komponen &amp; Servis (baterai "Komponen Tidak Dikenal"), tanggal produksi baterai di halaman Kesehatan Baterai, dan hasil tes timer.</div>`};
 // Penjelasan muncul di bawah poin saat pilihan minus dipilih
 for(const it of ALL)if(it.o&&it.o.some(o=>lv(o)>=1)){const prev=DYN[it.id];DYN[it.id]=()=>{
   const L=eduList(it.id),pre=prev?prev():"";
@@ -2089,6 +2096,7 @@ function build(){
 function level(it){ // 0 ok,1 minus,2 cancel,-1 kosong
   const v=S[it.id];
   if(it.id=="cyc"&&cycNA())return 0;
+  if(it.id=="cyc"&&v&&String(v).trim()&&batSus())return 1;
   if(it.k=="t"||it.k=="x"||it.k=="sel")return (v&&String(v).trim())?0:-1;
   const sel=it.k=="r"?(v?[v]:[]):(v||[]); if(!sel.length)return -1;
   let m=0; for(const x of sel){const o=(it.o||[]).find(o=>cl(o)===x); if(o)m=Math.max(m,lv(o))} return m;
@@ -2255,7 +2263,7 @@ function renderStatus(){
     const its=s.i.filter(it=>shown(it)&&!["tipe","warna","storage"].includes(it.id)&&!it.ns&&level(it)>=0);if(!its.length)continue;
     let rows="",bad=0;
     for(const it of its){
-      const l=level(it);let v=gv(it)||"—";if(it.id=="bat")v+="%";if(it.id=="cyc"&&!cycNA())v+=" siklus";if(N[it.id]&&N[it.id].trim())v+=" — "+N[it.id].trim();
+      const l=level(it);let v=gv(it)||"—";if(it.id=="bat")v+="%";if(it.id=="cyc"&&!cycNA()){v+=" siklus";const b=batSus();if(b)v+=" · perlu dicek (BH "+b.bh+"%)"}if(N[it.id]&&N[it.id].trim())v+=" — "+N[it.id].trim();
       const na=NA.test(v)||(it.id=="cyc"&&cycNA()),c=na?"na":l==2?"c":l==1?"b":"ok";if(!na)n[c]++;if(c=="b"||c=="c")bad++;
       const inf=!!infoHTML(it.id);
       rows+=`<button type="button" class="rrow ${c}" ${inf?`data-info="${it.id}"`:"disabled"} style="--d:${Math.min(k++,30)*28}ms"><span class="ric">${na?"–":c=="c"?"✕":c=="b"?"!":"✓"}</span><span class="rtx"><b>${esc(nm(it))}</b><small>${esc(v)}</small></span>${phUrl("m_"+it.id).length&&l>=1?'<span class="rph">📷</span>':""}${inf?'<span class="rch">›</span>':""}</button>`;
@@ -2581,7 +2589,7 @@ document.addEventListener("input",e=>{const t=e.target;clearTimeout(AUTOT);
     if(v==cl(it.o[0])||/^(Tidak dicek|Tidak ada di seri|Tidak ada TrueDepth|Tidak ada box)/.test(v))autoNext(id)}
   LASTMISS=missing().length;
 });
-document.addEventListener("keydown",e=>{const t=e.target;if(e.key!=="Enter"||VIEW||t.type!=="text"||!t.dataset.id)return;e.preventDefault();t.blur();if(String(t.value).trim())autoNext(t.dataset.id,150)});
+document.addEventListener("keydown",e=>{const t=e.target;if(e.key!=="Enter"||VIEW||t.type!=="text"||!t.dataset.id)return;e.preventDefault();t.blur();if(String(t.value).trim()&&!(t.dataset.id=="cyc"&&batSus())&&!(t.dataset.id=="bat"&&batSus()))autoNext(t.dataset.id,150)});
 const _goStep=goStep;goStep=function(i,anim,itm){if(i!==-1&&i!==STEP)ITM=itm!=null?itm:0;else if(itm!=null)ITM=itm;_goStep(i,anim)};
 goItem=function(id){const sec=secOf(id);if(sec<0)return;const t=(id=="warna"||id=="storage")?"tipe":id;
   const idx=Math.max(0,secItems(sec).findIndex(x=>x.id==t));
