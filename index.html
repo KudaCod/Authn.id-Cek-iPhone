@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
+<meta name="color-scheme" content="light only">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Authn.id Cek iPhone</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,8 +15,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 :root{--bg:#f4f5f7;--card:#fff;--tx:#1b1d21;--mu:#6b7280;--bd:#d9dce1;--ac:#2563eb;--ok:#16a34a;--bad:#d97706;--cx:#dc2626}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#111316;--card:#1b1e23;--tx:#eceef1;--mu:#98a0ab;--bd:#323840;--ac:#60a5fa;--ok:#4ade80;--bad:#fbbf24;--cx:#f87171}}
-:root[data-theme="dark"]{--bg:#111316;--card:#1b1e23;--tx:#eceef1;--mu:#98a0ab;--bd:#323840;--ac:#60a5fa;--ok:#4ade80;--bad:#fbbf24;--cx:#f87171}
+@media not all{:root:not([data-theme="light"]){--bg:#111316;--card:#1b1e23;--tx:#eceef1;--mu:#98a0ab;--bd:#323840;--ac:#60a5fa;--ok:#4ade80;--bad:#fbbf24;--cx:#f87171}}
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
@@ -199,7 +199,7 @@ select{width:100%;margin-top:6px;padding:10px;border:1px solid var(--bd);border-
 .eduh{font-weight:700;margin:2px 0 4px}.edu1{font-weight:400;margin:4px 0;line-height:1.45}
 .oem{display:none;margin:6px 0;padding:8px 10px;border-radius:8px;background:rgba(217,119,6,.15);border-left:3px solid var(--bad);font-size:13px;font-weight:600}
 #res{display:none}#pimg{text-align:center;margin:4px 0 2px}#pimg img.pimgreal{max-width:220px;height:auto;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) #pimg img.pimgreal{filter:drop-shadow(0 0 1px rgba(255,255,255,.45)) drop-shadow(0 6px 16px rgba(255,255,255,.08))}}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
+@media not all{:root:not([data-theme="light"]) #pimg img.pimgreal{filter:drop-shadow(0 0 1px rgba(255,255,255,.45)) drop-shadow(0 6px 16px rgba(255,255,255,.08))}}#pcap{text-align:center;font-weight:600;margin-bottom:8px}
 .ex{margin:6px 0}.ex .exl{font-size:12px;color:var(--mu);margin-bottom:2px}.ex img{display:block;max-width:100%;max-height:680px;width:auto;height:auto;margin:6px 0;border-radius:8px;border:1px solid var(--bd)}
 html{-webkit-text-size-adjust:100%}
 button,label{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -333,12 +333,12 @@ body.view .tpill,body.view #menuB,body.view #secNav{display:none!important}
 /* ===== Tema lembut ala Apple: satu warna aksen, warna status hanya untuk penanda ===== */
 :root{--bg:#f5f5f7;--card:#fff;--tx:#1d1d1f;--mu:#6e6e73;--bd:#e3e3e8;--ac:#0071e3;--ok:#34a853;--bad:#e8890c;--cx:#e5484d;
   --soft:rgba(0,113,227,.08);--okS:rgba(52,168,83,.12);--badS:rgba(232,137,12,.13);--cxS:rgba(229,72,77,.11);--sh:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.05)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#000;--card:#1c1c1e;--tx:#f5f5f7;--mu:#98989d;--bd:#2c2c2e;--ac:#2997ff;--ok:#30d158;--bad:#ff9f0a;--cx:#ff6961;--soft:rgba(41,151,255,.14);--okS:rgba(48,209,88,.14);--badS:rgba(255,159,10,.15);--cxS:rgba(255,105,97,.14);--sh:none}}
+@media not all{:root:not([data-theme="light"]){--bg:#000;--card:#1c1c1e;--tx:#f5f5f7;--mu:#98989d;--bd:#2c2c2e;--ac:#2997ff;--ok:#30d158;--bad:#ff9f0a;--cx:#ff6961;--soft:rgba(41,151,255,.14);--okS:rgba(48,209,88,.14);--badS:rgba(255,159,10,.15);--cxS:rgba(255,105,97,.14);--sh:none}}
 body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Inter","Helvetica Neue",system-ui,sans-serif;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
 h1,h2,.brand,.upsum .nm,.upcap,#res h2{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;letter-spacing:-.022em}
 header{background:rgba(255,255,255,.78);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid rgba(0,0,0,.08)}
 .foot{background:rgba(255,255,255,.82);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid rgba(0,0,0,.08)}
-@media(prefers-color-scheme:dark){header,.foot{background:rgba(28,28,30,.78);border-color:rgba(255,255,255,.08)}}
+@media not all{header,.foot{background:rgba(28,28,30,.78);border-color:rgba(255,255,255,.08)}}
 section>h2{color:var(--tx);font-weight:700}
 .secnav{background:var(--bg);border:0}
 .tpill{border:0;background:var(--bg)}.tpill #ts{background:var(--tx);color:var(--card)}
@@ -360,7 +360,7 @@ button.p,#fNext,.foot #rep{background:var(--ac);border:0;box-shadow:none}
 .upsws button.on,.uptiles button.on{background:var(--soft);box-shadow:inset 0 0 0 1.5px var(--ac);color:var(--ac)}
 .upsum{background:linear-gradient(135deg,#ffffff,#f2f2f5);color:var(--tx);box-shadow:var(--sh)}
 .upsum .ph .em{border-color:rgba(0,0,0,.15)}
-@media(prefers-color-scheme:dark){.upsum{background:linear-gradient(135deg,#2c2c2e,#1c1c1e);color:var(--tx)}.upsum .ph .em{border-color:rgba(255,255,255,.2)}}
+@media not all{.upsum{background:linear-gradient(135deg,#2c2c2e,#1c1c1e);color:var(--tx)}.upsum .ph .em{border-color:rgba(255,255,255,.2)}}
 .upsum .k{opacity:1;color:var(--mu)}.upsum .sb{opacity:1;color:var(--mu)}
 /* keterangan & peringatan dibuat lembut */
 .info{border:0;background:var(--bg);color:var(--ac)}
@@ -379,6 +379,48 @@ button.p,#fNext,.foot #rep{background:var(--ac);border:0;box-shadow:none}
 .rshare .wa{background:#25d366;border:0}
 #sheet .steps button.cur{background:var(--ac)}
 #pop .pb{background:var(--ac)}
+
+/* ===== Mode terang saja + efek gradasi lembut di bagian penting ===== */
+:root{color-scheme:light;--ac:#2c2c2e;--soft:rgba(44,44,46,.07)}
+/* tombol utama */
+button.p,#fNext,.foot #rep,.uppick,#pop .pb{background:linear-gradient(180deg,#48484b,#1d1d1f)!important;border-color:transparent!important;color:#fff!important;box-shadow:0 4px 14px rgba(0,0,0,.16)}
+.rshare .wa{background:linear-gradient(180deg,#3ddc7a,#22c15e)!important;box-shadow:0 4px 14px rgba(37,211,102,.25)}
+/* jawaban terpilih */
+.item:not(#it_tipe) .opts input:checked+span{background:linear-gradient(135deg,rgba(44,44,46,.12),rgba(44,44,46,.02) 75%)}
+.item:not(#it_tipe) .opts input.b:checked+span{background:linear-gradient(135deg,rgba(232,137,12,.22),rgba(232,137,12,.04) 75%);color:var(--tx);box-shadow:inset 0 0 0 1.5px var(--bad)}
+.item:not(#it_tipe) .opts input.c:checked+span{background:linear-gradient(135deg,rgba(229,72,77,.2),rgba(229,72,77,.04) 75%);color:var(--tx);box-shadow:inset 0 0 0 1.5px var(--cx)}
+.upsws button.on,.uptiles button.on{background:linear-gradient(135deg,rgba(44,44,46,.12),rgba(44,44,46,.02) 75%)}
+/* ceklis status */
+.item.ok>.t::before,.upst.ok .uph .n{background:linear-gradient(135deg,#4cc46c,#2f9e4f);border-color:transparent;color:#fff}
+.item.bad>.t::before{background:linear-gradient(135deg,#f6a93b,#e07f00);border-color:transparent}
+.item.cx>.t::before{background:linear-gradient(135deg,#f2717a,#d93a42);border-color:transparent}
+.upst.cur .uph .n{background:linear-gradient(135deg,#48484b,#1d1d1f);color:#fff}
+/* tombol penjelasan minus + peringatan */
+.info.minus{background:linear-gradient(135deg,var(--badS),rgba(255,255,255,0) 90%);border:0;box-shadow:inset 0 0 0 1px rgba(232,137,12,.35)}
+#warn{background:linear-gradient(135deg,rgba(229,72,77,.16),var(--card) 75%);box-shadow:var(--sh)}
+#pop .pa{background:linear-gradient(135deg,var(--okS),rgba(255,255,255,0))}
+#pop .pa.b{background:linear-gradient(135deg,var(--badS),rgba(255,255,255,0))}
+#pop .pa.c{background:linear-gradient(135deg,var(--cxS),rgba(255,255,255,0))}
+/* daftar hasil */
+.rrow.b{background:linear-gradient(90deg,rgba(232,137,12,.14),var(--card) 70%)}
+.rrow.c{background:linear-gradient(90deg,rgba(229,72,77,.13),var(--card) 70%)}
+.rrow .ric{background:linear-gradient(135deg,#4cc46c,#2f9e4f)}.rrow.b .ric{background:linear-gradient(135deg,#f6a93b,#e07f00)}.rrow.c .ric{background:linear-gradient(135deg,#f2717a,#d93a42)}
+#rsum .rc span{border:0;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.bar i,#pb{background:linear-gradient(90deg,#8e8e93,#1d1d1f)}
+/* tulisan: tidak ada teks biru/merah/kuning, semua abu gelap */
+.item:not(#it_tipe) .opts input:checked+span{color:var(--tx)!important;box-shadow:inset 0 0 0 1.5px var(--ac)}
+#warn,#warn *,.info,.info.minus,#pop .pa,#pop .pa.b,#pop .pa.c,.phwarn,.proof .pbt,details.ex summary,.exb,.nb,.uph .e,section>h2,#res h2,h2,.upchips button,.upsum .k{color:var(--tx)!important}
+.proof .pbt{border-color:var(--mu)!important;background:var(--bg)!important}
+.item.miss .t::after{color:var(--tx)}
+#rsum .rc span{color:var(--tx)!important}
+.upsws button.on,.uptiles button.on{color:var(--tx)!important;box-shadow:inset 0 0 0 1.5px var(--ac)}
+.upchips button.on,.rtabs button.on,#sheet .steps button.cur,.tpill #ts{background:linear-gradient(180deg,#48484b,#1d1d1f)!important;color:#fff!important}
+.updots i.on{background:var(--ac)}
+a{color:var(--tx)}
+/* gambar contoh: tanpa kotak, latar abu dilebur jadi glow lembut */
+div.ex{position:relative;isolation:isolate;background:radial-gradient(ellipse 50% 50% at 50% 50%,#e4e4e8 0%,#ebebee 40%,rgba(240,240,243,.55) 68%,rgba(255,255,255,0) 100%);padding:10px 0;margin:4px -6px}
+div.ex img{border:0!important;border-radius:0!important}
+#lb img[src*="img/contoh/"]{background:radial-gradient(ellipse at center,#f4f4f6,#e4e4e8);border-radius:14px}
 </style>
 </head>
 <body>
@@ -472,15 +514,15 @@ const SEC=[
 "t": "Asal unit",
 "img": [
 {
-"src": "img/contoh/contoh-asal-home.jpg",
+"src": "img/contoh/contoh-asal-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-asal-1112.jpg",
+"src": "img/contoh/contoh-asal-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-asal-1314.jpg",
+"src": "img/contoh/contoh-asal-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -511,23 +553,23 @@ const SEC=[
 "t": "Kecerahan layar maksimal (wajib)",
 "img": [
 {
-"src": "img/contoh/contoh-brightness.jpg",
+"src": "img/contoh/contoh-brightness.webp",
 "when": "frislandb"
 },
 {
-"src": "img/contoh/contoh-brightness-home.jpg",
+"src": "img/contoh/contoh-brightness-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-brightness-notch.jpg",
+"src": "img/contoh/contoh-brightness-notch.webp",
 "when": "frnotchb"
 },
 {
-"src": "img/contoh/contoh-bright-1112.jpg",
+"src": "img/contoh/contoh-bright-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-bright-1314.jpg",
+"src": "img/contoh/contoh-bright-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -598,19 +640,19 @@ const SEC=[
 "t": "Tombol power & volume",
 "img": [
 {
-"src": "img/contoh/contoh-power-volume.jpg",
+"src": "img/contoh/contoh-power-volume.webp",
 "when": "frislandb"
 },
 {
-"src": "img/contoh/contoh-power-volume-1112.jpg",
+"src": "img/contoh/contoh-power-volume-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-power-volume-home.jpg",
+"src": "img/contoh/contoh-power-volume-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-power-volume-notch.jpg",
+"src": "img/contoh/contoh-power-volume-notch.webp",
 "when": "frnotch"
 }
 ],
@@ -626,19 +668,19 @@ const SEC=[
 "t": "Tombol silent & getaran",
 "img": [
 {
-"src": "img/contoh/contoh-tombol-silent.jpg",
+"src": "img/contoh/contoh-tombol-silent.webp",
 "when": "frislandb"
 },
 {
-"src": "img/contoh/contoh-tombol-silent-1112.jpg",
+"src": "img/contoh/contoh-tombol-silent-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-tombol-silent-home.jpg",
+"src": "img/contoh/contoh-tombol-silent-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-tombol-silent-notch.jpg",
+"src": "img/contoh/contoh-tombol-silent-notch.webp",
 "when": "frnotch"
 }
 ],
@@ -658,7 +700,7 @@ const SEC=[
 "id": "action",
 "t": "Action Button & getaran",
 "img": [
-"img/contoh/contoh-action-button.jpg"
+"img/contoh/contoh-action-button.webp"
 ],
 "k": "r",
 "s": "Action Button",
@@ -677,7 +719,7 @@ const SEC=[
 "id": "camctl",
 "t": "Camera Control (tombol kamera di sisi kanan)",
 "img": [
-"img/contoh/contoh-camera-control.jpg"
+"img/contoh/contoh-camera-control.webp"
 ],
 "k": "r",
 "s": "Camera Control",
@@ -697,23 +739,23 @@ const SEC=[
 "t": "Senter",
 "img": [
 {
-"src": "img/contoh/contoh-senter.jpg",
+"src": "img/contoh/contoh-senter.webp",
 "when": "senterlama"
 },
 {
-"src": "img/contoh/contoh-senter-home.jpg",
+"src": "img/contoh/contoh-senter-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-senter-15.jpg",
+"src": "img/contoh/contoh-senter-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-senter-1112.jpg",
+"src": "img/contoh/contoh-senter-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-senter-1314.jpg",
+"src": "img/contoh/contoh-senter-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -753,15 +795,15 @@ const SEC=[
 "t": "Keaslian LCD (original atau sudah diganti)",
 "img": [
 {
-"src": "img/contoh/contoh-lcd-bezel.jpg",
+"src": "img/contoh/contoh-lcd-bezel.webp",
 "when": "frisland"
 },
 {
-"src": "img/contoh/contoh-lcd-home.jpg",
+"src": "img/contoh/contoh-lcd-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-lcd-notch.jpg",
+"src": "img/contoh/contoh-lcd-notch.webp",
 "when": "frnotch"
 }
 ],
@@ -804,19 +846,19 @@ const SEC=[
 "t": "Wi-Fi",
 "img": [
 {
-"src": "img/contoh/contoh-wifi-new.jpg",
+"src": "img/contoh/contoh-wifi-new.webp",
 "when": "frislandb"
 },
 {
-"src": "img/contoh/contoh-wifi-1112.jpg",
+"src": "img/contoh/contoh-wifi-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-wifi-home.jpg",
+"src": "img/contoh/contoh-wifi-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-wifi-notch.jpg",
+"src": "img/contoh/contoh-wifi-notch.webp",
 "when": "frnotch"
 }
 ],
@@ -836,19 +878,19 @@ const SEC=[
 "t": "Bluetooth",
 "img": [
 {
-"src": "img/contoh/contoh-bt-new.jpg",
+"src": "img/contoh/contoh-bt-new.webp",
 "when": "frislandb"
 },
 {
-"src": "img/contoh/contoh-bt-1112.jpg",
+"src": "img/contoh/contoh-bt-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-bt-home.jpg",
+"src": "img/contoh/contoh-bt-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-bt-notch.jpg",
+"src": "img/contoh/contoh-bt-notch.webp",
 "when": "frnotch"
 }
 ],
@@ -869,19 +911,19 @@ const SEC=[
 "t": "Battery Health",
 "img": [
 {
-"src": "img/contoh/contoh-bat-home.jpg",
+"src": "img/contoh/contoh-bat-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-battery-health-15.jpg",
+"src": "img/contoh/contoh-battery-health-15.webp",
 "when": "fr15"
 },
 {
-"src": "img/contoh/contoh-bat-1112.jpg",
+"src": "img/contoh/contoh-bat-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-bat-1314.jpg",
+"src": "img/contoh/contoh-bat-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -898,7 +940,7 @@ const SEC=[
 "id": "cyc",
 "t": "Cycle Count (khusus iPhone 15 ke atas)",
 "img": [
-"img/contoh/contoh-cycle-count.jpg"
+"img/contoh/contoh-cycle-count.webp"
 ],
 "k": "t",
 "s": "Cycle Count",
@@ -913,15 +955,15 @@ const SEC=[
 "t": "Riwayat komponen & servis sesuai deskripsi penjual",
 "img": [
 {
-"src": "img/contoh/contoh-riw-home.jpg",
+"src": "img/contoh/contoh-riw-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-riw-1112.jpg",
+"src": "img/contoh/contoh-riw-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-riw-1314.jpg",
+"src": "img/contoh/contoh-riw-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -944,19 +986,19 @@ const SEC=[
 "t": "Nomor Model sesuai keterangan (inter/resmi)",
 "img": [
 {
-"src": "img/contoh/contoh-model-home.jpg",
+"src": "img/contoh/contoh-model-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-model-15.jpg",
+"src": "img/contoh/contoh-model-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-model-1112.jpg",
+"src": "img/contoh/contoh-model-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-model-1314.jpg",
+"src": "img/contoh/contoh-model-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -978,19 +1020,19 @@ const SEC=[
 "t": "Modem Firmware",
 "img": [
 {
-"src": "img/contoh/contoh-modem-home.jpg",
+"src": "img/contoh/contoh-modem-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-modem-15.jpg",
+"src": "img/contoh/contoh-modem-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-modem-1112.jpg",
+"src": "img/contoh/contoh-modem-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-modem-1314.jpg",
+"src": "img/contoh/contoh-modem-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1011,19 +1053,19 @@ const SEC=[
 "t": "EID (nomor chip eSIM)",
 "img": [
 {
-"src": "img/contoh/contoh-eid-home.jpg",
+"src": "img/contoh/contoh-eid-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-eid-15.jpg",
+"src": "img/contoh/contoh-eid-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-eid-1112.jpg",
+"src": "img/contoh/contoh-eid-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-eid-1314.jpg",
+"src": "img/contoh/contoh-eid-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1044,19 +1086,19 @@ const SEC=[
 "t": "Carrier Lock / Pembatasan SIM",
 "img": [
 {
-"src": "img/contoh/contoh-sim-home.jpg",
+"src": "img/contoh/contoh-sim-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-sim-15.jpg",
+"src": "img/contoh/contoh-sim-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-sim-1112.jpg",
+"src": "img/contoh/contoh-sim-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-sim-1314.jpg",
+"src": "img/contoh/contoh-sim-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1078,31 +1120,31 @@ const SEC=[
 "t": "Auto Brightness",
 "img": [
 {
-"src": "img/contoh/contoh-autob-home.jpg",
+"src": "img/contoh/contoh-autob-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-autob1-15.jpg",
+"src": "img/contoh/contoh-autob1-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-autob2-15.jpg",
+"src": "img/contoh/contoh-autob2-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-autob1-1112.jpg",
+"src": "img/contoh/contoh-autob1-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-autob2-1112.jpg",
+"src": "img/contoh/contoh-autob2-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-autob1-1314.jpg",
+"src": "img/contoh/contoh-autob1-1314.webp",
 "when": "fr1314"
 },
 {
-"src": "img/contoh/contoh-autob2-1314.jpg",
+"src": "img/contoh/contoh-autob2-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1123,11 +1165,11 @@ const SEC=[
 "t": "Cek MagSafe / wireless charging",
 "img": [
 {
-"src": "img/contoh/contoh-magsafe.jpg",
+"src": "img/contoh/contoh-magsafe.webp",
 "when": "not15"
 },
 {
-"src": "img/contoh/contoh-magsafe-15.jpg",
+"src": "img/contoh/contoh-magsafe-15.webp",
 "when": "fr15"
 }
 ],
@@ -1154,19 +1196,19 @@ const SEC=[
 ],
 "img": [
 {
-"src": "img/contoh/contoh-spk-home.jpg",
+"src": "img/contoh/contoh-spk-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-spk-15.jpg",
+"src": "img/contoh/contoh-spk-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-spk-1112.jpg",
+"src": "img/contoh/contoh-spk-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-spk-1314.jpg",
+"src": "img/contoh/contoh-spk-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1194,15 +1236,15 @@ const SEC=[
 "t": "Face ID",
 "img": [
 {
-"src": "img/contoh/contoh-touchid-home.jpg",
+"src": "img/contoh/contoh-touchid-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-faceid-15.jpg",
+"src": "img/contoh/contoh-faceid-15.webp",
 "when": "fidisland"
 },
 {
-"src": "img/contoh/contoh-faceid-1314.jpg",
+"src": "img/contoh/contoh-faceid-1314.webp",
 "when": "fidnotch"
 }
 ],
@@ -1228,35 +1270,35 @@ const SEC=[
 "t": "Panicfull & Resetcounter",
 "img": [
 {
-"src": "img/contoh/contoh-panic1-home.jpg",
+"src": "img/contoh/contoh-panic1-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-panic2-home.jpg",
+"src": "img/contoh/contoh-panic2-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-panic3-home.jpg",
+"src": "img/contoh/contoh-panic3-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-panic4-home.jpg",
+"src": "img/contoh/contoh-panic4-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-panic1-1112.jpg",
+"src": "img/contoh/contoh-panic1-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-panic2-1112.jpg",
+"src": "img/contoh/contoh-panic2-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-panic3-1112.jpg",
+"src": "img/contoh/contoh-panic3-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-panic4-1112.jpg",
+"src": "img/contoh/contoh-panic4-1112.webp",
 "when": "fr1112"
 }
 ],
@@ -1281,15 +1323,15 @@ const SEC=[
 "t": "Mikrofon (Memo Suara)",
 "img": [
 {
-"src": "img/contoh/contoh-mic-home.jpg",
+"src": "img/contoh/contoh-mic-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-mic-1112.jpg",
+"src": "img/contoh/contoh-mic-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-mic-1314.jpg",
+"src": "img/contoh/contoh-mic-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1309,15 +1351,15 @@ const SEC=[
 "t": "Kompas",
 "img": [
 {
-"src": "img/contoh/contoh-comp-home.jpg",
+"src": "img/contoh/contoh-comp-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-comp-1112.jpg",
+"src": "img/contoh/contoh-comp-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-comp-1314.jpg",
+"src": "img/contoh/contoh-comp-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1359,39 +1401,39 @@ const SEC=[
 "t": "NFC",
 "img": [
 {
-"src": "img/contoh/contoh-nfc1-home.jpg",
+"src": "img/contoh/contoh-nfc1-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-nfc2-home.jpg",
+"src": "img/contoh/contoh-nfc2-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-nfc3-home.jpg",
+"src": "img/contoh/contoh-nfc3-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-nfc4-home.jpg",
+"src": "img/contoh/contoh-nfc4-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-nfc-15.jpg",
+"src": "img/contoh/contoh-nfc-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-nfc1-1112.jpg",
+"src": "img/contoh/contoh-nfc1-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-nfc2-1112.jpg",
+"src": "img/contoh/contoh-nfc2-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-nfc3-1112.jpg",
+"src": "img/contoh/contoh-nfc3-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-nfc4-1112.jpg",
+"src": "img/contoh/contoh-nfc4-1112.webp",
 "when": "fr1112"
 }
 ],
@@ -1527,7 +1569,7 @@ const SEC=[
 "id": "imei_m",
 "t": "IMEI sistem sesuai dengan IMEI di housing / SIM tray",
 "img": [
-"img/contoh/contoh-simtray.jpg"
+"img/contoh/contoh-simtray.webp"
 ],
 "k": "r",
 "s": "IMEI device vs housing",
@@ -1562,19 +1604,19 @@ const SEC=[
 "t": "Tes telepon 123 dan sensor proximity",
 "img": [
 {
-"src": "img/contoh/contoh-prox-home.jpg",
+"src": "img/contoh/contoh-prox-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-prox-15.jpg",
+"src": "img/contoh/contoh-prox-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-prox-1112.jpg",
+"src": "img/contoh/contoh-prox-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-prox-1314.jpg",
+"src": "img/contoh/contoh-prox-1314.webp",
 "when": "fr1314"
 }
 ],
@@ -1594,19 +1636,19 @@ const SEC=[
 "t": "Tes telepon dengan loudspeaker",
 "img": [
 {
-"src": "img/contoh/contoh-loud-home.jpg",
+"src": "img/contoh/contoh-loud-home.webp",
 "when": "frhome"
 },
 {
-"src": "img/contoh/contoh-loud-15.jpg",
+"src": "img/contoh/contoh-loud-15.webp",
 "when": "frdi15"
 },
 {
-"src": "img/contoh/contoh-loud-1112.jpg",
+"src": "img/contoh/contoh-loud-1112.webp",
 "when": "fr1112"
 },
 {
-"src": "img/contoh/contoh-loud-1314.jpg",
+"src": "img/contoh/contoh-loud-1314.webp",
 "when": "fr1314"
 }
 ],
