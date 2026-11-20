@@ -526,7 +526,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-asal-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -967,7 +967,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-riw-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1002,7 +1002,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-model-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1036,7 +1036,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-modem-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1069,7 +1069,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-eid-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1102,7 +1102,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-sim-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1144,11 +1144,11 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-autob1-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 },
 {
 "src": "img/contoh/contoh-autob2-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1212,7 +1212,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-spk-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1335,7 +1335,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-mic-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "d": "Buka aplikasi Voice Memos (Memo Suara), rekam suara selama beberapa detik, lalu putar ulang. Suara harus terdengar jelas.",
@@ -1363,7 +1363,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-comp-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1620,7 +1620,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-prox-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1652,7 +1652,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-loud-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -1819,7 +1819,9 @@ const VIS={cyc:t=>!PRE15.includes(t),fidisland:t=>devTy(t)=="island",fidnotch:t=
   // Frame gambar contoh: tombol home, poni (notch), atau Dynamic Island
   frhome:t=>HOME_T.includes(t),fr15:FR15,not15:t=>!FR15(t),
   // screenshot iPhone 12 Pro dengan frame poni lebar: iPhone 11 sampai 12 Pro Max
-  fr1314:t=>F1314_T.includes(t),frnotchb:t=>NOTCH_T.includes(t)&&!F1314_T.includes(t),
+  fr1314:t=>F1314_T.includes(t),
+  // iPhone 16e (poni) memakai screenshot frame poni yang sama dengan iPhone 13/14/17e pada halaman Pengaturan
+  fr1314e:t=>F1314_T.includes(t)||t==="iPhone 16e",frnotchb:t=>NOTCH_T.includes(t)&&!F1314_T.includes(t),
   fr1112:t=>X1112_T.includes(t),frislandb:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t)&&!X1112_T.includes(t),
   // screenshot iPhone 17 dengan frame Dynamic Island: iPhone 15 ke atas, kecuali 16e (poni)
   frdi15:DI15,senterlama:t=>!HOME_T.includes(t)&&!F1314_T.includes(t)&&!X1112_T.includes(t)&&!DI15(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
