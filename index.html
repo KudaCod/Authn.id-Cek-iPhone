@@ -169,6 +169,10 @@ details.ex{margin:6px 0}details.ex summary{cursor:pointer;color:var(--ac);font-s
 .dtrack::-webkit-scrollbar{display:none}
 .dcard{flex:0 0 170px;scroll-snap-align:center;border:0;background:none;padding:0;margin:0;color:var(--tx);font:inherit;cursor:pointer;transform-origin:50% 60%;will-change:transform,opacity;backface-visibility:hidden}
 #dvar{min-height:38px}
+.dcard{transform:scale(.78);opacity:.45;transition:transform .35s cubic-bezier(.45,0,.55,1),opacity .35s cubic-bezier(.45,0,.55,1)}
+.dcard.ctr{transform:none;opacity:1}
+.dtrack{scroll-behavior:auto;-webkit-transform:translateZ(0);contain:layout paint}
+@media(prefers-reduced-motion:reduce){.dcard{transition:none}}
 .dcard .dimg{height:212px;display:flex;align-items:flex-end;justify-content:center}
 .dcard img{max-height:212px;max-width:158px;height:auto;width:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.16))}
 .dcard svg{height:198px;width:auto}
@@ -1813,11 +1817,9 @@ let dslLastKey="",dslTouch=false;
 function dslCenter(){
   const tr=$("#dtrack");if(!tr)return null;
   const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,bd=1e9;
-  tr.querySelectorAll(".dcard").forEach(c=>{
-    const cx=c.offsetLeft+c.offsetWidth/2,dist=Math.abs(cx-mid),k=Math.min(dist/(c.offsetWidth*1.6),1);
-    c.style.transform=`scale(${(1-0.32*k).toFixed(3)})`;c.style.opacity=(1-0.6*k).toFixed(2);
-    if(dist<bd){bd=dist;best=c}
-  });
+  tr.querySelectorAll(".dcard").forEach(c=>{const dist=Math.abs(c.offsetLeft+c.offsetWidth/2-mid);if(dist<bd){bd=dist;best=c}});
+  // hanya kartu tengah yang membesar; diubah lewat class (animasi CSS), tidak dihitung ulang setiap frame saat digeser
+  if(best&&!best.classList.contains("ctr")){tr.querySelectorAll(".dcard.ctr").forEach(c=>c.classList.remove("ctr"));best.classList.add("ctr")}
   const nm=$("#dname");
   if(nm&&best){const g=dgOf(best.dataset.t),on=g.m.includes(S.tipe),key=g.k+"|"+S.tipe;
     if(dslLastKey!==key){dslLastKey=key;nm.textContent=on?S.tipe:(g.m.length>1?"iPhone "+dgLabel(g):g.k);nm.style.color=on?"":"var(--mu)";dslVar(g)}}
@@ -1840,13 +1842,14 @@ function initDSL(){
   const tr=$("#dtrack");if(!tr)return;
   const user=()=>{dslUser=true};
   tr.addEventListener("touchstart",()=>{dslTouch=true},{passive:true});
-  tr.addEventListener("touchend",()=>{dslTouch=false;tr.dispatchEvent(new Event("scroll"))},{passive:true});
   ["pointerdown","touchstart","wheel","keydown"].forEach(ev=>tr.addEventListener(ev,user,{passive:true}));
-  tr.addEventListener("scroll",()=>{
-    requestAnimationFrame(dslCenter);
-    clearTimeout(dslTimer);
-    dslTimer=setTimeout(()=>{if(dslProg||!dslUser||dslTouch)return;const c=dslCenter();if(c)dslPickGroup(c.dataset.t);dslUser=false;dslLastKey="";dslCenter()},260);
-  },{passive:true});
+  // Saat digeser tidak ada perubahan tampilan apa pun (scroll native murni); begitu berhenti baru kartu tengah dibesarkan & dipilih
+  const settle=()=>{if(dslProg||dslTouch)return;const c=dslCenter();if(dslUser&&c){dslPickGroup(c.dataset.t);dslUser=false;dslLastKey="";dslCenter()}};
+  const hasEnd="onscrollend" in window;
+  if(hasEnd)tr.addEventListener("scrollend",()=>{clearTimeout(dslTimer);dslTimer=setTimeout(settle,40)},{passive:true});
+  tr.addEventListener("scroll",()=>{clearTimeout(dslTimer);dslTimer=setTimeout(settle,hasEnd?400:160)},{passive:true});
+  tr.addEventListener("touchend",()=>{dslTouch=false;clearTimeout(dslTimer);dslTimer=setTimeout(settle,220)},{passive:true});
+  tr.addEventListener("touchcancel",()=>{dslTouch=false},{passive:true});
   tr.addEventListener("click",e=>{const c=e.target.closest(".dcard");if(!c)return;dslUser=false;dslGo(c.dataset.t,true);dslPickGroup(c.dataset.t)});
   $("#dvar").addEventListener("click",e=>{const b=e.target.closest("button[data-v]");if(!b)return;dslPick(b.dataset.v);dslLastKey="";dslCenter();dslSetPhoto()});
   document.querySelector('select[data-id=tipe]').addEventListener("change",e=>dslGo(e.target.value,true));
