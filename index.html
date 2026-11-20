@@ -252,8 +252,15 @@ input.nh{display:none}input.nin{animation:fadeIO .35s var(--ease) both}
 #fPrev{flex:0 0 52px;max-width:52px;font-size:18px;border-radius:14px;transition:opacity .3s var(--ease)}
 #fNext,.foot #rep{flex:1;max-width:none;padding:13px;font-size:16px;font-weight:700;border-radius:14px}
 body.onres .foot{display:none}
+#form section .item{display:none}#form section .item.it-on{display:block}
+section:not(.first-it)>.d{display:none}
+section>.ipos{font-size:12.5px;color:var(--mu);font-weight:600;margin:0 2px 8px}
+section>h2{font-size:18px;margin:6px 2px 2px}
+.item.it-on .ex img{max-height:44vh;margin-left:auto;margin-right:auto}
+#fNext{min-width:0}#fNx{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body.view .tpill,body.view #menuB,body.view #secNav{display:none!important}
 @media(prefers-reduced-motion:no-preference){
+  .item.it-in{animation:pgIn .38s var(--ease) both}.item.it-out{animation:pgOut .18s var(--ease) both}
   .pg-in{animation:pgIn .42s var(--ease) both}.pg-out{animation:pgOut .18s var(--ease) both}
   #pop,#pop .pc{transition-timing-function:var(--ease)}
 }
@@ -292,8 +299,8 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
     <div class="snav"><button type="button" class="prev" id="resBack">← Kembali ke form</button><button type="button" class="p" id="resCopy">Salin ulang link</button></div></div>
 </main>
 <div class="foot">
-  <button type="button" id="fPrev" data-nav="-1" aria-label="Bagian sebelumnya">←</button>
-  <button type="button" class="p" id="fNext" data-nav="1">Lanjut →</button>
+  <button type="button" id="fPrev" aria-label="Sebelumnya">←</button>
+  <button type="button" class="p" id="fNext"><span id="fNx">Lanjut →</span></button>
   <button class="p" id="rep" hidden>Check Status Device</button>
   <button id="rst" hidden>Reset Form</button>
 </div>
@@ -2251,7 +2258,7 @@ async function copyText(t,o){
   else if(f)f.classList.remove("on");
   return ok;
 }
-$("#resBack").onclick=()=>goStep(LAST,true);
+$("#resBack").onclick=()=>goStep(LAST,true,ITM);
 $("#resCopy").onclick=async()=>{const b=$("#resCopy"),lbl=b.textContent,t=VIEW?location.href:shareMsg(resultLink()),ok=await copyText(t);b.textContent=ok?"✔ Tersalin":"Salin manual dari kotak di atas";setTimeout(()=>b.textContent=lbl,2500)};
 let rstT=null;
 $("#rst").onclick=()=>{
@@ -2289,10 +2296,6 @@ $("#mTimer").onclick=()=>{$("#tr").click();closeSheet("#menu")};
 $("#mReset").onclick=()=>{const r=$("#mReset");if(!rsC){rsC=1;r.textContent="Ketuk lagi untuk menghapus semua isian";r.classList.add("warnb");return}$("#rst").click();$("#rst").click();closeSheet("#menu")};
 $("#mClose").onclick=()=>closeSheet("#menu");
 function simplify(){
-  document.querySelectorAll("#form .item .ex").forEach(ex=>{if(ex.parentElement.classList.contains("exi"))return;
-    const w=document.createElement("div");w.className="exw";w.innerHTML='<div class="exi"></div>';ex.before(w);w.firstChild.appendChild(ex);
-    const b=document.createElement("button");b.type="button";b.className="exb";b.textContent="📷 Lihat contoh gambar";w.before(b);
-    b.onclick=()=>{const o=w.classList.toggle("open");b.textContent=o?"Sembunyikan contoh":"📷 Lihat contoh gambar"}});
   document.querySelectorAll("#form input[data-note]").forEach(n=>{if(n.dataset.s)return;n.dataset.s=1;if(n.value)return;n.classList.add("nh");
     const b=document.createElement("button");b.type="button";b.className="nb";b.textContent="+ Tambah catatan";n.before(b);
     b.onclick=()=>{b.remove();n.classList.remove("nh");n.classList.add("nin");n.focus()}});
@@ -2300,18 +2303,47 @@ function simplify(){
     it.innerHTML='<button type="button" class="intb">ℹ️ Cara pakai form ini <span>▾</span></button><div class="exw"><div class="exi"><div style="padding-top:8px">'+inner+'</div></div></div>';
     it.querySelector(".intb").onclick=()=>{const o=it.querySelector(".exw").classList.toggle("open");it.querySelector(".intb span").textContent=o?"▴":"▾"}}
 }
-const _build=build;build=function(){_build();simplify()};
+const _build=build;build=function(){_build();simplify();
+  document.querySelectorAll("#form section").forEach(sc=>{if(!sc.querySelector(".ipos")){const d=document.createElement("div");d.className="ipos";sc.querySelector("h2").after(d)}})};
+// ===== Satu poin per layar: Lanjut → poin berikutnya, di akhir bagian lanjut ke bagian berikutnya =====
+const ITKEY=KEY+"_item";let ITM=0,ITT=0;try{ITM=+localStorage.getItem(ITKEY)||0}catch(e){}
+const secItems=si=>si==null||si<0||!SEC[si]?[]:SEC[si].i.filter(it=>{const e=$("#it_"+it.id);return shown(it)&&e&&e.style.display!=="none"});
+function showItem(anim){
+  if(STEP===-1||VIEW)return;const sec=$("#sec_"+STEP),L=secItems(STEP);if(!sec||!L.length)return;
+  ITM=Math.max(0,Math.min(ITM,L.length-1));try{localStorage.setItem(ITKEY,String(ITM))}catch(e){}
+  const nx=$("#it_"+L[ITM].id),cur=sec.querySelector(".item.it-on");
+  const apply=()=>{document.querySelectorAll("#form .item.it-on,#form .item.it-in,#form .item.it-out").forEach(e=>e.classList.remove("it-on","it-in","it-out"));nx.classList.add("it-on");
+    if(anim){void nx.offsetWidth;nx.classList.add("it-in");window.scrollTo({top:0,behavior:"auto"})}
+    sec.classList.toggle("first-it",ITM===0);const ip=sec.querySelector(".ipos");if(ip)ip.textContent=L.length>1?`Poin ${ITM+1} dari ${L.length}`:"";
+    const it=$("#intro");if(it)it.style.display=STEP===visSecs()[0]&&ITM===0?"":"none";
+    updNav()};
+  clearTimeout(ITT);
+  if(anim&&cur&&cur!==nx){cur.classList.remove("it-in");cur.classList.add("it-out");ITT=setTimeout(apply,170)}else apply();
+}
+function updNav(){
+  const V=visSecs(),k=V.indexOf(STEP),L=secItems(STEP),lastSec=k===V.length-1,lastIt=ITM>=L.length-1;
+  $("#fPrev").style.visibility=k>0||ITM>0?"visible":"hidden";
+  const end=lastSec&&lastIt;$("#fNext").hidden=end;$("#rep").hidden=!end;
+  if(!end){const n=!lastIt?L[ITM+1]:secItems(V[k+1])[0];$("#fNx").textContent="Lanjut"+(n?": "+nm(n).replace(/\s*\(.*?\)/g,""):"")+" →"}
+  $("#snP").textContent=L.length>1?`${Math.min(ITM+1,L.length)}/${L.length}`:"";
+}
+$("#fNext").onclick=()=>{const L=secItems(STEP);if(ITM<L.length-1){ITM++;showItem(true);return}
+  const V=visSecs(),k=V.indexOf(STEP);if(k<V.length-1)goStep(V[k+1],true,0);else $("#rep").click()};
+$("#fPrev").onclick=()=>{if(ITM>0){ITM--;showItem(true);return}const V=visSecs(),k=V.indexOf(STEP);if(k>0)goStep(V[k-1],true,9999)};
+const _goStep=goStep;goStep=function(i,anim,itm){if(i!==-1&&i!==STEP)ITM=itm!=null?itm:0;else if(itm!=null)ITM=itm;_goStep(i,anim)};
+goItem=function(id){const sec=secOf(id);if(sec<0)return;const t=(id=="warna"||id=="storage")?"tipe":id;
+  const idx=Math.max(0,secItems(sec).findIndex(x=>x.id==t));
+  const fl=()=>{const e=$("#it_"+t);if(!e)return;e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),1700)};
+  if(STEP===sec){ITM=idx;showItem(true);setTimeout(fl,250)}else{goStep(sec,true,idx);setTimeout(fl,500)}};
 const _stepsUI=stepsUI;stepsUI=function(){_stepsUI();
   const V=visSecs(),k=V.indexOf(STEP),res=STEP===-1;
   $("#snK").textContent=res?"Selesai":`Bagian ${k+1}/${V.length}`;
   $("#snT").textContent=res?"Hasil Check Status Device":SEC[STEP].h.replace(/ \(Settings\)/,"");
   document.body.classList.toggle("onres",res);
-  $("#fPrev").style.visibility=k>0?"visible":"hidden";
-  const last=k===V.length-1;$("#fNext").hidden=last;$("#rep").hidden=!last;
+  if(!res)showItem(false);
 };
 const _refresh=refresh;refresh=function(){_refresh();
   document.querySelectorAll("#form .exw").forEach(w=>{const ex=w.querySelector(".ex"),b=w.previousElementSibling;if(ex&&b&&b.classList.contains("exb"))b.style.display=ex.style.display==="none"?"none":""});
-  const pt=$("#pt");if(pt)$("#snP").textContent=pt.textContent.replace(" terisi","");
 };
 if(VIEW){
   const d=decodeResult(location.hash.slice(3));document.body.classList.add("view");
