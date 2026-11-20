@@ -759,7 +759,7 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-senter-1314.webp",
-"when": "fr1314"
+"when": "fr1314e"
 }
 ],
 "k": "r",
@@ -919,7 +919,11 @@ const SEC=[
 },
 {
 "src": "img/contoh/contoh-battery-health-15.webp",
-"when": "fr15"
+"when": "fr15x"
+},
+{
+"src": "img/contoh/contoh-battery-health-16e.webp",
+"when": "is16e"
 },
 {
 "src": "img/contoh/contoh-bat-1112.webp",
@@ -943,7 +947,14 @@ const SEC=[
 "id": "cyc",
 "t": "Cycle Count (khusus iPhone 15 ke atas)",
 "img": [
-"img/contoh/contoh-cycle-count.webp"
+{
+"src": "img/contoh/contoh-cycle-count.webp",
+"when": "not16e"
+},
+{
+"src": "img/contoh/contoh-cycle-count-16e.webp",
+"when": "is16e"
+}
 ],
 "k": "t",
 "s": "Cycle Count",
@@ -1821,10 +1832,12 @@ const VIS={cyc:t=>!PRE15.includes(t),fidisland:t=>devTy(t)=="island",fidnotch:t=
   // screenshot iPhone 12 Pro dengan frame poni lebar: iPhone 11 sampai 12 Pro Max
   fr1314:t=>F1314_T.includes(t),
   // iPhone 16e (poni) memakai screenshot frame poni yang sama dengan iPhone 13/14/17e pada halaman Pengaturan
-  fr1314e:t=>F1314_T.includes(t)||t==="iPhone 16e",frnotchb:t=>NOTCH_T.includes(t)&&!F1314_T.includes(t),
+  fr1314e:t=>F1314_T.includes(t)||t==="iPhone 16e",
+  // iPhone 16e: layar Battery Health/Cycle Count versi iOS 15+ dengan bingkai poni iPhone 13
+  is16e:t=>t==="iPhone 16e",not16e:t=>t!=="iPhone 16e",fr15x:t=>FR15(t)&&t!=="iPhone 16e",frnotchb:t=>NOTCH_T.includes(t)&&!F1314_T.includes(t),
   fr1112:t=>X1112_T.includes(t),frislandb:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t)&&!X1112_T.includes(t),
   // screenshot iPhone 17 dengan frame Dynamic Island: iPhone 15 ke atas, kecuali 16e (poni)
-  frdi15:DI15,senterlama:t=>!HOME_T.includes(t)&&!F1314_T.includes(t)&&!X1112_T.includes(t)&&!DI15(t),frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
+  frdi15:DI15,senterlama:t=>!HOME_T.includes(t)&&!F1314_T.includes(t)&&!X1112_T.includes(t)&&!DI15(t)&&t!=="iPhone 16e",frnotch:t=>NOTCH_T.includes(t),frisland:t=>!HOME_T.includes(t)&&!NOTCH_T.includes(t),nothome:t=>!HOME_T.includes(t)};
 const shown=it=>!VIS[it.id]||VIS[it.id](S.tipe);
 // Pilihan "tidak berlaku" tidak dihitung dalam persentase kondisi
 const NAP=["Tidak ada di seri ini","Tidak ada TrueDepth","Tidak ada MagSafe","Tidak ada wireless charging","Menu tidak tersedia","Bukan iPhone inter","Tidak dicek"];
