@@ -148,6 +148,7 @@ pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--bd);borde
 .item>.why,.item>.oem{display:none!important}
 .info{display:none;margin-top:8px;padding:6px 12px;border-radius:999px;border:1px solid var(--bd);background:var(--bg);color:var(--ac);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .info.on{display:inline-block;animation:infoIn .3s ease}
+.info{transition:background .25s ease-in-out,color .25s ease-in-out,border-color .25s ease-in-out}.info.minus{background:rgba(217,119,6,.12);border-color:var(--bad);color:var(--bad)}
 @keyframes infoIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 #pop{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;padding:12px;background:rgba(0,0,0,0);transition:background .25s ease}
 #pop.show{display:flex}#pop.on{background:rgba(0,0,0,.45)}
@@ -290,7 +291,7 @@ window.onerror=function(m,u,l,c){var f=document.getElementById("form")||document
   <button type="button" id="mRep">📋 Check Status Device</button><button type="button" id="mTimer">↺ Reset timer</button><button type="button" id="mReset">🗑 Reset form</button><button type="button" id="mClose" class="mc">Tutup</button></div></div>
 <main>
   <div class="intro" id="intro"><b>Checklist ini membantu memastikan kondisi iPhone sesuai dengan deskripsi penjual, sehingga risiko penipuan dan unit yang tidak sesuai dapat diminimalkan.</b>
-    <div class="d">Petunjuk: teks abu-abu di bawah judul setiap poin menjelaskan cara pengecekan. Setelah jawaban dipilih, keterangan dan alasan pengecekan akan muncul dalam pop up, dan dapat dibuka kembali melalui tombol ⓘ Lihat keterangan. Semua poin wajib diisi sebelum menekan Check Status Device.</div></div>
+    <div class="d">Petunjuk: teks abu-abu di bawah judul setiap poin menjelaskan cara pengecekan. Keterangan dan alasan pengecekan dapat dibuka kapan saja melalui tombol ⓘ Lihat keterangan di setiap poin. Semua poin wajib diisi sebelum menekan Check Status Device.</div></div>
   <div id="warn"></div>
   <input type="file" id="phIn" accept="image/*" hidden><div id="lb"><button class="lx" type="button" aria-label="Tutup">✕</button><button class="ln lp" type="button" aria-label="Sebelumnya">‹</button><img alt=""><button class="ln lnx" type="button" aria-label="Berikutnya">›</button><div class="lc"></div></div>
   <div id="pop" role="dialog" aria-modal="true" aria-labelledby="popT"><div class="pc"><div class="pk">Keterangan</div><h3 id="popT"></h3><div id="popA"></div><div id="popB"></div><button type="button" class="pb" id="popX">Mengerti</button></div></div>
@@ -689,7 +690,7 @@ const SEC=[
 },
 {
 "h": "Pengecekan Fungsi & Pengaturan (Settings)",
-"d": "Buka Pengaturan (Settings), lalu periksa setiap poin di bawah secara berurutan. Teks abu-abu menjelaskan cara pengecekan; keterangan lengkap muncul setelah jawaban dipilih.",
+"d": "Buka Pengaturan (Settings), lalu periksa setiap poin di bawah secara berurutan. Teks abu-abu menjelaskan cara pengecekan; keterangan lengkap dapat dibuka melalui tombol ⓘ Lihat keterangan.",
 "i": [
 {
 "id": "wifi",
@@ -2031,7 +2032,8 @@ function refresh(){
   if(typeof stepsUI==="function"&&$("#steps"))stepsUI();
   $("#pb").style.width=(done/total*100)+"%";
   $("#pt").textContent=done+" / "+total+" terisi";
-  for(const it of ALL){const b=$("#info_"+it.id);if(b)b.classList.toggle("on",answered(it)&&!!infoHTML(it.id))}
+  for(const it of ALL){const b=$("#info_"+it.id);if(!b)continue;const has=!!infoHTML(it.id),m=level(it)>=1&&!!$("#dyn_"+it.id)&&!!$("#dyn_"+it.id)._t;
+    b.classList.toggle("on",has);b.classList.toggle("minus",m);const t=m?"ⓘ Lihat penjelasan minus":"ⓘ Lihat keterangan";if(b.textContent!==t)b.textContent=t}
   renderProof();{const di=slotOn("dus");if(di!==window._dus){window._dus=di;renderSlots()}}
   const w=$("#warn");
   if(cx.length){w.style.display="block";w.innerHTML="⚠️ PERTIMBANGKAN KEMBALI SEBELUM MEMBELI — ditemukan minus serius:<ul>"+cx.map((t,k)=>"<li><a href=\"#it_"+cxi[k]+"\" data-go=\""+cxi[k]+"\">"+t+"</a></li>").join("")+"</ul><div style=\"font-weight:400;font-size:13px;margin-top:4px\">Ketuk poin di atas untuk melihat penjelasannya.</div>"}
@@ -2056,9 +2058,7 @@ document.addEventListener("input",e=>{
     }else S[it.id]=t.value;
   }
   save();refresh();
-  if(t.dataset.id&&(t.type=="radio"||(t.type=="checkbox"&&t.checked))&&!["tipe","warna","storage"].includes(t.dataset.id))openInfo(t.dataset.id);
 });
-document.addEventListener("change",e=>{const t=e.target;if(t.dataset&&t.dataset.id&&t.type=="text"&&String(t.value).trim())openInfo(t.dataset.id)});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-info]");if(b){e.preventDefault();openInfo(b.dataset.info)}});
 $("#popX").onclick=closeInfo;
 $("#pop").addEventListener("click",e=>{if(e.target.id=="pop")closeInfo()});
