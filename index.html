@@ -252,6 +252,14 @@ input.nh{display:none}input.nin{animation:fadeIO .35s var(--ease) both}
 #fPrev{flex:0 0 52px;max-width:52px;font-size:18px;border-radius:14px;transition:opacity .3s var(--ease)}
 #fNext,.foot #rep{flex:1;max-width:none;padding:13px;font-size:16px;font-weight:700;border-radius:14px}
 body.onres .foot{display:none}
+@keyframes fdIn{from{opacity:0}to{opacity:1}}@keyframes fdOut{from{opacity:1}to{opacity:0}}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+#form .ex img{animation:none!important;transform:none!important;transition:opacity .25s var(--ease)}
+.item:not(#it_tipe) .opts{align-items:stretch}.item:not(#it_tipe) .opts label{display:flex}
+.item:not(#it_tipe) .opts span{flex:1;display:flex;align-items:center;justify-content:center;min-height:48px;padding:8px;font-size:14px;line-height:1.25}
+input[type=text],textarea{font-size:16px!important;line-height:1.35;padding:12px;border-radius:12px;-webkit-appearance:none;appearance:none;margin-top:10px}
+select{border-radius:12px}
+input[type=text]::placeholder,textarea::placeholder{color:var(--mu);opacity:1;font-size:16px}
 #form section .item{display:none}#form section .item.it-on{display:block}
 section:not(.first-it)>.d{display:none}
 section>.ipos{font-size:12.5px;color:var(--mu);font-weight:600;margin:0 2px 8px}
@@ -260,8 +268,7 @@ section>h2{font-size:18px;margin:6px 2px 2px}
 #fNext{min-width:0}#fNx{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 body.view .tpill,body.view #menuB,body.view #secNav{display:none!important}
 @media(prefers-reduced-motion:no-preference){
-  .item.it-in{animation:pgIn .38s var(--ease) both}.item.it-out{animation:pgOut .18s var(--ease) both}
-  .pg-in{animation:pgIn .42s var(--ease) both}.pg-out{animation:pgOut .18s var(--ease) both}
+  .item.it-in,.pg-in{animation:fdIn .32s var(--ease) both}.item.it-out,.pg-out{animation:fdOut .16s var(--ease) both}
   #pop,#pop .pc{transition-timing-function:var(--ease)}
 }
 </style>
@@ -2312,14 +2319,17 @@ function showItem(anim){
   if(STEP===-1||VIEW)return;const sec=$("#sec_"+STEP),L=secItems(STEP);if(!sec||!L.length)return;
   ITM=Math.max(0,Math.min(ITM,L.length-1));try{localStorage.setItem(ITKEY,String(ITM))}catch(e){}
   const nx=$("#it_"+L[ITM].id),cur=sec.querySelector(".item.it-on");
+  if(!anim&&cur===nx){const ip=sec.querySelector(".ipos");if(ip)ip.textContent=L.length>1?`Poin ${ITM+1} dari ${L.length}`:"";updNav();return}
   const apply=()=>{document.querySelectorAll("#form .item.it-on,#form .item.it-in,#form .item.it-out").forEach(e=>e.classList.remove("it-on","it-in","it-out"));nx.classList.add("it-on");
     if(anim){void nx.offsetWidth;nx.classList.add("it-in");window.scrollTo({top:0,behavior:"auto"})}
     sec.classList.toggle("first-it",ITM===0);const ip=sec.querySelector(".ipos");if(ip)ip.textContent=L.length>1?`Poin ${ITM+1} dari ${L.length}`:"";
     const it=$("#intro");if(it)it.style.display=STEP===visSecs()[0]&&ITM===0?"":"none";
-    updNav()};
-  clearTimeout(ITT);
+    updNav();ITT=0;preloadNext()};
+  clearTimeout(ITT);ITT=0;
   if(anim&&cur&&cur!==nx){cur.classList.remove("it-in");cur.classList.add("it-out");ITT=setTimeout(apply,170)}else apply();
 }
+function preloadNext(){const V=visSecs(),k=V.indexOf(STEP),L=secItems(STEP),nx=[L[ITM+1],L[ITM-1],secItems(V[k+1])[0]].filter(Boolean);
+  for(const it of nx){const e=$("#it_"+it.id);if(e)e.querySelectorAll(".ex img").forEach(i=>{if(i.style.display!=="none"&&!i.complete){i.loading="eager";const im=new Image();im.src=i.currentSrc||i.src}})}}
 function updNav(){
   const V=visSecs(),k=V.indexOf(STEP),L=secItems(STEP),lastSec=k===V.length-1,lastIt=ITM>=L.length-1;
   $("#fPrev").style.visibility=k>0||ITM>0?"visible":"hidden";
@@ -2340,7 +2350,7 @@ const _stepsUI=stepsUI;stepsUI=function(){_stepsUI();
   $("#snK").textContent=res?"Selesai":`Bagian ${k+1}/${V.length}`;
   $("#snT").textContent=res?"Hasil Check Status Device":SEC[STEP].h.replace(/ \(Settings\)/,"");
   document.body.classList.toggle("onres",res);
-  if(!res)showItem(false);
+  if(!res&&!ITT)showItem(false);
 };
 const _refresh=refresh;refresh=function(){_refresh();
   document.querySelectorAll("#form .exw").forEach(w=>{const ex=w.querySelector(".ex"),b=w.previousElementSibling;if(ex&&b&&b.classList.contains("exb"))b.style.display=ex.style.display==="none"?"none":""});
