@@ -421,6 +421,9 @@ a{color:var(--tx)}
 div.ex{position:relative;isolation:isolate;background:radial-gradient(ellipse 50% 50% at 50% 50%,#e4e4e8 0%,#ebebee 40%,rgba(240,240,243,.55) 68%,rgba(255,255,255,0) 100%);padding:10px 0;margin:4px -6px}
 div.ex img{border:0!important;border-radius:0!important}
 #lb img[src*="img/contoh/"]{background:radial-gradient(ellipse at center,#f4f4f6,#e4e4e8);border-radius:14px}
+/* slider model: skala/opasitas kartu diatur langsung per frame saat digeser */
+.upcard{transition:none!important}
+.uptrack{will-change:transform,opacity}
 </style>
 </head>
 <body>
@@ -2498,13 +2501,14 @@ function upBuild(){const it=$("#it_tipe");if(!it||$("#upRoot"))return;
   it.prepend(r);
   const tr=$("#upTrack");
   const settle=()=>upCenter();
-  tr.addEventListener("scroll",()=>{clearTimeout(UPT);UPT=setTimeout(settle,"onscrollend" in window?350:150)},{passive:true});
-  if("onscrollend" in window)tr.addEventListener("scrollend",()=>{clearTimeout(UPT);UPT=setTimeout(settle,30)},{passive:true});
+  tr.addEventListener("scroll",()=>{if(!UPRAF)UPRAF=requestAnimationFrame(upFx);clearTimeout(UPT);UPT=setTimeout(settle,180)},{passive:true});
+  if("onscrollend" in window)tr.addEventListener("scrollend",()=>{clearTimeout(UPT);settle()},{passive:true});
+  addEventListener("resize",()=>{upMeasure();upFx()},{passive:true});
   tr.addEventListener("click",e=>{const c=e.target.closest(".upcard");if(!c)return;const i=+c.dataset.i;if(i===UPCI&&c.classList.contains("ctr"))upPickModel();else upGo(i,true)});
   $("#upL").onclick=()=>upGo(UPCI-1,true);$("#upR").onclick=()=>upGo(UPCI+1,true);
   $("#upPick").onclick=upPickModel;
   r.addEventListener("click",e=>{const b=e.target.closest("[data-up]");if(b){UPFORCE=+b.dataset.up;upRender();return}
-    const sb=e.target.closest("[data-seri]");if(sb){const k=sb.dataset.seri;if(k=="Lainnya"){UPFORCE=0;dslPick("Lainnya");upRender();return}UPSERI=k;upTrack();upRender();return}
+    const sb=e.target.closest("[data-seri]");if(sb){const k=sb.dataset.seri;if(k=="Lainnya"){UPFORCE=0;dslPick("Lainnya");upRender();return}upSwitchSeri(k);return}
     const cb=e.target.closest("[data-col]");if(cb){const inp=[...document.querySelectorAll('#opts_warna input')].find(x=>x.value===cb.dataset.col);UPFORCE=0;if(inp&&!inp.checked)inp.click();else upRender();return}
     const tb=e.target.closest("[data-sto]");if(tb){const inp=[...document.querySelectorAll('#opts_storage input')].find(x=>x.value===tb.dataset.sto);UPFORCE=0;if(inp&&!inp.checked)inp.click();else upRender()}});
   UPSERI=S.tipe&&S.tipe!="Lainnya"?seriOf(S.tipe):seriList()[0];UPLAST=S.tipe;upTrack();upRender();
@@ -2512,12 +2516,30 @@ function upBuild(){const it=$("#it_tipe");if(!it||$("#upRoot"))return;
 function upTrack(){const tr=$("#upTrack");if(!tr)return;const L=seriModels(UPSERI);
   tr.innerHTML=L.map((t,i)=>`<button type="button" class="upcard" data-i="${i}" data-t="${esc(t)}">${upPic(t,upCol(t))}</button>`).join("");
   $("#upDots").innerHTML=L.map(()=>"<i></i>").join("");
-  const i0=Math.max(0,L.indexOf(S.tipe));UPCI=i0;requestAnimationFrame(()=>upGo(i0,false));
+  const i0=Math.max(0,L.indexOf(S.tipe));UPCI=i0;upMeasure();upGo(i0,false);requestAnimationFrame(()=>{upMeasure();upGo(i0,false)});
 }
+let UPRAF=0,UPC=[],UPSW=0;
+function upMeasure(){const tr=$("#upTrack");if(!tr)return;UPC=[...tr.querySelectorAll(".upcard")].map(c=>c.offsetLeft+c.offsetWidth/2)}
+function upFx(){UPRAF=0;const tr=$("#upTrack");if(!tr)return;const cs=tr.querySelectorAll(".upcard");if(!cs.length)return;
+  if(UPC.length!==cs.length||!UPC[UPC.length-1])upMeasure();
+  const mid=tr.scrollLeft+tr.clientWidth/2,u=UPC.length>1?(UPC[1]-UPC[0])||160:160;let bi=0,bd=1e9;
+  cs.forEach((c,k)=>{const d=Math.abs(UPC[k]-mid)/u,t=Math.min(d,1),e=t*t*(3-2*t);
+    c.style.transform="scale("+(1-.28*e).toFixed(4)+")";c.style.opacity=(1-.55*e).toFixed(3);if(d<bd){bd=d;bi=k}});
+  if(bi!==UPCI||!cs[bi].classList.contains("ctr"))upMeta(bi)}
+function upSwitchSeri(k){if(k===UPSERI){upRender();return}
+  const L=seriList(),dir=Math.sign(L.indexOf(k)-L.indexOf(UPSERI))||1,tr=$("#upTrack"),cap=$("#upCap"),tok=++UPSW;
+  UPSERI=k;upRender();
+  const els=[tr,cap],can=!!tr.animate,D=26;
+  if(!can){upTrack();upRender();return}
+  const out=els.map(e=>e.animate([{opacity:1,transform:"translateX(0)"},{opacity:0,transform:"translateX("+(-dir*D)+"px)"}],{duration:140,easing:"cubic-bezier(.4,0,1,1)",fill:"forwards"}));
+  out[0].onfinish=()=>{if(tok!==UPSW)return;upTrack();upRender();out.forEach(a=>a.cancel());
+    els.forEach(e=>e.animate([{opacity:0,transform:"translateX("+(dir*D)+"px)"},{opacity:1,transform:"translateX(0)"}],{duration:280,easing:"cubic-bezier(.2,.8,.2,1)"}))}}
 function upGo(i,smooth){const tr=$("#upTrack");if(!tr)return;const cs=tr.querySelectorAll(".upcard");if(!cs.length)return;i=Math.max(0,Math.min(i,cs.length-1));const c=cs[i];
   tr.scrollTo({left:c.offsetLeft+c.offsetWidth/2-tr.clientWidth/2,behavior:smooth?"smooth":"auto"});if(!smooth)upCenter(i)}
 function upCenter(force){const tr=$("#upTrack");if(!tr)return;const cs=[...tr.querySelectorAll(".upcard")];if(!cs.length)return;
   let i=force;if(i==null){const mid=tr.scrollLeft+tr.clientWidth/2;let bd=1e9;cs.forEach((c,k)=>{const d=Math.abs(c.offsetLeft+c.offsetWidth/2-mid);if(d<bd){bd=d;i=k}})}
+  upMeta(i);upFx()}
+function upMeta(i){const tr=$("#upTrack");if(!tr)return;const cs=[...tr.querySelectorAll(".upcard")];if(!cs[i])return;
   UPCI=i;cs.forEach((c,k)=>c.classList.toggle("ctr",k===i));
   $("#upDots").querySelectorAll("i").forEach((d,k)=>d.classList.toggle("on",k===i));
   const t=cs[i].dataset.t,col=upCol(t);$("#upCap").textContent=t;
