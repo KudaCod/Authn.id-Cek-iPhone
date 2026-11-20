@@ -258,6 +258,49 @@ input.nh{display:none}input.nin{animation:fadeIO .35s var(--ease) both}
 #fPrev{flex:0 0 52px;max-width:52px;font-size:18px;border-radius:14px;transition:opacity .3s var(--ease)}
 #fNext,.foot #rep{flex:1;max-width:none;padding:13px;font-size:16px;font-weight:700;border-radius:14px}
 body.onres .foot{display:none}
+/* ===== Pemilih unit (Data Unit): ringkasan + 3 langkah ===== */
+main{overflow-x:clip}
+section.pg-on:has(#it_tipe.it-on)>.d{display:none}
+#it_tipe{background:none;box-shadow:none;padding:0;overflow:visible}
+#it_tipe>.t,#it_tipe .dsl,#it_tipe .dname,#it_tipe .dvar,#it_tipe .dhint,#it_tipe>.sub,#it_tipe>#opts_warna,#it_tipe>#opts_storage,#it_tipe>select,#it_tipe>.nb,#it_tipe>input[data-note]{display:none!important}
+#it_tipe.up-ln>.nb{display:inline-block!important}#it_tipe.up-ln>input[data-note]:not(.nh){display:block!important}
+.upsum{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#1f2937,#111827);color:#fff;border-radius:18px;padding:10px 16px;box-shadow:0 6px 18px rgba(17,24,39,.2);min-height:92px}
+.upsum .ph{flex:0 0 auto;width:56px;height:72px;display:grid;place-items:center}.upsum .ph img{max-height:72px;max-width:56px;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45));animation:fdIn .35s var(--ease)}
+.upsum .ph svg{height:70px;width:auto}.upsum .ph .em{width:50px;height:68px;border-radius:12px;border:2px dashed rgba(255,255,255,.3);display:grid;place-items:center;font-size:24px;opacity:.6}
+.upsum .k{font-size:11px;letter-spacing:.07em;opacity:.6;font-weight:700}.upsum .nm{font-size:19px;font-weight:800;line-height:1.2}.upsum .sb{font-size:13px;opacity:.8;margin-top:2px}
+.upst{background:var(--card);border-radius:16px;margin-top:10px;padding:12px 14px;box-shadow:0 1px 8px rgba(0,0,0,.05);position:relative;transition:opacity .3s var(--ease)}
+.upst.off{opacity:.55}
+.uph{display:flex;align-items:center;gap:10px;min-height:26px}.uph .n{flex:0 0 24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--bd);color:var(--mu);transition:background .3s var(--ease)}
+.upst.ok .uph .n{background:var(--ok);color:#fff}.upst.cur .uph .n{background:var(--ac);color:#fff}
+.uph b{flex:1;font-size:15.5px}.uph .v{color:var(--mu);font-size:13.5px;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:55%}
+.uph .e{border:0;background:none;color:var(--ac);font-size:13px;font-weight:600;padding:4px 0 4px 6px;display:none}.upst.ok .uph .e{display:inline-block}
+.upw{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:0fr;opacity:0;transition:grid-template-rows .4s var(--ease),opacity .3s var(--ease)}.upst.cur .upw{grid-template-rows:1fr;opacity:1}.upw>.upi{min-height:0;min-width:0;overflow:hidden}
+.upst.cur .upw>.upi{overflow:visible}
+.upchips{display:flex;gap:8px;overflow-x:auto;margin:12px -14px 0;padding:0 14px 4px;scrollbar-width:none;position:relative;z-index:2}.upchips::-webkit-scrollbar{display:none}
+.upchips button{flex:0 0 auto;min-width:44px;padding:8px 13px;border-radius:999px;background:var(--bg);font-weight:700;font-size:14px;border:0;color:var(--tx);transition:background .25s var(--ease),color .25s var(--ease)}
+.upchips button.on{background:var(--tx);color:var(--card)}
+.upstage{position:relative;margin:2px -14px 0;height:262px}
+.upglow{position:absolute;left:50%;top:44%;width:150%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background-color:rgb(150,160,175);
+  -webkit-mask-image:radial-gradient(closest-side,rgba(0,0,0,.8) 0%,rgba(0,0,0,.5) 28%,rgba(0,0,0,.2) 55%,rgba(0,0,0,.06) 78%,transparent 100%);mask-image:radial-gradient(closest-side,rgba(0,0,0,.8) 0%,rgba(0,0,0,.5) 28%,rgba(0,0,0,.2) 55%,rgba(0,0,0,.06) 78%,transparent 100%);
+  filter:blur(14px);opacity:.85;transition:background-color .5s var(--ease);pointer-events:none;z-index:0}
+.uptrack{position:relative;z-index:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:4px calc(50% - 80px) 0;height:218px;align-items:flex-end;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 22%,#000 78%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 22%,#000 78%,transparent 100%)}
+.uptrack::-webkit-scrollbar{display:none}
+.upcard{flex:0 0 160px;scroll-snap-align:center;border:0;background:none;padding:0;height:212px;display:flex;align-items:flex-end;justify-content:center;transform:scale(.72);opacity:.45;transform-origin:50% 85%;transition:transform .35s var(--ease),opacity .35s var(--ease);will-change:transform,opacity}
+.upcard.ctr{transform:none;opacity:1}
+.upcard img{max-height:204px;max-width:156px;filter:drop-shadow(0 16px 18px rgba(0,0,0,.18))}.upcard svg{height:196px;width:auto}
+.uparw{position:absolute;top:38%;z-index:3;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:18px;line-height:34px;padding:0;color:#444;transition:opacity .25s var(--ease)}
+.uparw.l{left:10px}.uparw.r{right:10px}.uparw[disabled]{opacity:0;pointer-events:none}
+.updots{position:absolute;left:0;right:0;bottom:28px;display:flex;gap:5px;justify-content:center;z-index:3}.updots i{width:6px;height:6px;border-radius:9px;background:var(--bd);transition:width .3s var(--ease),background .3s var(--ease)}.updots i.on{width:18px;background:var(--tx)}
+.upcap{position:absolute;left:0;right:0;bottom:0;text-align:center;z-index:3;font-size:17px;font-weight:800}
+.uppick{display:block;width:100%;margin-top:8px;padding:12px;border:0;border-radius:12px;background:var(--tx);color:var(--card);font-weight:700;font-size:15px;position:relative;z-index:2}
+.upsws{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:12px}
+.upsws button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border:1.5px solid var(--bd);border-radius:14px;background:var(--card);color:var(--tx);font-size:12.5px;font-weight:600;line-height:1.2;transition:border-color .25s var(--ease),background .25s var(--ease)}
+.upsws i{width:34px;height:34px;border-radius:50%;border:1px solid rgba(0,0,0,.12);display:grid;place-items:center;font-style:normal;color:var(--mu)}
+.upsws button.on,.uptiles button.on{border-color:var(--ac);background:rgba(37,99,235,.08)}
+.uptiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:8px;margin-top:12px}
+.uptiles button{border:1.5px solid var(--bd);border-radius:12px;background:var(--card);color:var(--tx);padding:10px 0;font-weight:800;font-size:17px;line-height:1.1;transition:border-color .25s var(--ease),background .25s var(--ease)}.uptiles button small{display:block;font-size:11px;color:var(--mu);font-weight:600}
+.uptiles button.on{color:var(--ac)}
 header,.foot{z-index:30}
 header,.foot{padding-left:max(16px,calc((100% - 696px)/2));padding-right:max(16px,calc((100% - 696px)/2))}
 header .bar{margin:0 calc(-1 * max(16px,calc((100% - 696px)/2)))}
@@ -333,7 +376,7 @@ const SEC=[
 "h": "Data Unit",
 "nonum": 1,
 "skip": 1,
-"d": "Pilih tipe iPhone, lalu warna dan kapasitas penyimpanan. Foto produk akan ditampilkan pada halaman hasil (setelah menekan Check Status Device).",
+"d": "Tiga langkah singkat untuk mengenali unit: model, warna, lalu kapasitas.",
 "i": [
 {
 "id": "tipe",
@@ -1897,7 +1940,7 @@ function goStep(i,anim){
     if(toRes)$("#need").style.display="none";
     stepsUI();
     if(anim)window.scrollTo({top:0,behavior:"auto"});
-    if(STEP===secOf("tipe"))requestAnimationFrame(()=>dslGo(S.tipe||DEV[DEV.length-1][0],false));
+    if(STEP===secOf("tipe"))requestAnimationFrame(()=>{dslGo(S.tipe||DEV[DEV.length-1][0],false);if(typeof upGo==="function")upGo(UPCI,false)});
   };
   clearTimeout(PGT);
   if(anim&&cur&&cur!==next){cur.classList.remove("pg-in");cur.classList.add("pg-out");PGT=setTimeout(show,180)}else show();
@@ -2327,8 +2370,78 @@ function simplify(){
     it.innerHTML='<button type="button" class="intb">ℹ️ Cara pakai form ini <span>▾</span></button><div class="exw"><div class="exi"><div style="padding-top:8px">'+inner+'</div></div></div>';
     it.querySelector(".intb").onclick=()=>{const o=it.querySelector(".exw").classList.toggle("open");it.querySelector(".intb span").textContent=o?"▴":"▾"}}
 }
-const _build=build;build=function(){_build();simplify();
+const _build=build;build=function(){_build();simplify();upBuild();
   document.querySelectorAll("#form section").forEach(sc=>{if(!sc.querySelector(".ipos")){const d=document.createElement("div");d.className="ipos";sc.querySelector("h2").after(d)}})};
+// ===== Pemilih unit (Data Unit): ringkasan, 1 Model (seri + slider), 2 Warna, 3 Kapasitas =====
+const SERI_ORD=["18","17","16","15","14","13","12","11","X","SE","8","7","6"];
+const seriOf=t=>{if(!t||t=="Lainnya")return "Lainnya";if(/SE/.test(t))return "SE";if(/^iPhone X/.test(t))return "X";if(/Air/.test(t))return "17";const m=t.match(/iPhone (\d+)/);if(!m)return "Lainnya";return m[1]=="6"||m[1]=="6s"?"6":m[1]};
+const seriList=()=>SERI_ORD.filter(k=>DEV.some(d=>seriOf(d[0])==k));
+const seriModels=k=>DEV.filter(d=>seriOf(d[0])==k).map(d=>d[0]);
+const hexRgb=h=>{h=(h||"#9aa0a6").replace("#","");const n=parseInt(h.length==3?h.split("").map(c=>c+c).join(""):h,16);return [(n>>16)&255,(n>>8)&255,n&255]};
+const upCol=t=>{const m=DM[t];if(!m)return null;return S.tipe===t&&S.warna&&m.cols.includes(S.warna)?S.warna:m.cols[0]};
+function upPic(t,col){const m=DM[t];if(!m)return '<div class="em">📱</div>';col=col||m.cols[0];
+  if(t==="iPhone SE (2016)")return phone2D(t,col);
+  return `<img alt="${esc(t)}" src="img/produk/${slug(PHOTO_AS[t]||t)}-${slug(col)}.png?v=${FOTO_V}" onerror="this.outerHTML=phone2D('${t}','${col}')">`}
+let UPSERI=null,UPFORCE=0,UPCI=0,UPT=0;
+function upStep(){if(UPFORCE)return UPFORCE;if(!S.tipe)return 1;if(!S.warna)return 2;if(!S.storage)return 3;return 0}
+function upBuild(){const it=$("#it_tipe");if(!it||$("#upRoot"))return;
+  const r=document.createElement("div");r.id="upRoot";r.className="up";
+  r.innerHTML=`<div class="upsum" id="upSum"></div>
+  <div class="upst" data-s="1"><div class="uph"><span class="n">1</span><b>Model</b><span class="v"></span><button type="button" class="e" data-up="1">Ubah</button></div>
+    <div class="upw"><div class="upi"><div class="upchips" id="upSeri"></div>
+      <div class="upstage"><div class="upglow" id="upGlow"></div><div class="uptrack" id="upTrack"></div><button type="button" class="uparw l" id="upL" aria-label="Sebelumnya">‹</button><button type="button" class="uparw r" id="upR" aria-label="Berikutnya">›</button><div class="updots" id="upDots"></div><div class="upcap" id="upCap"></div></div>
+      <button type="button" class="uppick" id="upPick"></button></div></div></div>
+  <div class="upst" data-s="2"><div class="uph"><span class="n">2</span><b>Warna</b><span class="v"></span><button type="button" class="e" data-up="2">Ubah</button></div><div class="upw"><div class="upi"><div class="upsws" id="upCols"></div></div></div></div>
+  <div class="upst" data-s="3"><div class="uph"><span class="n">3</span><b>Kapasitas</b><span class="v"></span><button type="button" class="e" data-up="3">Ubah</button></div><div class="upw"><div class="upi"><div class="uptiles" id="upSto"></div></div></div></div>`;
+  it.prepend(r);
+  const tr=$("#upTrack");
+  const settle=()=>upCenter();
+  tr.addEventListener("scroll",()=>{clearTimeout(UPT);UPT=setTimeout(settle,"onscrollend" in window?350:150)},{passive:true});
+  if("onscrollend" in window)tr.addEventListener("scrollend",()=>{clearTimeout(UPT);UPT=setTimeout(settle,30)},{passive:true});
+  tr.addEventListener("click",e=>{const c=e.target.closest(".upcard");if(!c)return;const i=+c.dataset.i;if(i===UPCI&&c.classList.contains("ctr"))upPickModel();else upGo(i,true)});
+  $("#upL").onclick=()=>upGo(UPCI-1,true);$("#upR").onclick=()=>upGo(UPCI+1,true);
+  $("#upPick").onclick=upPickModel;
+  r.addEventListener("click",e=>{const b=e.target.closest("[data-up]");if(b){UPFORCE=+b.dataset.up;upRender();return}
+    const sb=e.target.closest("[data-seri]");if(sb){const k=sb.dataset.seri;if(k=="Lainnya"){UPFORCE=0;dslPick("Lainnya");upRender();return}UPSERI=k;upTrack();upRender();return}
+    const cb=e.target.closest("[data-col]");if(cb){const inp=[...document.querySelectorAll('#opts_warna input')].find(x=>x.value===cb.dataset.col);UPFORCE=0;if(inp&&!inp.checked)inp.click();else upRender();return}
+    const tb=e.target.closest("[data-sto]");if(tb){const inp=[...document.querySelectorAll('#opts_storage input')].find(x=>x.value===tb.dataset.sto);UPFORCE=0;if(inp&&!inp.checked)inp.click();else upRender()}});
+  UPSERI=S.tipe&&S.tipe!="Lainnya"?seriOf(S.tipe):seriList()[0];UPLAST=S.tipe;upTrack();upRender();
+}
+function upTrack(){const tr=$("#upTrack");if(!tr)return;const L=seriModels(UPSERI);
+  tr.innerHTML=L.map((t,i)=>`<button type="button" class="upcard" data-i="${i}" data-t="${esc(t)}">${upPic(t,upCol(t))}</button>`).join("");
+  $("#upDots").innerHTML=L.map(()=>"<i></i>").join("");
+  const i0=Math.max(0,L.indexOf(S.tipe));UPCI=i0;requestAnimationFrame(()=>upGo(i0,false));
+}
+function upGo(i,smooth){const tr=$("#upTrack");if(!tr)return;const cs=tr.querySelectorAll(".upcard");if(!cs.length)return;i=Math.max(0,Math.min(i,cs.length-1));const c=cs[i];
+  tr.scrollTo({left:c.offsetLeft+c.offsetWidth/2-tr.clientWidth/2,behavior:smooth?"smooth":"auto"});if(!smooth)upCenter(i)}
+function upCenter(force){const tr=$("#upTrack");if(!tr)return;const cs=[...tr.querySelectorAll(".upcard")];if(!cs.length)return;
+  let i=force;if(i==null){const mid=tr.scrollLeft+tr.clientWidth/2;let bd=1e9;cs.forEach((c,k)=>{const d=Math.abs(c.offsetLeft+c.offsetWidth/2-mid);if(d<bd){bd=d;i=k}})}
+  UPCI=i;cs.forEach((c,k)=>c.classList.toggle("ctr",k===i));
+  $("#upDots").querySelectorAll("i").forEach((d,k)=>d.classList.toggle("on",k===i));
+  const t=cs[i].dataset.t,col=upCol(t);$("#upCap").textContent=t;
+  $("#upGlow").style.backgroundColor="rgb("+hexRgb(HEX[col]).join(",")+")";
+  $("#upL").disabled=i===0;$("#upR").disabled=i===cs.length-1;
+  $("#upPick").textContent=S.tipe===t?"✓ "+t+" dipilih":"Pilih "+t;
+}
+let UPLAST;function upSyncSeri(){if(S.tipe===UPLAST)return;UPLAST=S.tipe;if(S.tipe&&S.tipe!=="Lainnya"&&seriOf(S.tipe)!==UPSERI){UPSERI=seriOf(S.tipe);upTrack()}}
+function upPickModel(){const t=$("#upTrack .upcard.ctr")?.dataset.t;if(!t)return;UPFORCE=0;if(S.tipe!==t)dslPick(t);else upRender()}
+function upRender(){const r=$("#upRoot");if(!r)return;upSyncSeri();
+  const st=upStep(),it=$("#it_tipe");it.classList.toggle("up-ln",S.tipe==="Lainnya");
+  const col=S.tipe?upCol(S.tipe)||S.warna:null;
+  const sub=!S.tipe?"Pilih seri, lalu geser modelnya":[S.warna,S.storage].filter(Boolean).join(" · ")||"Pilih warna unit";
+  const key=[S.tipe,col].join("|");const sum=$("#upSum");
+  if(sum.dataset.k!==key){sum.dataset.k=key;sum.innerHTML=`<div class="ph">${S.tipe?upPic(S.tipe,col):'<div class="em">📱</div>'}</div><div><div class="k">UNIT YANG DICEK</div><div class="nm"></div><div class="sb"></div></div>`}
+  sum.querySelector(".nm").textContent=S.tipe||"Belum dipilih";sum.querySelector(".sb").textContent=S.tipe&&S.warna&&!S.storage?S.warna+" · pilih kapasitas":sub;
+  const vals=[S.tipe,S.warna,S.storage];
+  r.querySelectorAll(".upst").forEach(x=>{const n=+x.dataset.s,done=!!vals[n-1];x.classList.toggle("cur",st===n);x.classList.toggle("ok",done&&st!==n);x.classList.toggle("off",!done&&st!==n);
+    x.querySelector(".n").textContent=done&&st!==n?"✓":n;x.querySelector(".v").textContent=st===n?"":(vals[n-1]||"")});
+  $("#upSeri").innerHTML=seriList().concat(["Lainnya"]).map(k=>`<button type="button" data-seri="${k}" class="${(S.tipe==="Lainnya"?k=="Lainnya":k===UPSERI)?"on":""}">${k=="X"?"X / XS / XR":k}</button>`).join("");
+  const cs=colorsFor();$("#upCols").innerHTML=cs.map(c=>`<button type="button" data-col="${esc(c)}" class="${S.warna===c?"on":""}"><i style="${HEX[c]?"background:"+HEX[c]:""}">${HEX[c]?"":"?"}</i>${esc(c)}</button>`).join("")||'<span class="d">Pilih model terlebih dahulu.</span>';
+  const ss=storageFor();$("#upSto").innerHTML=ss.map(x=>{const m=x.match(/^(\d+)(\D+)$/)||[x,x,""];return `<button type="button" data-sto="${esc(x)}" class="${S.storage===x?"on":""}">${m[1]}<small>${m[2]}</small></button>`}).join("")||'<span class="d">Pilih model terlebih dahulu.</span>';
+  // foto kartu slider mengikuti warna terpilih
+  $("#upTrack").querySelectorAll(".upcard").forEach(c=>{const t=c.dataset.t,cl=upCol(t);if(c.dataset.c!==cl){if(c.dataset.c)c.innerHTML=upPic(t,cl);c.dataset.c=cl}});
+  if(st===1)upCenter(UPCI);
+}
 // ===== Satu poin per layar: Lanjut → poin berikutnya, di akhir bagian lanjut ke bagian berikutnya =====
 const ITKEY=KEY+"_item";let ITM=0,ITT=0;try{ITM=+localStorage.getItem(ITKEY)||0}catch(e){}
 const secItems=si=>si==null||si<0||!SEC[si]?[]:SEC[si].i.filter(it=>{const e=$("#it_"+it.id);return shown(it)&&e&&e.style.display!=="none"});
@@ -2387,7 +2500,7 @@ const _stepsUI=stepsUI;stepsUI=function(){_stepsUI();
   document.body.classList.toggle("onres",res);if(res)$("#snP").textContent="";
   if(!res&&!ITT)showItem(false);
 };
-const _refresh=refresh;refresh=function(){
+const _refresh=refresh;refresh=function(){setTimeout(()=>{if(typeof upRender==="function")upRender()},0);
   {const fi=ALL.find(x=>x.id=="fid");if(fi){const ty=devTy(S.tipe),nt=!ty?"Face ID / Touch ID":ty=="home"?"Touch ID":"Face ID";
     if(fi.t!==nt){fi.t=nt;fi.s=nt;const e=$("#it_fid>.t");if(e)e.textContent=nt}}}
   _refresh();
