@@ -253,6 +253,13 @@ input.nh{display:none}input.nin{animation:fadeIO .35s var(--ease) both}
 #fPrev{flex:0 0 52px;max-width:52px;font-size:18px;border-radius:14px;transition:opacity .3s var(--ease)}
 #fNext,.foot #rep{flex:1;max-width:none;padding:13px;font-size:16px;font-weight:700;border-radius:14px}
 body.onres .foot{display:none}
+header,.foot{z-index:30}
+header,.foot{padding-left:max(16px,calc((100% - 696px)/2));padding-right:max(16px,calc((100% - 696px)/2))}
+header .bar{margin:0 calc(-1 * max(16px,calc((100% - 696px)/2)))}
+.opts span{overflow-wrap:anywhere;hyphens:auto}
+.phg{grid-template-columns:repeat(auto-fill,minmax(112px,1fr))}
+@media(min-width:600px){.phs{aspect-ratio:4/5}}
+.sheet .shc,#pop .pc{max-width:560px}
 @keyframes fdIn{from{opacity:0}to{opacity:1}}@keyframes fdOut{from{opacity:1}to{opacity:0}}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #form .ex img{animation:none!important;transform:none!important;transition:opacity .25s var(--ease)}
@@ -1917,9 +1924,9 @@ function build(){
         else h+=`<div class="opts">`+it.o.map(o=>{
           const sel=it.k=="r"?S[it.id]===cl(o):(S[it.id]||[]).includes(cl(o));
           const c=lv(o)==2?"c":lv(o)==1?"b":"";
-          return `<label><input type="${it.k=="r"?"radio":"checkbox"}" name="${it.id}" class="${c}" data-id="${it.id}" value="${esc(cl(o))}" ${sel?"checked":""}><span>${cl(o)}</span></label>`}).join("")+`</div>`;
+          return `<label><input type="${it.k=="r"?"radio":"checkbox"}" name="${it.id}" class="${c}" data-id="${it.id}" value="${esc(cl(o))}" ${sel?"checked":""}><span>${cl(o).replace(/\//g,"/<wbr>")}</span></label>`}).join("")+`</div>`;
         if(it.n)h+=`<input type="text" data-note="${it.id}" placeholder="Catatan (opsional)" value="${esc(N[it.id]||"")}">`;
-      }else if(it.k=="t")h+=`<input type="text" data-id="${it.id}" placeholder="${it.ph||""}" value="${esc(S[it.id]||"")}">`;
+      }else if(it.k=="t")h+=`<input type="text" enterkeyhint="next" data-id="${it.id}" placeholder="${it.ph||""}" value="${esc(S[it.id]||"")}">`;
       else if(it.k=="photo")h+=`<div class="phg" id="phg"></div><div class="phwarn">⚠️ Hindari IMEI, nomor seri, atau data pribadi terlihat di foto.</div><div class="simu">Foto tersimpan di HP ini dan dapat dikirim bersama link hasil melalui tombol Kirim ke WhatsApp. Foto akan terhapus saat Reset Form.</div>`;
       else h+=`<textarea data-id="${it.id}" placeholder="Tulis di sini… (kosongkan jika tidak ada)">${esc(S[it.id]||"")}</textarea>`;
       if(it.o&&it.o.some(o=>lv(o)>=1))h+=`<div class="proof" id="proof_${it.id}"><div class="pr"></div></div>`;
@@ -2335,17 +2342,25 @@ function updNav(){
   $("#fPrev").style.visibility=k>0||ITM>0?"visible":"hidden";
   const end=lastSec&&lastIt;$("#fNext").hidden=end;$("#rep").hidden=!end;
   if(!end){const n=!lastIt?L[ITM+1]:secItems(V[k+1])[0];$("#fNx").textContent="Lanjut"+(n?": "+nm(n).replace(/\s*\(.*?\)/g,""):"")+" →"}
-  $("#snP").textContent=L.length>1?`${Math.min(ITM+1,L.length)}/${L.length}`:"";
+  $("#snP").textContent=STEP!==-1&&L.length>1?`${Math.min(ITM+1,L.length)}/${L.length}`:"";
 }
 $("#fNext").onclick=()=>{const L=secItems(STEP);if(ITM<L.length-1){ITM++;showItem(true);return}
   const V=visSecs(),k=V.indexOf(STEP);if(k<V.length-1)goStep(V[k+1],true,0);else $("#rep").click()};
 $("#fPrev").onclick=()=>{if(ITM>0){ITM--;showItem(true);return}const V=visSecs(),k=V.indexOf(STEP);if(k>0)goStep(V[k-1],true,9999)};
 // Otomatis lanjut ke poin berikutnya setelah jawaban (pilihan tunggal) dipilih
 let AUTOT=0;
+const autoNext=(id,ms)=>{clearTimeout(AUTOT);AUTOT=setTimeout(()=>{const L=secItems(STEP);if(!L[ITM]||L[ITM].id!==id||$("#fNext").hidden||$("#pop").classList.contains("show")||document.querySelector(".sheet.show"))return;$("#fNext").click()},ms||450)};
 document.addEventListener("input",e=>{const t=e.target;clearTimeout(AUTOT);
-  if(VIEW||t.type!=="radio"||!t.dataset.id||["tipe","warna","storage"].includes(t.dataset.id))return;
-  const id=t.dataset.id,it=ALL.find(x=>x.id==id);if(!it||it.k!=="r")return;
-  AUTOT=setTimeout(()=>{const L=secItems(STEP);if(!L[ITM]||L[ITM].id!==id||$("#fNext").hidden||$("#pop").classList.contains("show"))return;$("#fNext").click()},450)});
+  if(VIEW||!t.dataset||!t.dataset.id)return;const id=t.dataset.id;
+  if(id=="warna"||id=="storage"){if(S.tipe&&S.warna&&S.storage)autoNext("tipe",700);return}
+  if(id=="tipe")return;
+  const it=ALL.find(x=>x.id==id);if(!it)return;
+  if(it.k=="r"&&t.type=="radio")autoNext(id);
+  // pilihan ganda: lanjut otomatis bila yang dipilih opsi tunggal (Normal / sesuai / tidak ada di seri ini); bila minus, tunggu karena bisa lebih dari satu
+  else if(it.k=="m"&&t.type=="checkbox"&&t.checked){const o=it.o.find(o=>cl(o)===t.value);const v=t.value;
+    if(v==cl(it.o[0])||/^(Tidak dicek|Tidak ada di seri|Tidak ada TrueDepth|Tidak ada box)/.test(v))autoNext(id)}
+});
+document.addEventListener("keydown",e=>{const t=e.target;if(e.key!=="Enter"||VIEW||t.type!=="text"||!t.dataset.id)return;e.preventDefault();t.blur();if(String(t.value).trim())autoNext(t.dataset.id,150)});
 const _goStep=goStep;goStep=function(i,anim,itm){if(i!==-1&&i!==STEP)ITM=itm!=null?itm:0;else if(itm!=null)ITM=itm;_goStep(i,anim)};
 goItem=function(id){const sec=secOf(id);if(sec<0)return;const t=(id=="warna"||id=="storage")?"tipe":id;
   const idx=Math.max(0,secItems(sec).findIndex(x=>x.id==t));
@@ -2355,7 +2370,7 @@ const _stepsUI=stepsUI;stepsUI=function(){_stepsUI();
   const V=visSecs(),k=V.indexOf(STEP),res=STEP===-1;
   $("#snK").textContent=res?"Selesai":`Bagian ${k+1}/${V.length}`;
   $("#snT").textContent=res?"Hasil Check Status Device":SEC[STEP].h.replace(/ \(Settings\)/,"");
-  document.body.classList.toggle("onres",res);
+  document.body.classList.toggle("onres",res);if(res)$("#snP").textContent="";
   if(!res&&!ITT)showItem(false);
 };
 const _refresh=refresh;refresh=function(){_refresh();
