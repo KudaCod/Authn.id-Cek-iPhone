@@ -1015,7 +1015,7 @@ const SEC=[
 ],
 "k": "r",
 "s": "Riwayat komponen & servis",
-"d": "Settings › General › About › Parts and Service History (Pengaturan › Umum › Mengenai › Riwayat Komponen & Servis). Tersedia mulai iPhone XR/XS dan SE 2020 (iOS 15.2 ke atas). iPhone 6–8 dan SE 2016 tidak memiliki menu ini, sehingga poin ini terisi otomatis.",
+"d": "Settings › General › About › Parts and Service History (Pengaturan › Umum › Mengenai › Riwayat Komponen & Servis). Tersedia mulai iPhone XR/XS dan SE 2020 (iOS 15.2 ke atas). iPhone 6–8 tidak memiliki menu ini, sehingga poin ini terisi otomatis.",
 "w": [
 "Menu ini menampilkan komponen yang pernah diganti (baterai, layar, kamera). Cocokkan dengan deskripsi penjual; jika berbeda, berarti ada riwayat servis yang tidak disampaikan.",
 "Komponen yang tercatat bergantung pada seri: XR/XS/SE 2020/SE 2022 hanya baterai, iPhone 11 baterai dan layar, sedangkan iPhone 12 ke atas baterai, layar, kamera, dan mainboard. Keterangan \"Komponen Tidak Dikenal\" berarti komponen tersebut bukan original Apple."
@@ -1251,7 +1251,7 @@ const SEC=[
 "Wireless charging jalan (tanpa magnet)",
 "Magnet MagSafe tidak menempel!",
 "Tidak mengisi daya!",
-"Tidak ada wireless charging (iPhone 7 ke bawah, SE 2016)"
+"Tidak ada wireless charging (iPhone 7 ke bawah)"
 ]
 },
 {
@@ -1493,7 +1493,7 @@ const SEC=[
 "id": "nfc",
 "alt": {
 "frhome": {
-"d": "Buka aplikasi Pintasan (Shortcuts) › ketuk + › Automasi › pilih NFC › Pindai, lalu tempelkan kartu e-money atau tag NFC ke bagian atas belakang iPhone. Ikuti langkah 1–4 pada gambar. NFC berfungsi jika kartu atau tag terbaca dan muncul kolom untuk memberi nama. Jika opsi NFC tidak muncul (umumnya pada iPhone 8 ke bawah dan SE 2016), gunakan aplikasi pembaca NFC dari App Store. iPhone 6/6 Plus hanya menggunakan NFC untuk Apple Pay, sehingga tidak dapat dites dengan cara ini."
+"d": "Buka aplikasi Pintasan (Shortcuts) › ketuk + › Automasi › pilih NFC › Pindai, lalu tempelkan kartu e-money atau tag NFC ke bagian atas belakang iPhone. Ikuti langkah 1–4 pada gambar. NFC berfungsi jika kartu atau tag terbaca dan muncul kolom untuk memberi nama. Jika opsi NFC tidak muncul (umumnya pada iPhone 8 ke bawah), gunakan aplikasi pembaca NFC dari App Store. iPhone 6/6 Plus hanya menggunakan NFC untuk Apple Pay, sehingga tidak dapat dites dengan cara ini."
 }
 },
 "t": "NFC",
@@ -1821,7 +1821,7 @@ const KEY="cek_iphone_v3";
 const VIEW=/^#r=/.test(location.hash); // mode lihat hasil dari link: tidak menyentuh data checker
 let RTIME=0;
 let S={},N={};
-try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");S=j.S||{};N=j.N||{}}catch(e){}
+try{const j=JSON.parse(localStorage.getItem(KEY)||"{}");S=j.S||{};N=j.N||{};if(S.tipe==="iPhone SE (2016)"){delete S.tipe;delete S.warna;delete S.storage}}catch(e){}
 {const R={"Berfungsi, getaran normal (mendem)": "Berfungsi, getaran normal", "Naik sendiri": "Kecerahan naik otomatis", "Brightness stuck": "Kecerahan tidak berubah", "Layar delay": "Respons layar tertunda (delay)", "Ada bagian yg gabisa disentuh": "Ada area yang tidak bisa disentuh"};for(const k in S){const v=S[k];if(Array.isArray(v))S[k]=v.map(x=>R[x]||x);else if(R[v])S[k]=R[v]}}
 const save=()=>{if(VIEW)return;try{localStorage.setItem(KEY,JSON.stringify({S,N}))}catch(e){}};
 const cl=o=>o.replace(/!+$/,""), lv=o=>o.endsWith("!!")?2:o.endsWith("!")?1:0;
@@ -1843,7 +1843,7 @@ ASE22:["Midnight","Starlight","(PRODUCT)RED"],A14:["Blue","Purple","Midnight","S
 A15:["Black","Blue","Green","Yellow","Pink"],A15P:["Black Titanium","White Titanium","Blue Titanium","Natural Titanium"],
 A16E:["Black","White"],A16:["Black","White","Pink","Teal","Ultramarine"],A16P:["Black Titanium","White Titanium","Natural Titanium","Desert Titanium"],
 A17:["Black","White","Mist Blue","Sage","Lavender"],AAIR:["Space Black","Cloud White","Light Gold","Sky Blue"],A17P:["Silver","Cosmic Orange","Deep Blue"],A17E:["Black","White","Soft Pink"],A18P:["Black","Silver","Glacier","Burgundy"]};
-const DEV=[["iPhone 6","home",1,"A6"],["iPhone 6 Plus","home",1,"A6"],["iPhone 6s","home",1,"A6S"],["iPhone 6s Plus","home",1,"A6S"],["iPhone SE (2016)","home",1,"A6S"],
+const DEV=[["iPhone 6","home",1,"A6"],["iPhone 6 Plus","home",1,"A6"],["iPhone 6s","home",1,"A6S"],["iPhone 6s Plus","home",1,"A6S"],
 ["iPhone 7","home",1,"A7"],["iPhone 7 Plus","home",2,"A7"],["iPhone 8","home",1,"A8"],["iPhone 8 Plus","home",2,"A8"],
 ["iPhone X","notch",2,"AX"],["iPhone XR","notch",1,"AXR"],["iPhone XS","notch",2,"AXS"],["iPhone XS Max","notch",2,"AXS"],
 ["iPhone 11","notch",2,"A11"],["iPhone 11 Pro","notch",3,"A11P"],["iPhone 11 Pro Max","notch",3,"A11P"],["iPhone SE (2020)","home",1,"ASE20"],
@@ -1864,7 +1864,6 @@ const stoRange=(a,b)=>STO.slice(STO.indexOf(a),STO.indexOf(b)+1);
 const SP=a=>a.map(x=>"iPhone "+x);
 const STO_GRP=[
   [SP(["6","6 Plus","6s","6s Plus"]),"16GB","256GB"],
-  [SP(["SE (2016)"]),"16GB","128GB"],
   [SP(["7","7 Plus"]),"32GB","256GB"],
   [SP(["8","8 Plus"]),"64GB","256GB"],
   [SP(["SE (2020)","SE (2022)"]),"64GB","256GB"],
@@ -1876,12 +1875,12 @@ const storageFor=()=>{if(!S.tipe)return [];const g=STO_GRP.find(x=>x[0].includes
 
 // ===== Fitur per seri: isi otomatis "tidak ada" untuk fitur yang tidak dimiliki seri =====
 const P=a=>a.map(x=>"iPhone "+x);
-const OLD=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus"]), SE2=P(["SE (2020)","SE (2022)"]);
+const OLD=P(["6","6 Plus","6s","6s Plus","7","7 Plus","8","8 Plus"]), SE2=P(["SE (2020)","SE (2022)"]);
 const NO_EID=OLD.concat(P(["X"])); // belum mendukung eSIM, tidak ada baris EID
 const NO_UW=OLD.concat(P(["X","XR","XS","XS Max","16e","Air","17e"]),SE2);           // tanpa kamera 0.5 (ultra wide)
-const NO_TELE=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air","17e"]).concat(SE2); // tanpa lensa telefoto
+const NO_TELE=P(["6","6 Plus","6s","6s Plus","7","8","XR","11","12 mini","12","13 mini","13","14","14 Plus","15","15 Plus","16e","16","16 Plus","17","Air","17e"]).concat(SE2); // tanpa lensa telefoto
 const HAS_5X=P(["15 Pro Max","16 Pro","16 Pro Max"]);                            // telefoto 5x
-const NO_WL=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus"]);            // tanpa wireless charging (mulai iPhone 8)
+const NO_WL=P(["6","6 Plus","6s","6s Plus","7","7 Plus"]);            // tanpa wireless charging (mulai iPhone 8)
 const NO_TD=OLD.concat(SE2);                                                     // tanpa TrueDepth
 const PRE15=DEV.map(d=>d[0]).slice(0,DEV.findIndex(d=>d[0]=="iPhone 15"));       // tanpa menu Cycle Count
 const optOf=(id,pre)=>cl(ALL.find(i=>i.id==id).o.find(o=>cl(o).indexOf(pre)==0));
@@ -1910,7 +1909,7 @@ function applyAuto(){
 const ACTION_T=P(["15 Pro","15 Pro Max","16e","16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max","17e","18 Pro","18 Pro Max"]);
 const CAMCTL_T=P(["16","16 Plus","16 Pro","16 Pro Max","17","Air","17 Pro","17 Pro Max","18 Pro","18 Pro Max"]);
 const APERTURE_T=P(["18 Pro","18 Pro Max"]); // variable aperture kamera utama
-const HOME_T=P(["6","6 Plus","6s","6s Plus","SE (2016)","7","7 Plus","8","8 Plus","SE (2020)","SE (2022)"]);
+const HOME_T=P(["6","6 Plus","6s","6s Plus","7","7 Plus","8","8 Plus","SE (2020)","SE (2022)"]);
 const X1112_T=P(["11","11 Pro","11 Pro Max","12 mini","12","12 Pro","12 Pro Max"]);
 const X_T=P(["X","XR","XS","XS Max"]); // gambar contoh: bingkai iPhone 11 dengan screenshot iPhone XR (iOS 18)
 const NOTCH_T=P(["13 mini","13","13 Pro","13 Pro Max","14","14 Plus","16e","17e"]); // gambar contoh pakai frame poni (notch)
@@ -2045,7 +2044,6 @@ function renderColors(){
 // ===== Slider pilihan tipe device: geser, kartu di tengah membesar, lalu terpilih otomatis =====
 function dslPic(t){
   const m=DM[t];if(!m)return '<div class="dother">?</div>';
-  if(t==="iPhone SE (2016)")return phone2D(t,m.cols[0]);
   return `<img loading="lazy" alt="${esc(t)}" src="img/produk/${slug(PHOTO_AS[t]||t)}-${slug(m.cols[0])}.png?v=${FOTO_V}" onerror="this.outerHTML=phone2D('${t}','${m.cols[0]}')">`;
 }
 // Tipe dengan foto yang sama (mis. 13 mini & 13) jadi satu kartu; ukurannya dipilih lewat tombol di bawah nama
@@ -2058,7 +2056,7 @@ function dslSetPhoto(){
     const col=(g.m.includes(S.tipe)&&S.warna&&m.cols.includes(S.warna))?S.warna:DM[g.k].cols[0];
     if((c.dataset.c||DM[g.k].cols[0])===col)return;c.dataset.c=col;
     const box=c.querySelector(".dimg"),im=box.querySelector("img");
-    if(g.k==="iPhone SE (2016)"||!im){box.innerHTML=phone2D(t,col);return}
+    if(!im){box.innerHTML=phone2D(t,col);return}
     const url=`img/produk/${slug(g.k)}-${slug(col)}.png?v=${FOTO_V}`;
     im.classList.add("swap");const pre=new Image();
     pre.onload=()=>{setTimeout(()=>{im.src=url;im.classList.remove("swap")},120)};
@@ -2600,7 +2598,6 @@ const seriModels=k=>DEV.filter(d=>seriOf(d[0])==k).map(d=>d[0]);
 const hexRgb=h=>{h=(h||"#9aa0a6").replace("#","");const n=parseInt(h.length==3?h.split("").map(c=>c+c).join(""):h,16);return [(n>>16)&255,(n>>8)&255,n&255]};
 const upCol=t=>{const m=DM[t];if(!m)return null;return S.tipe===t&&S.warna&&m.cols.includes(S.warna)?S.warna:m.cols[0]};
 function upPic(t,col){const m=DM[t];if(!m)return '<div class="em">📱</div>';col=col||m.cols[0];
-  if(t==="iPhone SE (2016)")return phone2D(t,col);
   return `<img alt="${esc(t)}" src="img/produk/${slug(PHOTO_AS[t]||t)}-${slug(col)}.png?v=${FOTO_V}" onerror="this.outerHTML=phone2D('${t}','${col}')">`}
 let UPSERI=null,UPFORCE=0,UPCI=0,UPT=0;
 function upStep(){if(UPFORCE)return UPFORCE;if(!S.tipe)return 1;if(!S.warna)return 2;if(!S.storage)return 3;return 0}
